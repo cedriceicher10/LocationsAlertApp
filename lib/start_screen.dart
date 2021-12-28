@@ -93,7 +93,7 @@ class StartScreen extends StatelessWidget {
 
   Widget genericHelpText() {
     return const FormattedText(
-        text: 'Such as: At a grocery or hardware store, etc.',
+        text: 'Such as: At a grocery store',
         size: s_fontSizeSmall,
         color: Color(s_blackBlue),
         font: s_font_BonaNova,
@@ -127,7 +127,7 @@ class StartScreen extends StatelessWidget {
 
   Widget specificHelpText() {
     return const FormattedText(
-        text: 'Such as: At a specific address, at home, etc.',
+        text: 'Such as: At a specific address',
         size: s_fontSizeSmall,
         color: Color(s_blackBlue),
         font: s_font_BonaNova,

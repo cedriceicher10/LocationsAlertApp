@@ -41,6 +41,7 @@ const int s_seaFoam = 0xFF0A8C79;
 const int s_forrestGreen = 0xFF012B09;
 const int s_goldenrod = 0xC59849;
 const int s_blackBlue = 0xFF00171F;
+const int s_darkSalmon = 0xFFDD9787;
 
 // Color Swatch
 const MaterialColor s_whiteSwatch = const MaterialColor(

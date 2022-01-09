@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'start_screen.dart';
 import 'formatted_text.dart';
@@ -22,17 +23,28 @@ class _SpecificScreenState extends State<SpecificScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Specific Screen',
-      home: Scaffold(
-        appBar: AppBar(
-          title: specificScreenTitle('Specific Alert'),
-          backgroundColor: const Color(s_aquariumLighter),
-          centerTitle: true,
-        ),
-        body: specificScreenBody(),
-      ),
-    );
+    // Wrapping the MaterialApp allows the user to tap anywhere on the screen
+    // to remove the keyboard focus
+    // See: https://flutterigniter.com/dismiss-keyboard-form-lose-focus/
+    return GestureDetector(
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+        },
+        child: MaterialApp(
+          title: 'Specific Screen',
+          home: Scaffold(
+            appBar: AppBar(
+              title: specificScreenTitle('Specific Alert'),
+              backgroundColor: const Color(s_aquariumLighter),
+              centerTitle: true,
+            ),
+            resizeToAvoidBottomInset: false,
+            body: specificScreenBody(),
+          ),
+        ));
   }
 
   Widget specificScreenBody() {
@@ -46,8 +58,10 @@ class _SpecificScreenState extends State<SpecificScreen> {
               SizedBox(height: buttonSpacing),
               titleText('At the location...'),
               SizedBox(width: textWidth, child: locationEntry()),
-              SizedBox(height: buttonSpacing),
+              SizedBox(height: buttonSpacing * 2),
               submitButton(buttonWidth, buttonHeight),
+              SizedBox(height: buttonSpacing / 2),
+              cancelButton(buttonWidth, buttonHeight)
             ])));
   }
 
@@ -113,6 +127,11 @@ class _SpecificScreenState extends State<SpecificScreen> {
 
             // Put in database as a current reminder
 
+            // Remove keyboard
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            if (!currentFocus.hasPrimaryFocus) {
+              currentFocus.unfocus();
+            }
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => const StartScreen()),
@@ -124,11 +143,50 @@ class _SpecificScreenState extends State<SpecificScreen> {
             fixedSize: Size(buttonWidth, buttonHeight)),
         child: const FormattedText(
           text: 'Create Reminder',
-          size: s_fontSizeSmall,
+          size: s_fontSizeMedium,
           color: Colors.white,
           font: s_font_BonaNova,
           weight: FontWeight.bold,
         ));
+  }
+
+  Widget cancelButton(double buttonWidth, double buttonHeight) {
+    return ElevatedButton(
+        onPressed: () {
+          // Remove keyboard
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const StartScreen()),
+              (Route<dynamic> route) => false);
+        },
+        style: ElevatedButton.styleFrom(
+            primary: const Color(s_declineRed),
+            fixedSize: Size(buttonWidth / 2, buttonHeight / 2)),
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          const Icon(
+            Icons.arrow_back_ios_rounded,
+            color: Colors.white,
+            size: 16,
+          ),
+          SizedBox(
+            width: buttonWidth / 12,
+          ),
+          cancelText('Cancel')
+        ]));
+  }
+
+  Widget cancelText(String text) {
+    return const FormattedText(
+      text: 'Cancel',
+      size: s_fontSizeSmall,
+      color: Colors.white,
+      font: s_font_BonaNova,
+      weight: FontWeight.bold,
+    );
   }
 
   Widget specificScreenTitle(String title) {

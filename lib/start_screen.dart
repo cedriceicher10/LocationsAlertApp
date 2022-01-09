@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'specific_screen.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
 
@@ -16,18 +17,21 @@ class StartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Start Screen',
-      home: Scaffold(
-        appBar: AppBar(
-          title: startScreenTitle('Location Alerts'),
-          backgroundColor: const Color(s_blackBlue),
-          centerTitle: true,
-        ),
-        body: startScreenBody(),
-      ),
+      // This Builder is here so that routes needing a up-the-tree context can
+      // find it. See: https://stackoverflow.com/questions/44004451/navigator-operation-requested-with-a-context-that-does-not-include-a-navigator
+      home: Builder(
+          builder: (context) => Scaffold(
+                appBar: AppBar(
+                  title: startScreenTitle('Location Alerts'),
+                  backgroundColor: const Color(s_blackBlue),
+                  centerTitle: true,
+                ),
+                body: startScreenBody(context),
+              )),
     );
   }
 
-  Widget startScreenBody() {
+  Widget startScreenBody(BuildContext context) {
     return Column(children: [
       Center(
           child: Column(
@@ -46,7 +50,7 @@ class StartScreen extends StatelessWidget {
             genericLocationButton('Generic'),
             genericHelpText(),
             SizedBox(height: buttonSpacing),
-            specificLocationButton('Specific'),
+            specificLocationButton(context, 'Specific'),
             specificHelpText(),
             SizedBox(height: buttonSpacing),
             viewMyAlertsButton('View my Alerts (0)'),
@@ -65,7 +69,7 @@ class StartScreen extends StatelessWidget {
     return FormattedText(
         text: text,
         size: s_fontSizeMedium,
-        color: const Color(s_aquarium),
+        color: const Color(s_darkSalmon),
         font: s_font_BonaNova,
         weight: FontWeight.bold,
         align: TextAlign.center);
@@ -97,7 +101,7 @@ class StartScreen extends StatelessWidget {
 
   Widget genericHelpText() {
     return const FormattedText(
-        text: 'Such as: At a grocery store',
+        text: 'Such as: At any grocery store',
         size: s_fontSizeSmall,
         color: Color(s_blackBlue),
         font: s_font_BonaNova,
@@ -105,13 +109,13 @@ class StartScreen extends StatelessWidget {
         weight: FontWeight.bold);
   }
 
-  Widget specificLocationButton(String text) {
+  Widget specificLocationButton(BuildContext context, String text) {
     return ElevatedButton(
         onPressed: () {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => LoginScreen()),
-          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SpecificScreen()),
+          );
         },
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           buttonText(text),

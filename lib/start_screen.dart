@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'generic_screen.dart';
 import 'specific_screen.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
@@ -46,7 +47,7 @@ class StartScreen extends StatelessWidget {
             size: 150,
           ),
           SizedBox(height: buttonSpacing * 2),
-          genericLocationButton('Generic'),
+          genericLocationButton(context, 'Generic'),
           genericHelpText(),
           SizedBox(height: buttonSpacing),
           specificLocationButton(context, 'Specific'),
@@ -54,6 +55,7 @@ class StartScreen extends StatelessWidget {
           SizedBox(height: buttonSpacing),
           viewMyAlertsButton('View my Alerts (0)'),
           SizedBox(height: buttonSpacing),
+          signatureText()
         ]));
   }
 
@@ -67,13 +69,13 @@ class StartScreen extends StatelessWidget {
         align: TextAlign.center);
   }
 
-  Widget genericLocationButton(String text) {
+  Widget genericLocationButton(BuildContext context, String text) {
     return ElevatedButton(
         onPressed: () {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => LoginScreen()),
-          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const GenericScreen()),
+          );
         },
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           buttonText(text),
@@ -167,15 +169,16 @@ class StartScreen extends StatelessWidget {
         weight: FontWeight.bold);
   }
 
-  Widget signatureText(String title) {
+  Widget signatureText() {
     return RichText(
       text: TextSpan(
           style: const TextStyle(
               color: Colors.black,
-              fontFamily: s_font_BonaNova,
+              fontFamily: s_font_IBMPlexSans,
               fontSize: s_fontSizeExtraSmall,
-              fontWeight: FontWeight.bold),
-          text: title,
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.underline),
+          text: 'An App by Cedric Eicher',
           recognizer: TapGestureRecognizer()
             ..onTap = () async {
               var url = "https://www.linkedin.com/in/cedriceicher/";

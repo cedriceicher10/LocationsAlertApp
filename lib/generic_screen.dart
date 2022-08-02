@@ -4,14 +4,16 @@ import 'start_screen.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
 
-class SpecificScreen extends StatefulWidget {
-  const SpecificScreen({Key? key}) : super(key: key);
+String _dropDownValue = 'Grocery Store';
+
+class GenericScreen extends StatefulWidget {
+  const GenericScreen({Key? key}) : super(key: key);
 
   @override
-  State<SpecificScreen> createState() => _SpecificScreenState();
+  State<GenericScreen> createState() => _GenericScreenState();
 }
 
-class _SpecificScreenState extends State<SpecificScreen> {
+class _GenericScreenState extends State<GenericScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   String reminder = '';
   String location = '';
@@ -34,20 +36,20 @@ class _SpecificScreenState extends State<SpecificScreen> {
           }
         },
         child: MaterialApp(
-          title: 'Specific Screen',
+          title: 'Generic Screen',
           home: Scaffold(
             appBar: AppBar(
-              title: specificScreenTitle('Specific Alert'),
-              backgroundColor: const Color(s_aquariumLighter),
+              title: genericScreenTitle('Generic Alert'),
+              backgroundColor: const Color(s_aquarium),
               centerTitle: true,
             ),
             resizeToAvoidBottomInset: false,
-            body: specificScreenBody(),
+            body: genericScreenBody(),
           ),
         ));
   }
 
-  Widget specificScreenBody() {
+  Widget genericScreenBody() {
     return SizedBox(
         height: 500,
         width: 400,
@@ -62,7 +64,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
                   titleText('Remind me to...'),
                   SizedBox(width: textWidth, child: reminderEntry()),
                   SizedBox(height: buttonSpacing),
-                  titleText('At the specific location...'),
+                  titleText('At the generic location...'),
                   SizedBox(width: textWidth, child: locationEntry()),
                   SizedBox(height: buttonSpacing * 2),
                   submitButton(buttonWidth, buttonHeight),
@@ -74,18 +76,17 @@ class _SpecificScreenState extends State<SpecificScreen> {
   Widget reminderEntry() {
     return TextFormField(
         autofocus: true,
-        style: const TextStyle(color: Color(s_aquariumLighter)),
+        style: const TextStyle(color: Color(s_aquarium)),
         decoration: const InputDecoration(
             labelStyle: TextStyle(
-                color: Color(s_aquariumLighter), fontWeight: FontWeight.bold),
-            hintText: 'Check the pantry for extra paper towels',
+                color: Color(s_aquarium), fontWeight: FontWeight.bold),
+            hintText: 'Pick up some laundry detergent',
             hintStyle: TextStyle(color: Color(s_disabledGray)),
             errorStyle: TextStyle(
                 color: Color(s_declineRed), fontWeight: FontWeight.bold),
             border: OutlineInputBorder(),
             focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: Color(s_aquariumLighter), width: 2.0))),
+                borderSide: BorderSide(color: Color(s_aquarium), width: 2.0))),
         onSaved: (value) {
           reminder = value!;
         },
@@ -99,30 +100,33 @@ class _SpecificScreenState extends State<SpecificScreen> {
   }
 
   Widget locationEntry() {
-    return TextFormField(
-        autofocus: true,
-        style: const TextStyle(color: Color(s_aquariumLighter)),
-        decoration: const InputDecoration(
-            labelStyle: TextStyle(
-                color: Color(s_aquariumLighter), fontWeight: FontWeight.bold),
-            hintText: '675 W Beech St, San Diego, CA 92101',
-            hintStyle: TextStyle(color: Color(s_disabledGray)),
-            errorStyle: TextStyle(
-                color: Color(s_declineRed), fontWeight: FontWeight.bold),
-            border: OutlineInputBorder(),
-            focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: Color(s_aquariumLighter), width: 2.0))),
-        onSaved: (value) {
-          reminder = value!;
-        },
-        validator: (value) {
-          if (value!.isEmpty) {
-            return 'Please enter a location';
-          } else {
-            return null;
-          }
-        });
+    return Center(
+        child: DropdownButton<String>(
+            icon: const Icon(Icons.add_location_alt_outlined),
+            iconEnabledColor: const Color(s_aquarium),
+            items: const [
+              DropdownMenuItem(
+                child: Text('Grocery Store'),
+                value: 'Grocery Store',
+                alignment: Alignment.center,
+              ),
+              DropdownMenuItem(
+                child: Text('Hardware Store'),
+                value: 'Hardware Store',
+                alignment: Alignment.center,
+              ),
+              DropdownMenuItem(
+                child: Text('Anywhere'),
+                value: 'Anywhere',
+                alignment: Alignment.center,
+              )
+            ],
+            value: _dropDownValue,
+            onChanged: (value) {
+              setState(() {
+                _dropDownValue = value!;
+              });
+            }));
   }
 
   Widget submitButton(double buttonWidth, double buttonHeight) {
@@ -145,7 +149,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           }
         },
         style: ElevatedButton.styleFrom(
-            primary: const Color(s_aquariumLighter),
+            primary: const Color(s_aquarium),
             fixedSize: Size(buttonWidth, buttonHeight)),
         child: const FormattedText(
           text: 'Create Reminder',
@@ -195,7 +199,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
     );
   }
 
-  Widget specificScreenTitle(String title) {
+  Widget genericScreenTitle(String title) {
     return FormattedText(
       text: title,
       size: s_fontSizeLarge,

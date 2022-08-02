@@ -48,21 +48,27 @@ class _SpecificScreenState extends State<SpecificScreen> {
   }
 
   Widget specificScreenBody() {
-    return Center(
+    return SizedBox(
+        height: 500,
+        width: 400,
         child: Form(
             key: formKey,
-            child: Column(children: [
-              SizedBox(height: topPadding),
-              titleText('Remind me to...'),
-              SizedBox(width: textWidth, child: reminderEntry()),
-              SizedBox(height: buttonSpacing),
-              titleText('At the location...'),
-              SizedBox(width: textWidth, child: locationEntry()),
-              SizedBox(height: buttonSpacing * 2),
-              submitButton(buttonWidth, buttonHeight),
-              SizedBox(height: buttonSpacing / 2),
-              cancelButton(buttonWidth, buttonHeight)
-            ])));
+            child: SingleChildScrollView(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                  SizedBox(height: topPadding),
+                  titleText('Remind me to...'),
+                  SizedBox(width: textWidth, child: reminderEntry()),
+                  SizedBox(height: buttonSpacing),
+                  titleText('At the location...'),
+                  SizedBox(width: textWidth, child: locationEntry()),
+                  SizedBox(height: buttonSpacing * 2),
+                  submitButton(buttonWidth, buttonHeight),
+                  SizedBox(height: buttonSpacing / 2),
+                  cancelButton(buttonWidth, buttonHeight)
+                ]))));
   }
 
   Widget reminderEntry() {

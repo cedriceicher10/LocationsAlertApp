@@ -32,37 +32,29 @@ class StartScreen extends StatelessWidget {
   }
 
   Widget startScreenBody(BuildContext context) {
-    return Column(children: [
-      Center(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-            SizedBox(height: topPadding),
-            explainerTitle('Phone alerts based on your current location!'),
-            SizedBox(height: buttonSpacing),
-            const Icon(
-              Icons.add_location_alt_outlined,
-              color: Color(s_blackBlue),
-              size: 150,
-            ),
-            SizedBox(height: buttonSpacing * 2),
-            genericLocationButton('Generic'),
-            genericHelpText(),
-            SizedBox(height: buttonSpacing),
-            specificLocationButton(context, 'Specific'),
-            specificHelpText(),
-            SizedBox(height: buttonSpacing),
-            viewMyAlertsButton('View my Alerts (0)'),
-            SizedBox(height: buttonSpacing),
-          ])),
-      Expanded(
-        child: Align(
-          alignment: FractionalOffset.bottomCenter,
-          child: signatureText('An App by Cedric Eicher'),
-        ),
-      )
-    ]);
+    return SingleChildScrollView(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+          SizedBox(height: topPadding),
+          explainerTitle('Phone alerts based on your current location!'),
+          SizedBox(height: buttonSpacing),
+          const Icon(
+            Icons.add_location_alt_outlined,
+            color: Color(s_blackBlue),
+            size: 150,
+          ),
+          SizedBox(height: buttonSpacing * 2),
+          genericLocationButton('Generic'),
+          genericHelpText(),
+          SizedBox(height: buttonSpacing),
+          specificLocationButton(context, 'Specific'),
+          specificHelpText(),
+          SizedBox(height: buttonSpacing),
+          viewMyAlertsButton('View my Alerts (0)'),
+          SizedBox(height: buttonSpacing),
+        ]));
   }
 
   Widget explainerTitle(String text) {

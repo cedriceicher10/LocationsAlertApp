@@ -1,8 +1,13 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'start_screen.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
+
+// Firebase cloud firestore
+CollectionReference reminders =
+    FirebaseFirestore.instance.collection('reminders');
 
 class SpecificScreen extends StatefulWidget {
   const SpecificScreen({Key? key}) : super(key: key);
@@ -13,8 +18,8 @@ class SpecificScreen extends StatefulWidget {
 
 class _SpecificScreenState extends State<SpecificScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  String reminder = '';
-  String location = '';
+  String _reminderBody = '';
+  String _specificLocation = '';
   final double topPadding = 80;
   final double textWidth = 325;
   final double buttonWidth = 260;
@@ -87,7 +92,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
                 borderSide:
                     BorderSide(color: Color(s_aquariumLighter), width: 2.0))),
         onSaved: (value) {
-          reminder = value!;
+          _reminderBody = value!;
         },
         validator: (value) {
           if (value!.isEmpty) {
@@ -114,7 +119,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
                 borderSide:
                     BorderSide(color: Color(s_aquariumLighter), width: 2.0))),
         onSaved: (value) {
-          reminder = value!;
+          _specificLocation = value!;
         },
         validator: (value) {
           if (value!.isEmpty) {
@@ -130,9 +135,19 @@ class _SpecificScreenState extends State<SpecificScreen> {
         onPressed: () async {
           if (formKey.currentState!.validate()) {
             formKey.currentState?.save();
-
-            // Put in database as a current reminder
-
+            // Retrieve unique user id (uuid) for the user of the app
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            String? uuid = prefs.getString('uuid');
+            // Put in Firestore cloud database
+            reminders.add({
+              'userId': uuid,
+              'reminderBody': _reminderBody,
+              'isSpecific': true,
+              'isCompleted': false,
+              'location': _specificLocation,
+              'dateTimeCreated': Timestamp.now(),
+              'dateTimeCompleted': Timestamp.now(),
+            }).catchError((error) => throw ('Error: $error'));
             // Remove keyboard
             FocusScopeNode currentFocus = FocusScope.of(context);
             if (!currentFocus.hasPrimaryFocus) {

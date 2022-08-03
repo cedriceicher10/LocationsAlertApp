@@ -1,7 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:math';
 import 'generic_screen.dart';
 import 'specific_screen.dart';
 import 'formatted_text.dart';
@@ -26,6 +28,8 @@ class StartScreen extends StatelessWidget {
         Future.delayed(Duration.zero, () {
           return showLocationDisclosureDetermination(context);
         });
+        // Generate (hidden) unique user id for the user to be used to identify their reminders in the db
+        generateUniqueUserId();
         return Scaffold(
           appBar: AppBar(
             title: startScreenTitle('Location Alerts'),
@@ -36,6 +40,37 @@ class StartScreen extends StatelessWidget {
         );
       }),
     );
+  }
+
+  Future<void> generateUniqueUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? uuidSP = prefs.getString('uuid');
+    if (uuidSP == null) {
+      // The unique user id (uuid) is 10 sequential numerals (0-9)
+      // Ex: 0613108162
+      String uuid = '';
+      var rng = Random();
+      bool isNotUnique = true;
+      while (isNotUnique) {
+        for (var i = 0; i < 10; i++) {
+          uuid += rng.nextInt(9).toString();
+        }
+        // Ensure that uuid isn't already taken
+        var uuidDB = await FirebaseFirestore.instance
+            .collection('reminders')
+            .where('userId', isEqualTo: uuid)
+            .get();
+        bool alreadyTaken = false;
+        uuidDB.docs.forEach((result) {
+          alreadyTaken = true;
+        });
+        if (alreadyTaken == false) {
+          isNotUnique = false;
+        }
+      }
+      // Assign to prefs so can be accessed in the app
+      prefs.setString('uuid', uuid);
+    }
   }
 
   showLocationDisclosureDetermination(BuildContext context) async {

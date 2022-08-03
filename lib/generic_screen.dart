@@ -1,6 +1,5 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'start_screen.dart';
 import 'formatted_text.dart';
@@ -138,19 +137,19 @@ class _GenericScreenState extends State<GenericScreen> {
         onPressed: () async {
           if (formKey.currentState!.validate()) {
             formKey.currentState?.save();
-
-            // Put in database as a current reminder
+            // Retrieve unique user id (uuid) for the user of the app
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            String? uuid = prefs.getString('uuid');
+            // Put in Firestore cloud database
             reminders.add({
-              'user':
-                  'test_user_0', // NEED TO IMPLEMENT UNIQUE USER ID ON INSTANTIATION
+              'userId': uuid,
               'reminderBody': _reminderBody,
               'isSpecific': false,
               'isCompleted': false,
               'location': _genericLocation,
               'dateTimeCreated': Timestamp.now(),
               'dateTimeCompleted': Timestamp.now(),
-            }).catchError((error) => print("FAILED TO ADD USER: $error"));
-
+            }).catchError((error) => throw ('Error: $error'));
             // Remove keyboard
             FocusScopeNode currentFocus = FocusScope.of(context);
             if (!currentFocus.hasPrimaryFocus) {

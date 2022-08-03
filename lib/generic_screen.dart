@@ -1,10 +1,14 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'start_screen.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
 
-String _dropDownValue = 'Grocery Store';
+// Firebase cloud firestore
+CollectionReference reminders =
+    FirebaseFirestore.instance.collection('reminders');
 
 class GenericScreen extends StatefulWidget {
   const GenericScreen({Key? key}) : super(key: key);
@@ -15,8 +19,8 @@ class GenericScreen extends StatefulWidget {
 
 class _GenericScreenState extends State<GenericScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  String reminder = '';
-  String location = '';
+  String _reminderBody = '';
+  String _genericLocation = 'Grocery Store';
   final double topPadding = 80;
   final double textWidth = 325;
   final double buttonWidth = 260;
@@ -88,7 +92,7 @@ class _GenericScreenState extends State<GenericScreen> {
             focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Color(s_aquarium), width: 2.0))),
         onSaved: (value) {
-          reminder = value!;
+          _reminderBody = value!;
         },
         validator: (value) {
           if (value!.isEmpty) {
@@ -121,10 +125,10 @@ class _GenericScreenState extends State<GenericScreen> {
                 alignment: Alignment.center,
               )
             ],
-            value: _dropDownValue,
+            value: _genericLocation,
             onChanged: (value) {
               setState(() {
-                _dropDownValue = value!;
+                _genericLocation = value!;
               });
             }));
   }
@@ -136,6 +140,16 @@ class _GenericScreenState extends State<GenericScreen> {
             formKey.currentState?.save();
 
             // Put in database as a current reminder
+            reminders.add({
+              'user':
+                  'test_user_0', // NEED TO IMPLEMENT UNIQUE USER ID ON INSTANTIATION
+              'reminderBody': _reminderBody,
+              'isSpecific': false,
+              'isCompleted': false,
+              'location': _genericLocation,
+              'dateTimeCreated': Timestamp.now(),
+              'dateTimeCompleted': Timestamp.now(),
+            }).catchError((error) => print("FAILED TO ADD USER: $error"));
 
             // Remove keyboard
             FocusScopeNode currentFocus = FocusScope.of(context);

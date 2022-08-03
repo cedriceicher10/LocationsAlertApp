@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'start_screen.dart';
+import 'splash_screen.dart';
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const StartScreen();
+    return const MaterialApp(
+        home: SplashScreen(), debugShowCheckedModeBanner: false);
   }
 }

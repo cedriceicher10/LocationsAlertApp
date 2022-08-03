@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'generic_screen.dart';
 import 'specific_screen.dart';
@@ -20,15 +21,77 @@ class StartScreen extends StatelessWidget {
       title: 'Start Screen',
       // This Builder is here so that routes needing a up-the-tree context can
       // find it. See: https://stackoverflow.com/questions/44004451/navigator-operation-requested-with-a-context-that-does-not-include-a-navigator
-      home: Builder(
-          builder: (context) => Scaffold(
-                appBar: AppBar(
-                  title: startScreenTitle('Location Alerts'),
-                  backgroundColor: const Color(s_blackBlue),
-                  centerTitle: true,
-                ),
-                body: startScreenBody(context),
-              )),
+      home: Builder(builder: (context) {
+        // Prominent disclosure on location usage
+        Future.delayed(Duration.zero, () {
+          return showLocationDisclosureDetermination(context);
+        });
+        return Scaffold(
+          appBar: AppBar(
+            title: startScreenTitle('Location Alerts'),
+            backgroundColor: const Color(s_blackBlue),
+            centerTitle: true,
+          ),
+          body: startScreenBody(context),
+        );
+      }),
+    );
+  }
+
+  showLocationDisclosureDetermination(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? showLocationDisclosure = prefs.getBool('showLocationDisclosure');
+    if ((showLocationDisclosure == null) || (showLocationDisclosure == true)) {
+      showLocationDisclosureAlert(context, prefs);
+    }
+  }
+
+  dynamic showLocationDisclosureAlert(
+      BuildContext context, SharedPreferences prefs) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return locationDisclosureAlert(context, prefs);
+      },
+    );
+  }
+
+  AlertDialog locationDisclosureAlert(
+      BuildContext context, SharedPreferences prefs) {
+    return AlertDialog(
+      title: const Text(
+        "Location Disclosure",
+        style: TextStyle(
+            color: Colors.transparent,
+            fontWeight: FontWeight.bold,
+            shadows: [Shadow(offset: Offset(0, -3), color: Colors.black)],
+            decoration: TextDecoration.underline,
+            decorationColor: Colors.black,
+            decorationThickness: 1),
+      ),
+      content: const Text(
+          "Location Alerts collects background location data to deliver reminder alerts based on your location. This feature may be in use when the app is in the background or closed. \n\nLocation Alerts will ALWAYS ask your permission before turning on your location services."),
+      actions: <Widget>[
+        TextButton(
+          child: const Text("Decline (No location services)"),
+          style: TextButton.styleFrom(primary: Colors.red),
+          onPressed: () {
+            Navigator.of(context).pop();
+            prefs.setBool('showLocationDisclosure', true);
+          },
+        ),
+        TextButton(
+          child: const Text("Acknowledge",
+              style: TextStyle(fontWeight: FontWeight.bold)),
+          style: TextButton.styleFrom(
+              primary: Colors.white,
+              backgroundColor: const Color.fromARGB(255, 18, 148, 23)),
+          onPressed: () {
+            Navigator.of(context).pop();
+            prefs.setBool('showLocationDisclosure', false);
+          },
+        )
+      ],
     );
   }
 
@@ -55,7 +118,9 @@ class StartScreen extends StatelessWidget {
           SizedBox(height: buttonSpacing),
           viewMyAlertsButton('View my Alerts (0)'),
           SizedBox(height: buttonSpacing),
-          signatureText()
+          signatureText(),
+          SizedBox(height: buttonSpacing),
+          locationDisclosureButton(context)
         ]));
   }
 
@@ -71,11 +136,19 @@ class StartScreen extends StatelessWidget {
 
   Widget genericLocationButton(BuildContext context, String text) {
     return ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const GenericScreen()),
-          );
+        onPressed: () async {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          bool? showLocationDisclosure =
+              prefs.getBool('showLocationDisclosure');
+          if ((showLocationDisclosure == null) ||
+              (showLocationDisclosure == true)) {
+            showLocationDisclosureAlert(context, prefs);
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const GenericScreen()),
+            );
+          }
         },
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           buttonText(text),
@@ -105,11 +178,19 @@ class StartScreen extends StatelessWidget {
 
   Widget specificLocationButton(BuildContext context, String text) {
     return ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const SpecificScreen()),
-          );
+        onPressed: () async {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          bool? showLocationDisclosure =
+              prefs.getBool('showLocationDisclosure');
+          if ((showLocationDisclosure == null) ||
+              (showLocationDisclosure == true)) {
+            showLocationDisclosureAlert(context, prefs);
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SpecificScreen()),
+            );
+          }
         },
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           buttonText(text),
@@ -185,5 +266,39 @@ class StartScreen extends StatelessWidget {
               if (!await launch(url)) throw 'Could not launch $url';
             }),
     );
+  }
+
+  Widget locationDisclosureButton(BuildContext context) {
+    return SizedBox(
+        height: 30,
+        width: 125,
+        child: DecoratedBox(
+            decoration: const BoxDecoration(
+                color: Color(s_raisinBlack),
+                borderRadius: BorderRadius.all(Radius.circular(50))),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Icon(Icons.location_on,
+                      size: 12, color: Color(s_darkSalmon)),
+                  TextButton(
+                      style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                      child: locationDisclosureText('Location Disclosure'),
+                      onPressed: () async {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        showLocationDisclosureAlert(context, prefs);
+                      })
+                ])));
+  }
+
+  Widget locationDisclosureText(String text) {
+    return FormattedText(
+        text: text,
+        size: 12 * 0.8,
+        color: const Color(s_aquariumLighter),
+        font: s_font_IBMPlexSans,
+        weight: FontWeight.bold);
   }
 }

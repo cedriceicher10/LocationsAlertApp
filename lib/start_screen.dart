@@ -4,10 +4,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:math';
+import 'my_alerts_screen.dart';
 import 'generic_screen.dart';
 import 'specific_screen.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
+
+String UUID_GLOBAL = '';
 
 class StartScreen extends StatelessWidget {
   const StartScreen({Key? key}) : super(key: key);
@@ -56,12 +59,12 @@ class StartScreen extends StatelessWidget {
           uuid += rng.nextInt(9).toString();
         }
         // Ensure that uuid isn't already taken
-        var uuidDB = await FirebaseFirestore.instance
+        var snapshot = await FirebaseFirestore.instance
             .collection('reminders')
             .where('userId', isEqualTo: uuid)
             .get();
         bool alreadyTaken = false;
-        uuidDB.docs.forEach((result) {
+        snapshot.docs.forEach((result) {
           alreadyTaken = true;
         });
         if (alreadyTaken == false) {
@@ -70,6 +73,9 @@ class StartScreen extends StatelessWidget {
       }
       // Assign to prefs so can be accessed in the app
       prefs.setString('uuid', uuid);
+      UUID_GLOBAL = uuid;
+    } else {
+      UUID_GLOBAL = uuidSP;
     }
   }
 
@@ -151,7 +157,7 @@ class StartScreen extends StatelessWidget {
           specificLocationButton(context, 'Specific'),
           specificHelpText(),
           SizedBox(height: buttonSpacing),
-          viewMyAlertsButton('View my Alerts (0)'),
+          myAlertsButton(context, 'View my Alerts (0)'),
           SizedBox(height: buttonSpacing),
           signatureText(),
           SizedBox(height: buttonSpacing),
@@ -207,7 +213,6 @@ class StartScreen extends StatelessWidget {
         size: s_fontSizeSmall,
         color: Color(s_blackBlue),
         font: s_font_BonaNova,
-        style: FontStyle.italic,
         weight: FontWeight.bold);
   }
 
@@ -249,17 +254,16 @@ class StartScreen extends StatelessWidget {
         size: s_fontSizeSmall,
         color: Color(s_blackBlue),
         font: s_font_BonaNova,
-        style: FontStyle.italic,
         weight: FontWeight.bold);
   }
 
-  Widget viewMyAlertsButton(String text) {
+  Widget myAlertsButton(BuildContext context, String text) {
     return ElevatedButton(
         onPressed: () {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => LoginScreen()),
-          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MyAlertsScreen()),
+          );
         },
         child: buttonText(text),
         style: ElevatedButton.styleFrom(
@@ -309,7 +313,7 @@ class StartScreen extends StatelessWidget {
         width: 125,
         child: DecoratedBox(
             decoration: const BoxDecoration(
-                color: Color(s_raisinBlack),
+                color: Color(s_blackBlue),
                 borderRadius: BorderRadius.all(Radius.circular(50))),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -162,13 +162,24 @@ class _SpecificScreenState extends State<SpecificScreen> {
         style: ElevatedButton.styleFrom(
             primary: const Color(s_aquariumLighter),
             fixedSize: Size(buttonWidth, buttonHeight)),
-        child: const FormattedText(
-          text: 'Create Reminder',
-          size: s_fontSizeMedium,
-          color: Colors.white,
-          font: s_font_BonaNova,
-          weight: FontWeight.bold,
-        ));
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
+          Icon(
+            Icons.add,
+            color: Colors.white,
+            size: 32,
+          ),
+          SizedBox(
+            width: 4,
+          ),
+          FormattedText(
+            text: 'Create Alert',
+            size: s_fontSizeMedium,
+            color: Colors.white,
+            font: s_font_BonaNova,
+            weight: FontWeight.bold,
+          )
+        ]));
   }
 
   Widget cancelButton(double buttonWidth, double buttonHeight) {
@@ -201,8 +212,8 @@ class _SpecificScreenState extends State<SpecificScreen> {
   }
 
   Widget cancelText(String text) {
-    return const FormattedText(
-      text: 'Cancel',
+    return FormattedText(
+      text: text,
       size: s_fontSizeSmall,
       color: Colors.white,
       font: s_font_BonaNova,

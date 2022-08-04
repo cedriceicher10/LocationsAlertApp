@@ -17,6 +17,32 @@ int ALERTS_NUM_GLOBAL = 0;
 CollectionReference reminders =
     FirebaseFirestore.instance.collection('reminders');
 
+// Enables screen transition to the right (instead of default bottom)
+Route createRoute(Widget page, String direction) {
+  Offset begin = Offset.zero;
+  Offset end = Offset.zero;
+  if (direction == 'from_left') {
+    begin = const Offset(-1.0, 0.0);
+  } else if (direction == 'from_right') {
+    begin = const Offset(1.0, 0.0);
+  }
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => page,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      begin;
+      end;
+      const curve = Curves.ease;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
+}
+
 class StartScreen extends StatefulWidget {
   const StartScreen({Key? key}) : super(key: key);
 
@@ -37,10 +63,6 @@ class _StartScreenState extends State<StartScreen> {
       // This Builder is here so that routes needing a up-the-tree context can
       // find it. See: https://stackoverflow.com/questions/44004451/navigator-operation-requested-with-a-context-that-does-not-include-a-navigator
       home: Builder(builder: (context) {
-        // Generate (hidden) unique user id for the user to be used to identify their reminders in the db
-        generateUniqueUserId();
-        // Tally the number of uncompleted alerts for the My Alerts button
-        setAlertCount();
         // Prominent disclosure on location usage
         Future.delayed(Duration.zero, () {
           return showLocationDisclosureDetermination(context);
@@ -52,7 +74,7 @@ class _StartScreenState extends State<StartScreen> {
             centerTitle: true,
           ),
           body: FutureBuilder(
-              future: setAlertCount(),
+              future: initFunctions(),
               builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
                 if (snapshot.hasData) {
                   return startScreenBody(context);
@@ -68,20 +90,28 @@ class _StartScreenState extends State<StartScreen> {
     );
   }
 
-  Future<bool> setAlertCount() async {
+  Future<bool> initFunctions() async {
+    // Generate (hidden) unique user id for the user to be used to identify their reminders in the db
+    await generateUniqueUserId();
+    // Tally the number of uncompleted alerts for the My Alerts button
+    await setAlertCount();
+    return true;
+  }
+
+  Future<void> setAlertCount() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? uuid = prefs.getString('uuid');
     var snapshot = await FirebaseFirestore.instance
         .collection('reminders')
         .where('userId', isEqualTo: uuid)
         .where('isCompleted', isEqualTo: false)
-        .get();
+        .get()
+        .catchError((error) => throw ('Error: $error'));
     int alertCount = 0;
     snapshot.docs.forEach((result) {
       alertCount++;
     });
     ALERTS_NUM_GLOBAL = alertCount;
-    return true;
   }
 
   Future<void> generateUniqueUserId() async {
@@ -101,7 +131,8 @@ class _StartScreenState extends State<StartScreen> {
         var snapshot = await FirebaseFirestore.instance
             .collection('reminders')
             .where('userId', isEqualTo: uuid)
-            .get();
+            .get()
+            .catchError((error) => throw ('Error: $error'));
         bool alreadyTaken = false;
         snapshot.docs.forEach((result) {
           alreadyTaken = true;
@@ -224,10 +255,14 @@ class _StartScreenState extends State<StartScreen> {
               (showLocationDisclosure == true)) {
             showLocationDisclosureAlert(context, prefs);
           } else {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const GenericScreen()),
-            );
+            // Old way: From the bottom
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => const GenericScreen()),
+            // );
+            // New way: From a direction
+            Navigator.of(context)
+                .push(createRoute(const GenericScreen(), 'from_right'));
           }
         },
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -265,10 +300,14 @@ class _StartScreenState extends State<StartScreen> {
               (showLocationDisclosure == true)) {
             showLocationDisclosureAlert(context, prefs);
           } else {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SpecificScreen()),
-            );
+            // Old way: From the bottom
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => const SpecificScreen()),
+            // );
+            // New way: From a direction
+            Navigator.of(context)
+                .push(createRoute(const SpecificScreen(), 'from_right'));
           }
         },
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -304,10 +343,23 @@ class _StartScreenState extends State<StartScreen> {
             MaterialPageRoute(builder: (context) => const MyAlertsScreen()),
           );
         },
-        child: buttonText(text),
         style: ElevatedButton.styleFrom(
             primary: const Color(s_darkSalmon),
-            fixedSize: Size(buttonWidth, buttonHeight)));
+            fixedSize: Size(buttonWidth, buttonHeight)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.doorbell,
+              color: Colors.white,
+              size: 32,
+            ),
+            const SizedBox(
+              width: 4,
+            ),
+            buttonText(text)
+          ],
+        ));
   }
 
   Widget startScreenTitle(String title) {

@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'edit_alert_screen.dart';
 import 'start_screen.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
 
 class ReminderTile {
+  String id;
   String dateTimeCreated;
   String dateTimeCompleted;
   bool isCompleted;
@@ -14,7 +16,8 @@ class ReminderTile {
   String reminder;
   String userId;
   ReminderTile(
-      {required this.dateTimeCreated,
+      {required this.id,
+      required this.dateTimeCreated,
       required this.dateTimeCompleted,
       required this.isCompleted,
       required this.isSpecific,
@@ -66,7 +69,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
           padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
           child: explainerText()),
       SizedBox(height: buttonSpacing),
-      cancelButton(buttonWidth, buttonHeight)
+      backButton(buttonWidth, buttonHeight)
     ]));
   }
 
@@ -92,6 +95,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
         .collection('reminders')
         .where('userId', isEqualTo: UUID_GLOBAL)
         .where('isCompleted', isEqualTo: false)
+        .orderBy('dateTimeCreated', descending: true)
         .snapshots();
     return snapshot;
   }
@@ -102,6 +106,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     for (var index = 0; index < snapshotReminders.data!.docs.length; ++index) {
       // Convert to lightweight reminder tile objects
       ReminderTile reminderTile = ReminderTile(
+          id: snapshotReminders.data!.docs[index].id,
           dateTimeCompleted: DateFormat.yMMMMd('en_US').add_jm().format(
               snapshotReminders.data!.docs[index]['dateTimeCompleted']
                   .toDate()),
@@ -124,8 +129,8 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
       itemCount: reminderObjects.length,
       itemBuilder: (context, index) {
-        var post = reminderObjects[index];
-        return reminderCard(post);
+        var tile = reminderObjects[index];
+        return reminderCard(tile);
       },
     );
   }
@@ -147,10 +152,19 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
             ]),
             trailing: const Icon(
               Icons.arrow_forward_ios_rounded,
-              color: Colors.white,
+              color: Color(s_darkSalmon),
               size: 24,
             ),
-            onTap: () {}));
+            onTap: () {
+              // Old way: From the bottom
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => EditAlertScreen(reminderTile: reminderTile)),
+              // );
+              // New way: From a direction
+              Navigator.of(context).push(createRoute(
+                  EditAlertScreen(reminderTile: reminderTile), 'from_right'));
+            }));
   }
 
   Widget reminderCardTitleText(String text) {
@@ -185,7 +199,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     );
   }
 
-  Widget cancelButton(double buttonWidth, double buttonHeight) {
+  Widget backButton(double buttonWidth, double buttonHeight) {
     return ElevatedButton(
         onPressed: () {
           // Remove keyboard
@@ -236,7 +250,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   Widget explainerText() {
     return const FormattedText(
       text:
-          'These are your current active location alerts.\n An alert will notify you when it is at the location specified!\n Once an alert is marked as finished it will be removed.',
+          'These are your current active location alerts.\n An alert will notify you when it is at the location specified!\n Once an alert is marked as finished it will be removed.\n Tap an alert to edit it.',
       size: s_fontSizeExtraSmall,
       color: Color(s_blackBlue),
       align: TextAlign.center,

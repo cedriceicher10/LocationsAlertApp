@@ -8,6 +8,7 @@ class FormattedText extends StatelessWidget {
   final Color? color;
   final FontWeight? weight;
   final FontStyle? style;
+  final TextDecoration? decoration;
 
   const FormattedText(
       {Key? key,
@@ -17,7 +18,8 @@ class FormattedText extends StatelessWidget {
       this.font,
       this.color,
       this.weight,
-      this.style})
+      this.style,
+      this.decoration})
       : super(key: key);
 
   @override
@@ -33,6 +35,7 @@ class FormattedText extends StatelessWidget {
             fontWeight: weight,
             fontStyle: style,
             color: color,
+            decoration: decoration,
           ),
         ));
   }

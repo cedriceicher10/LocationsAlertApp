@@ -35,6 +35,7 @@ dependencies:
   shared_preferences:
   animated_splash_screen: ^1.2.0
   flutter_bloc: ^8.0.1
+  intl: 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

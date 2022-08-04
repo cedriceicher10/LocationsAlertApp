@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'start_screen.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
 
 class ReminderTile {
-  Timestamp dateTimeCreated;
-  Timestamp dateTimeCompleted;
+  String dateTimeCreated;
+  String dateTimeCompleted;
   bool isCompleted;
   bool isSpecific;
   String location;
@@ -58,11 +58,16 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   }
 
   Widget myAlertsScreenBody() {
-    return Column(children: [
+    return SingleChildScrollView(
+        child: Column(children: [
       listViewReminderBuilder(),
       SizedBox(height: buttonSpacing),
+      Container(
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+          child: explainerText()),
+      SizedBox(height: buttonSpacing),
       cancelButton(buttonWidth, buttonHeight)
-    ]);
+    ]));
   }
 
   Widget listViewReminderBuilder() {
@@ -86,6 +91,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     var snapshot = FirebaseFirestore.instance
         .collection('reminders')
         .where('userId', isEqualTo: UUID_GLOBAL)
+        .where('isCompleted', isEqualTo: false)
         .snapshots();
     return snapshot;
   }
@@ -96,10 +102,11 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     for (var index = 0; index < snapshotReminders.data!.docs.length; ++index) {
       // Convert to lightweight reminder tile objects
       ReminderTile reminderTile = ReminderTile(
-          dateTimeCompleted: snapshotReminders.data!.docs[index]
-              ['dateTimeCompleted'],
-          dateTimeCreated: snapshotReminders.data!.docs[index]
-              ['dateTimeCreated'],
+          dateTimeCompleted: DateFormat.yMMMMd('en_US').add_jm().format(
+              snapshotReminders.data!.docs[index]['dateTimeCompleted']
+                  .toDate()),
+          dateTimeCreated: DateFormat.yMMMMd('en_US').add_jm().format(
+              snapshotReminders.data!.docs[index]['dateTimeCreated'].toDate()),
           isCompleted: snapshotReminders.data!.docs[index]['isCompleted'],
           isSpecific: snapshotReminders.data!.docs[index]['isSpecific'],
           location: snapshotReminders.data!.docs[index]['location'],
@@ -111,16 +118,16 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   }
 
   Widget listViewReminders(List<ReminderTile> reminderObjects) {
-    return Flexible(
-        child: ListView.builder(
+    return ListView.builder(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
       itemCount: reminderObjects.length,
       itemBuilder: (context, index) {
         var post = reminderObjects[index];
         return reminderCard(post);
       },
-    ));
+    );
   }
 
   Card reminderCard(ReminderTile reminderTile) {
@@ -131,11 +138,12 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
             borderRadius: BorderRadius.circular(15)),
         child: ListTile(
             isThreeLine: true,
-            title: Text(reminderTile.reminder),
+            title: reminderCardTitleText(reminderTile.reminder),
             subtitle:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(reminderTile.location),
-              Text('Date Created: ${reminderTile.dateTimeCreated}')
+              reminderCardLocationText('at: ${reminderTile.location}'),
+              reminderCardDateText(
+                  'Date Created: ${reminderTile.dateTimeCreated}')
             ]),
             trailing: const Icon(
               Icons.arrow_forward_ios_rounded,
@@ -143,6 +151,38 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
               size: 24,
             ),
             onTap: () {}));
+  }
+
+  Widget reminderCardTitleText(String text) {
+    return FormattedText(
+      text: text,
+      size: s_fontSizeMedium,
+      color: const Color(s_blackBlue),
+      font: s_font_IBMPlexSans,
+      weight: FontWeight.bold,
+    );
+  }
+
+  Widget reminderCardLocationText(String text) {
+    return FormattedText(
+      text: text,
+      size: s_fontSizeSmall - 2,
+      color: const Color(s_darkSalmon),
+      font: s_font_IBMPlexSans,
+      decoration: TextDecoration.underline,
+      weight: FontWeight.bold,
+    );
+  }
+
+  Widget reminderCardDateText(String text) {
+    return FormattedText(
+      text: text,
+      size: s_fontSizeExtraSmall,
+      color: const Color(s_blackBlue),
+      font: s_font_IBMPlexSans,
+      style: FontStyle.italic,
+      weight: FontWeight.bold,
+    );
   }
 
   Widget cancelButton(double buttonWidth, double buttonHeight) {
@@ -190,6 +230,17 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
       size: s_fontSizeLarge,
       color: Colors.white,
       font: s_font_BerkshireSwash,
+    );
+  }
+
+  Widget explainerText() {
+    return const FormattedText(
+      text:
+          'These are your current active location alerts.\n An alert will notify you when it is at the location specified!\n Once an alert is marked as finished it will be removed.',
+      size: s_fontSizeExtraSmall,
+      color: Color(s_blackBlue),
+      align: TextAlign.center,
+      font: s_font_IBMPlexSans,
     );
   }
 }

@@ -11,10 +11,20 @@ import 'formatted_text.dart';
 import 'styles.dart';
 
 String UUID_GLOBAL = '';
+int ALERTS_NUM_GLOBAL = 0;
 
-class StartScreen extends StatelessWidget {
+// Firebase cloud firestore
+CollectionReference reminders =
+    FirebaseFirestore.instance.collection('reminders');
+
+class StartScreen extends StatefulWidget {
   const StartScreen({Key? key}) : super(key: key);
 
+  @override
+  State<StartScreen> createState() => _StartScreenState();
+}
+
+class _StartScreenState extends State<StartScreen> {
   final double topPadding = 80;
   final double buttonWidth = 260;
   final double buttonHeight = 60;
@@ -27,22 +37,51 @@ class StartScreen extends StatelessWidget {
       // This Builder is here so that routes needing a up-the-tree context can
       // find it. See: https://stackoverflow.com/questions/44004451/navigator-operation-requested-with-a-context-that-does-not-include-a-navigator
       home: Builder(builder: (context) {
+        // Generate (hidden) unique user id for the user to be used to identify their reminders in the db
+        generateUniqueUserId();
+        // Tally the number of uncompleted alerts for the My Alerts button
+        setAlertCount();
         // Prominent disclosure on location usage
         Future.delayed(Duration.zero, () {
           return showLocationDisclosureDetermination(context);
         });
-        // Generate (hidden) unique user id for the user to be used to identify their reminders in the db
-        generateUniqueUserId();
         return Scaffold(
           appBar: AppBar(
             title: startScreenTitle('Location Alerts'),
             backgroundColor: const Color(s_blackBlue),
             centerTitle: true,
           ),
-          body: startScreenBody(context),
+          body: FutureBuilder(
+              future: setAlertCount(),
+              builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                if (snapshot.hasData) {
+                  return startScreenBody(context);
+                } else {
+                  return const Center(
+                      child: CircularProgressIndicator(
+                    color: Color(s_darkSalmon),
+                  ));
+                }
+              }),
         );
       }),
     );
+  }
+
+  Future<bool> setAlertCount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? uuid = prefs.getString('uuid');
+    var snapshot = await FirebaseFirestore.instance
+        .collection('reminders')
+        .where('userId', isEqualTo: uuid)
+        .where('isCompleted', isEqualTo: false)
+        .get();
+    int alertCount = 0;
+    snapshot.docs.forEach((result) {
+      alertCount++;
+    });
+    ALERTS_NUM_GLOBAL = alertCount;
+    return true;
   }
 
   Future<void> generateUniqueUserId() async {
@@ -157,7 +196,7 @@ class StartScreen extends StatelessWidget {
           specificLocationButton(context, 'Specific'),
           specificHelpText(),
           SizedBox(height: buttonSpacing),
-          myAlertsButton(context, 'View my Alerts (0)'),
+          myAlertsButton(context, 'View my Alerts ($ALERTS_NUM_GLOBAL)'),
           SizedBox(height: buttonSpacing),
           signatureText(),
           SizedBox(height: buttonSpacing),

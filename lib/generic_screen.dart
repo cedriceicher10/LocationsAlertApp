@@ -107,23 +107,7 @@ class _GenericScreenState extends State<GenericScreen> {
         child: DropdownButton<String>(
             icon: const Icon(Icons.add_location_alt_outlined),
             iconEnabledColor: const Color(s_aquarium),
-            items: const [
-              DropdownMenuItem(
-                child: Text('Grocery Store'),
-                value: 'Grocery Store',
-                alignment: Alignment.center,
-              ),
-              DropdownMenuItem(
-                child: Text('Hardware Store'),
-                value: 'Hardware Store',
-                alignment: Alignment.center,
-              ),
-              DropdownMenuItem(
-                child: Text('Anywhere'),
-                value: 'Anywhere',
-                alignment: Alignment.center,
-              )
-            ],
+            items: generalLocations(),
             value: _genericLocation,
             onChanged: (value) {
               setState(() {

@@ -12,6 +12,25 @@ import 'styles.dart';
 
 String UUID_GLOBAL = '';
 int ALERTS_NUM_GLOBAL = 0;
+List<String> GENERAL_LOCATIONS_GLOBAL = [
+  'Grocery Store',
+  'Hardware Store',
+  'Convenience Store',
+  'Restaurant'
+];
+
+List<DropdownMenuItem<String>> generalLocations() {
+  List<DropdownMenuItem<String>> listGenericLocations = [];
+  for (int index = 0; index < GENERAL_LOCATIONS_GLOBAL.length; ++index) {
+    DropdownMenuItem<String> item = DropdownMenuItem(
+      child: Text(GENERAL_LOCATIONS_GLOBAL[index]),
+      value: GENERAL_LOCATIONS_GLOBAL[index],
+      alignment: Alignment.center,
+    );
+    listGenericLocations.add(item);
+  }
+  return listGenericLocations;
+}
 
 // Firebase cloud firestore
 CollectionReference reminders =

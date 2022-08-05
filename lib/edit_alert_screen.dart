@@ -3,6 +3,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'start_screen.dart';
 import 'my_alerts_screen.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
@@ -147,23 +148,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
           child: DropdownButton<String>(
               icon: const Icon(Icons.add_location_alt_outlined),
               iconEnabledColor: const Color(s_aquarium),
-              items: const [
-                DropdownMenuItem(
-                  child: Text('Grocery Store'),
-                  value: 'Grocery Store',
-                  alignment: Alignment.center,
-                ),
-                DropdownMenuItem(
-                  child: Text('Hardware Store'),
-                  value: 'Hardware Store',
-                  alignment: Alignment.center,
-                ),
-                DropdownMenuItem(
-                  child: Text('Anywhere'),
-                  value: 'Anywhere',
-                  alignment: Alignment.center,
-                )
-              ],
+              items: generalLocations(),
               value: _location,
               onChanged: (value) {
                 setState(() {

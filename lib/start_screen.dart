@@ -232,7 +232,9 @@ class _StartScreenState extends State<StartScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
           SizedBox(height: topPadding),
-          explainerTitle('Phone alerts based on your current location!'),
+          Center(
+              child: explainerTitle(
+                  'Phone alerts based on your current location!')),
           SizedBox(height: buttonSpacing),
           const Icon(
             Icons.add_location_alt_outlined,
@@ -257,8 +259,8 @@ class _StartScreenState extends State<StartScreen> {
   Widget explainerTitle(String text) {
     return FormattedText(
         text: text,
-        size: s_fontSizeMedium,
-        color: const Color(s_darkSalmon),
+        size: s_fontSizeMedLarge,
+        color: Colors.black,
         font: s_font_BonaNova,
         weight: FontWeight.bold,
         align: TextAlign.center);
@@ -446,7 +448,7 @@ class _StartScreenState extends State<StartScreen> {
     return FormattedText(
         text: text,
         size: 12 * 0.8,
-        color: const Color(s_aquariumLighter),
+        color: Colors.white,
         font: s_font_IBMPlexSans,
         weight: FontWeight.bold);
   }

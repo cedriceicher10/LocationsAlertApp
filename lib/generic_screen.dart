@@ -146,7 +146,7 @@ class _GenericScreenState extends State<GenericScreen> {
           }
         },
         style: ElevatedButton.styleFrom(
-            primary: const Color(s_aquarium),
+            backgroundColor: const Color(s_aquarium),
             fixedSize: Size(buttonWidth, buttonHeight)),
         child:
             Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
@@ -183,7 +183,7 @@ class _GenericScreenState extends State<GenericScreen> {
               (Route<dynamic> route) => false);
         },
         style: ElevatedButton.styleFrom(
-            primary: const Color(s_declineRed),
+            backgroundColor: const Color(s_declineRed),
             fixedSize: Size(buttonWidth / 2, buttonHeight / 2)),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           const Icon(
@@ -199,8 +199,8 @@ class _GenericScreenState extends State<GenericScreen> {
   }
 
   Widget cancelText(String text) {
-    return const FormattedText(
-      text: 'Cancel',
+    return FormattedText(
+      text: text,
       size: s_fontSizeSmall,
       color: Colors.white,
       font: s_font_BonaNova,

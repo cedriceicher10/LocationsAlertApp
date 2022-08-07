@@ -160,7 +160,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           }
         },
         style: ElevatedButton.styleFrom(
-            primary: const Color(s_aquariumLighter),
+            backgroundColor: const Color(s_aquariumLighter),
             fixedSize: Size(buttonWidth, buttonHeight)),
         child:
             Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
@@ -196,7 +196,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
               (Route<dynamic> route) => false);
         },
         style: ElevatedButton.styleFrom(
-            primary: const Color(s_declineRed),
+            backgroundColor: const Color(s_declineRed),
             fixedSize: Size(buttonWidth / 2, buttonHeight / 2)),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           const Icon(

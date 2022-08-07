@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:math';
+import 'location_services.dart';
 import 'my_alerts_screen.dart';
 import 'generic_screen.dart';
 import 'specific_screen.dart';
@@ -74,6 +75,8 @@ class _StartScreenState extends State<StartScreen> {
   final double buttonWidth = 260;
   final double buttonHeight = 60;
   final double buttonSpacing = 10;
+
+  final LocationServices _locationServices = LocationServices();
 
   @override
   Widget build(BuildContext context) {
@@ -171,8 +174,16 @@ class _StartScreenState extends State<StartScreen> {
   showLocationDisclosureDetermination(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool? showLocationDisclosure = prefs.getBool('showLocationDisclosure');
+    // Show the disclosure if it's the first time or user has previously dismissed location services
     if ((showLocationDisclosure == null) || (showLocationDisclosure == true)) {
       showLocationDisclosureAlert(context, prefs);
+    } else {
+      // If the user has previously accepted location services, now check to see if location is on
+      await _locationServices.getLocation();
+      if (_locationServices.permitted) {
+        // Location is turned on
+        print('LOCATION SERVICES: ON');
+      }
     }
   }
 
@@ -203,26 +214,65 @@ class _StartScreenState extends State<StartScreen> {
           "Location Alerts collects background location data to deliver reminder alerts based on your location. This feature may be in use when the app is in the background or closed. \n\nLocation Alerts will ALWAYS ask your permission before turning on your location services."),
       actions: <Widget>[
         TextButton(
-          child: const Text("Decline (No location services)"),
-          style: TextButton.styleFrom(primary: Colors.red),
-          onPressed: () {
-            Navigator.of(context).pop();
-            prefs.setBool('showLocationDisclosure', true);
-          },
-        ),
+            child: const Text("Decline (No location services)"),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            onPressed: () {
+              Navigator.of(context).pop();
+              prefs.setBool('showLocationDisclosure', true);
+              // Notice that app will not deliver alerts based on location
+              Future.delayed(Duration.zero, () {
+                return showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return locationOffNoticeAlert(context, prefs);
+                    });
+              });
+            }),
         TextButton(
           child: const Text("Acknowledge",
               style: TextStyle(fontWeight: FontWeight.bold)),
           style: TextButton.styleFrom(
-              primary: Colors.white,
+              foregroundColor: Colors.white,
               backgroundColor: const Color.fromARGB(255, 18, 148, 23)),
-          onPressed: () {
+          onPressed: () async {
             Navigator.of(context).pop();
             prefs.setBool('showLocationDisclosure', false);
+            // Turn on and get location
+            await _locationServices.getLocation();
+            if (_locationServices.permitted) {
+              // Location is turned on
+              print('LOCATION SERVICES: ON');
+            }
           },
         )
       ],
     );
+  }
+
+  AlertDialog locationOffNoticeAlert(
+      BuildContext context, SharedPreferences prefs) {
+    return AlertDialog(
+        title: const Text(
+          "Notice of Location Dismissal",
+          style: TextStyle(
+              color: Colors.transparent,
+              fontWeight: FontWeight.bold,
+              shadows: [Shadow(offset: Offset(0, -3), color: Colors.black)],
+              decoration: TextDecoration.underline,
+              decorationColor: Colors.black,
+              decorationThickness: 1),
+        ),
+        content: const Text(
+            "To receive alerts based on your current location, tap on the Location Disclosure button at the bottom of the screen and Acknowledge."),
+        actions: <Widget>[
+          TextButton(
+              child: const Text("Close"),
+              style:
+                  TextButton.styleFrom(foregroundColor: Color(s_disabledGray)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              })
+        ]);
   }
 
   Widget startScreenBody(BuildContext context) {
@@ -298,7 +348,7 @@ class _StartScreenState extends State<StartScreen> {
           )
         ]),
         style: ElevatedButton.styleFrom(
-            primary: const Color(s_aquarium),
+            backgroundColor: const Color(s_aquarium),
             fixedSize: Size(buttonWidth, buttonHeight)));
   }
 
@@ -343,7 +393,7 @@ class _StartScreenState extends State<StartScreen> {
           )
         ]),
         style: ElevatedButton.styleFrom(
-            primary: const Color(s_aquariumLighter),
+            backgroundColor: const Color(s_aquariumLighter),
             fixedSize: Size(buttonWidth, buttonHeight)));
   }
 
@@ -365,7 +415,7 @@ class _StartScreenState extends State<StartScreen> {
           );
         },
         style: ElevatedButton.styleFrom(
-            primary: const Color(s_darkSalmon),
+            backgroundColor: const Color(s_darkSalmon),
             fixedSize: Size(buttonWidth, buttonHeight)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

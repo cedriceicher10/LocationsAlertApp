@@ -209,7 +209,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
           });
         },
         style: ElevatedButton.styleFrom(
-            primary: const Color(s_blackBlue),
+            backgroundColor: const Color(s_blackBlue),
             fixedSize: Size(buttonWidth, buttonHeight)),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           const Icon(
@@ -253,14 +253,12 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
             if (!currentFocus.hasPrimaryFocus) {
               currentFocus.unfocus();
             }
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const MyAlertsScreen()),
-                (Route<dynamic> route) => false);
+            Navigator.pop(
+                context, createRoute(const MyAlertsScreen(), 'from_left'));
           }
         },
         style: ElevatedButton.styleFrom(
-            primary: const Color(s_aquarium),
+            backgroundColor: const Color(s_aquarium),
             fixedSize: Size(buttonWidth, buttonHeight)),
         child:
             Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
@@ -303,13 +301,11 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
           if (!currentFocus.hasPrimaryFocus) {
             currentFocus.unfocus();
           }
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const MyAlertsScreen()),
-              (Route<dynamic> route) => false);
+          Navigator.pop(
+              context, createRoute(const MyAlertsScreen(), 'from_left'));
         },
         style: ElevatedButton.styleFrom(
-            primary: const Color(s_declineRed),
+            backgroundColor: const Color(s_declineRed),
             fixedSize: Size(buttonWidth, buttonHeight)),
         child:
             Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
@@ -339,13 +335,11 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
           if (!currentFocus.hasPrimaryFocus) {
             currentFocus.unfocus();
           }
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const MyAlertsScreen()),
-              (Route<dynamic> route) => false);
+          Navigator.pop(
+              context, createRoute(const MyAlertsScreen(), 'from_left'));
         },
         style: ElevatedButton.styleFrom(
-            primary: const Color(s_darkSalmon),
+            backgroundColor: const Color(s_darkSalmon),
             fixedSize: Size(buttonWidth / 2, buttonHeight / 2)),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           const Icon(

@@ -153,10 +153,8 @@ class _SpecificScreenState extends State<SpecificScreen> {
             if (!currentFocus.hasPrimaryFocus) {
               currentFocus.unfocus();
             }
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const StartScreen()),
-                (Route<dynamic> route) => false);
+            Navigator.pop(
+                context, createRoute(const StartScreen(), 'from_left'));
           }
         },
         style: ElevatedButton.styleFrom(
@@ -190,10 +188,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           if (!currentFocus.hasPrimaryFocus) {
             currentFocus.unfocus();
           }
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const StartScreen()),
-              (Route<dynamic> route) => false);
+          Navigator.pop(context, createRoute(const StartScreen(), 'from_left'));
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: const Color(s_declineRed),

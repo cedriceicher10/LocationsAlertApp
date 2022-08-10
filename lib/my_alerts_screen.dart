@@ -207,13 +207,10 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
           if (!currentFocus.hasPrimaryFocus) {
             currentFocus.unfocus();
           }
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const StartScreen()),
-              (Route<dynamic> route) => false);
+          Navigator.pop(context, createRoute(const StartScreen(), 'from_left'));
         },
         style: ElevatedButton.styleFrom(
-            primary: const Color(s_darkSalmon),
+            backgroundColor: const Color(s_darkSalmon),
             fixedSize: Size(buttonWidth / 2, buttonHeight / 2)),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           const Icon(

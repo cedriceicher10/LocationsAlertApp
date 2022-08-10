@@ -283,8 +283,10 @@ class _StartScreenState extends State<StartScreen> {
             children: [
           SizedBox(height: topPadding),
           Center(
-              child: explainerTitle(
-                  'Phone alerts based on your current location!')),
+              child: Container(
+                  padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  child: explainerTitle(
+                      'Phone alerts based on your current location!'))),
           SizedBox(height: buttonSpacing),
           const Icon(
             Icons.add_location_alt_outlined,

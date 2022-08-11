@@ -75,6 +75,8 @@ class _StartScreenState extends State<StartScreen> {
   final double buttonSpacing = 10;
 
   final LocationServices _locationServices = LocationServices();
+  bool locationSwitch = false;
+  Color locationSwitchColor = Colors.grey;
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +117,22 @@ class _StartScreenState extends State<StartScreen> {
     await generateUniqueUserId();
     // Tally the number of uncompleted alerts for the My Alerts button
     await setAlertCount();
+    await locationToggleCheck();
     return true;
+  }
+
+  Future<void> locationToggleCheck() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? showLocationDisclosure = prefs.getBool('showLocationDisclosure');
+    if ((locationSwitch) &&
+        ((showLocationDisclosure == false) &&
+            (showLocationDisclosure != null))) {
+      await _locationServices.getLocation();
+      if (_locationServices.permitted) {
+        // Location is turned on
+        print('LOCATION SERVICES: ON');
+      }
+    }
   }
 
   Future<void> setAlertCount() async {
@@ -175,13 +192,6 @@ class _StartScreenState extends State<StartScreen> {
     // Show the disclosure if it's the first time or user has previously dismissed location services
     if ((showLocationDisclosure == null) || (showLocationDisclosure == true)) {
       showLocationDisclosureAlert(context, prefs);
-    } else {
-      // If the user has previously accepted location services, now check to see if location is on
-      await _locationServices.getLocation();
-      if (_locationServices.permitted) {
-        // Location is turned on
-        print('LOCATION SERVICES: ON');
-      }
     }
   }
 
@@ -235,12 +245,6 @@ class _StartScreenState extends State<StartScreen> {
           onPressed: () async {
             Navigator.of(context).pop();
             prefs.setBool('showLocationDisclosure', false);
-            // Turn on and get location
-            await _locationServices.getLocation();
-            if (_locationServices.permitted) {
-              // Location is turned on
-              print('LOCATION SERVICES: ON');
-            }
           },
         )
       ],
@@ -291,7 +295,7 @@ class _StartScreenState extends State<StartScreen> {
             color: Color(s_blackBlue),
             size: 150,
           ),
-          SizedBox(height: buttonSpacing * 2),
+          locationToggle(),
           genericLocationButton(context, 'Generic'),
           genericHelpText(),
           SizedBox(height: buttonSpacing),
@@ -314,6 +318,43 @@ class _StartScreenState extends State<StartScreen> {
         font: s_font_BonaNova,
         weight: FontWeight.bold,
         align: TextAlign.center);
+  }
+
+  Widget locationToggle() {
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      FormattedText(
+          text: 'Location Services: ',
+          size: s_fontSizeExtraSmall + 2,
+          color: locationSwitchColor,
+          font: s_font_IBMPlexSans,
+          weight: FontWeight.bold,
+          align: TextAlign.center),
+      Switch(
+        inactiveThumbColor: Colors.grey,
+        activeTrackColor: Colors.lightGreenAccent,
+        activeColor: Colors.green,
+        value: locationSwitch,
+        onChanged: (value) async {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          bool? showLocationDisclosure =
+              prefs.getBool('showLocationDisclosure');
+          if ((showLocationDisclosure == false) &&
+              (showLocationDisclosure != null)) {
+            setState(() {
+              locationSwitch = value;
+              if (locationSwitchColor == Colors.grey) {
+                locationSwitchColor = Colors.green;
+              } else {
+                locationSwitchColor = Colors.grey;
+              }
+              print('Location Switch: ' + locationSwitch.toString());
+            });
+          } else {
+            showLocationDisclosureAlert(context, prefs);
+          }
+        },
+      ),
+    ]);
   }
 
   Widget genericLocationButton(BuildContext context, String text) {

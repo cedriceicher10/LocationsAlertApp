@@ -52,9 +52,7 @@ Route createRoute(Widget page, String direction) {
       begin;
       end;
       const curve = Curves.ease;
-
       var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
       return SlideTransition(
         position: animation.drive(tween),
         child: child,
@@ -335,7 +333,9 @@ class _StartScreenState extends State<StartScreen> {
             // );
             // New way: From a direction
             Navigator.of(context)
-                .push(createRoute(const GenericScreen(), 'from_right'));
+                .push(createRoute(const GenericScreen(), 'from_right'))
+                .then((value) => setState(
+                    () {})); // This allows for page rebuilding upon pop
           }
         },
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -380,7 +380,8 @@ class _StartScreenState extends State<StartScreen> {
             // );
             // New way: From a direction
             Navigator.of(context)
-                .push(createRoute(const SpecificScreen(), 'from_right'));
+                .push(createRoute(const SpecificScreen(), 'from_right'))
+                .then((value) => setState(() {}));
           }
         },
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -411,10 +412,15 @@ class _StartScreenState extends State<StartScreen> {
   Widget myAlertsButton(BuildContext context, String text) {
     return ElevatedButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const MyAlertsScreen()),
-          );
+          // Old way: From the bottom
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const MyAlertsScreen()),
+          // );
+          // New way: From a direction
+          Navigator.of(context)
+              .push(createRoute(const MyAlertsScreen(), 'from_right'))
+              .then((value) => setState(() {}));
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: const Color(s_darkSalmon),

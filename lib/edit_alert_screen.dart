@@ -229,6 +229,52 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
         ]));
   }
 
+  Widget deleteButton(double buttonWidth, double buttonHeight) {
+    return ElevatedButton(
+        onPressed: () async {
+          // Retrieve alert
+          await FirebaseFirestore.instance
+              .collection('reminders')
+              .doc(widget.reminderTile.id)
+              .get()
+              .catchError((error) => throw ('Error: $error'));
+          // Delete alert (set isCompleted == true)
+          await FirebaseFirestore.instance
+              .collection('reminders')
+              .doc(widget.reminderTile.id)
+              .update({
+            'isCompleted': true,
+          }).catchError((error) => throw ('Error: $error'));
+          // Remove keyboard
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+          Navigator.pop(context);
+        },
+        style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(s_declineRed),
+            fixedSize: Size(buttonWidth, buttonHeight)),
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
+          Icon(
+            Icons.delete_forever,
+            color: Colors.white,
+            size: 16,
+          ),
+          SizedBox(
+            width: 4,
+          ),
+          FormattedText(
+            text: 'Delete Alert',
+            size: s_fontSizeExtraSmall,
+            color: Colors.white,
+            weight: FontWeight.bold,
+            font: s_font_IBMPlexSans,
+          )
+        ]));
+  }
+
   Widget updateButton(double buttonWidth, double buttonHeight) {
     return ElevatedButton(
         onPressed: () async {
@@ -253,8 +299,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
             if (!currentFocus.hasPrimaryFocus) {
               currentFocus.unfocus();
             }
-            Navigator.pop(
-                context, createRoute(const MyAlertsScreen(), 'from_left'));
+            Navigator.pop(context);
           }
         },
         style: ElevatedButton.styleFrom(
@@ -280,53 +325,6 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
         ]));
   }
 
-  Widget deleteButton(double buttonWidth, double buttonHeight) {
-    return ElevatedButton(
-        onPressed: () async {
-          // Retrieve alert
-          await FirebaseFirestore.instance
-              .collection('reminders')
-              .doc(widget.reminderTile.id)
-              .get()
-              .catchError((error) => throw ('Error: $error'));
-          // Delete alert (set isCompleted == true)
-          await FirebaseFirestore.instance
-              .collection('reminders')
-              .doc(widget.reminderTile.id)
-              .update({
-            'isCompleted': true,
-          }).catchError((error) => throw ('Error: $error'));
-          // Remove keyboard
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus) {
-            currentFocus.unfocus();
-          }
-          Navigator.pop(
-              context, createRoute(const MyAlertsScreen(), 'from_left'));
-        },
-        style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(s_declineRed),
-            fixedSize: Size(buttonWidth, buttonHeight)),
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
-          Icon(
-            Icons.delete_forever,
-            color: Colors.white,
-            size: 16,
-          ),
-          SizedBox(
-            width: 4,
-          ),
-          FormattedText(
-            text: 'Delete Alert',
-            size: s_fontSizeExtraSmall,
-            color: Colors.white,
-            weight: FontWeight.bold,
-            font: s_font_IBMPlexSans,
-          )
-        ]));
-  }
-
   Widget cancelButton(double buttonWidth, double buttonHeight) {
     return ElevatedButton(
         onPressed: () {
@@ -335,8 +333,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
           if (!currentFocus.hasPrimaryFocus) {
             currentFocus.unfocus();
           }
-          Navigator.pop(
-              context, createRoute(const MyAlertsScreen(), 'from_left'));
+          Navigator.pop(context);
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: const Color(s_darkSalmon),

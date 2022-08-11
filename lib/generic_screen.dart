@@ -139,8 +139,7 @@ class _GenericScreenState extends State<GenericScreen> {
             if (!currentFocus.hasPrimaryFocus) {
               currentFocus.unfocus();
             }
-            Navigator.pop(
-                context, createRoute(const StartScreen(), 'from_left'));
+            Navigator.pop(context);
           }
         },
         style: ElevatedButton.styleFrom(
@@ -175,7 +174,7 @@ class _GenericScreenState extends State<GenericScreen> {
           if (!currentFocus.hasPrimaryFocus) {
             currentFocus.unfocus();
           }
-          Navigator.pop(context, createRoute(const StartScreen(), 'from_left'));
+          Navigator.pop(context);
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: const Color(s_declineRed),

@@ -207,7 +207,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
           if (!currentFocus.hasPrimaryFocus) {
             currentFocus.unfocus();
           }
-          Navigator.pop(context, createRoute(const StartScreen(), 'from_left'));
+          Navigator.pop(context);
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: const Color(s_darkSalmon),

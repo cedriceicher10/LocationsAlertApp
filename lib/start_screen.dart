@@ -15,6 +15,7 @@ String UUID_GLOBAL = '';
 int ALERTS_NUM_GLOBAL = 0;
 List<String> GENERAL_LOCATIONS_GLOBAL = [
   'Grocery Store',
+  'Drug Store',
   'Hardware Store',
   'Convenience Store',
   'Restaurant'
@@ -131,6 +132,9 @@ class _StartScreenState extends State<StartScreen> {
       if (_locationServices.permitted) {
         // Location is turned on
         print('LOCATION SERVICES: ON');
+      } else {
+        locationSwitch = false;
+        locationSwitchColor = Colors.grey;
       }
     }
   }
@@ -323,7 +327,7 @@ class _StartScreenState extends State<StartScreen> {
   Widget locationToggle() {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       FormattedText(
-          text: 'Location Services: ',
+          text: 'Allow My Location: ',
           size: s_fontSizeExtraSmall + 2,
           color: locationSwitchColor,
           font: s_font_IBMPlexSans,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:background_location/background_location.dart';
 import 'dart:math';
 import 'location_services.dart';
 import 'my_alerts_screen.dart';
@@ -129,6 +130,30 @@ class _StartScreenState extends State<StartScreen> {
         ((showLocationDisclosure == false) &&
             (showLocationDisclosure != null))) {
       await _locationServices.getLocation();
+
+      // Background location service
+      await BackgroundLocation.setAndroidNotification(
+        title: 'Background service is running',
+        message: 'Background location in progress',
+        icon: '@mipmap/ic_launcher',
+      );
+      //await BackgroundLocation.setAndroidConfiguration(1000);
+      await BackgroundLocation.startLocationService(distanceFilter: 20);
+      BackgroundLocation.getLocationUpdates((bgLocationData) {
+        setState(() {
+          print('BACKGROUND LOCATION TRIGGERED ==============');
+          print('Latitude : ' + bgLocationData.latitude.toString());
+          print('Longitude: ' + bgLocationData.longitude.toString());
+          print('Accuracy : ' + bgLocationData.accuracy.toString());
+          print('Altitude : ' + bgLocationData.altitude.toString());
+          print('Bearing  : ' + bgLocationData.bearing.toString());
+          print('Speed    : ' + bgLocationData.speed.toString());
+          print('Time     : ' +
+              DateTime.fromMillisecondsSinceEpoch(bgLocationData.time!.toInt())
+                  .toString());
+        });
+      });
+
       if (_locationServices.permitted) {
         // Location is turned on
         print('LOCATION SERVICES: ON');

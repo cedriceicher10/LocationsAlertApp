@@ -14,6 +14,8 @@ class ReminderTile {
   bool isCompleted;
   bool isSpecific;
   String location;
+  double latitude;
+  double longitude;
   String reminder;
   String userId;
   ReminderTile(
@@ -23,6 +25,8 @@ class ReminderTile {
       required this.isCompleted,
       required this.isSpecific,
       required this.location,
+      required this.latitude,
+      required this.longitude,
       required this.reminder,
       required this.userId});
 }
@@ -89,7 +93,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> retrieveReminders() {
-    return _dbServices.getIncompleteAlerts();
+    return _dbServices.getIncompleteAlertsSnapshotCall(UUID_GLOBAL);
   }
 
   List<ReminderTile> createReminderObjects(
@@ -107,6 +111,8 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
           isCompleted: snapshotReminders.data!.docs[index]['isCompleted'],
           isSpecific: snapshotReminders.data!.docs[index]['isSpecific'],
           location: snapshotReminders.data!.docs[index]['location'],
+          latitude: snapshotReminders.data!.docs[index]['latitude'],
+          longitude: snapshotReminders.data!.docs[index]['longitude'],
           reminder: snapshotReminders.data!.docs[index]['reminderBody'],
           userId: snapshotReminders.data!.docs[index]['userId']);
       reminderObjects.add(reminderTile);

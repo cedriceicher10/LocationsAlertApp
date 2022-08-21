@@ -12,6 +12,7 @@ import 'specific_screen.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
 import 'database_services.dart';
+import 'alerts_services.dart';
 
 String UUID_GLOBAL = '';
 int ALERTS_NUM_GLOBAL = 0;
@@ -78,10 +79,12 @@ class _StartScreenState extends State<StartScreen> {
   final double buttonSpacing = 10;
 
   final DatabaseServices _dbServices = DatabaseServices();
-
+  final AlertServices _alertServices = AlertServices();
   final LocationServices _locationServices = LocationServices();
   bool locationSwitch = false;
   Color locationSwitchColor = Colors.grey;
+  double userBgLat = 0;
+  double userBgLon = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -136,14 +139,16 @@ class _StartScreenState extends State<StartScreen> {
 
       // Background location service
       await BackgroundLocation.setAndroidNotification(
-        title: 'Background service is running',
-        message: 'Background location in progress',
+        title: 'Location Alerts',
+        message: 'Background services currently in progress',
         icon: '@mipmap/ic_launcher',
       );
       //await BackgroundLocation.setAndroidConfiguration(1000);
-      await BackgroundLocation.startLocationService(distanceFilter: 20);
+      await BackgroundLocation.startLocationService(distanceFilter: 1);
       BackgroundLocation.getLocationUpdates((bgLocationData) {
-        setState(() {
+        userBgLat = bgLocationData.latitude!;
+        userBgLon = bgLocationData.longitude!;
+        setState(() async {
           print('BACKGROUND LOCATION TRIGGERED ==============');
           print('Latitude : ' + bgLocationData.latitude.toString());
           print('Longitude: ' + bgLocationData.longitude.toString());
@@ -154,24 +159,31 @@ class _StartScreenState extends State<StartScreen> {
           print('Time     : ' +
               DateTime.fromMillisecondsSinceEpoch(bgLocationData.time!.toInt())
                   .toString());
+
+          // CHECK IF IN LOCATION OF AN ALERT
+          // Retrieve alerts
+          QuerySnapshot<Map<String, dynamic>> alerts =
+              await _dbServices.getIncompleteAlertsGetCall(UUID_GLOBAL);
+
+          // Isolate location
+          for (var index = 0; index < alerts.docs.length; ++index) {
+            if (alerts.docs[index]['isSpecific']) {
+              if (_alertServices.checkAlertDistance(
+                  userBgLat,
+                  userBgLon,
+                  alerts.docs[index]['latitude'],
+                  alerts.docs[index]['longitude'])) {
+                print('ALERT IS WITHIN DISTANCE');
+              } else {
+                print('ALERT IS NOT WITHIN DISTANCE');
+              }
+            }
+          }
         });
       });
       if (_locationServices.permitted) {
         // Location is turned on
         print('LOCATION SERVICES: ON');
-
-        // CHECK IF IN LOCATION OF AN ALERT
-
-        // Retrieve alerts
-        // Stream<QuerySnapshot<Map<String, dynamic>>> alerts =
-        //     _dbServices.getIncompleteAlerts();
-
-        // Isolate location
-
-        // Geolocate (possible entry option) to see if matches
-
-        // Alert if matches
-
       } else {
         locationSwitch = false;
         locationSwitchColor = Colors.grey;

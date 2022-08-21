@@ -32,8 +32,14 @@ class DatabaseServices {
     return alertCount;
   }
 
-  void addToDatabase(String reminderBody, bool isSpecific, bool isCompleted,
-      String location, double latitude, double longitude) async {
+  void addToDatabase(
+      String uuid,
+      String reminderBody,
+      bool isSpecific,
+      bool isCompleted,
+      String location,
+      double latitude,
+      double longitude) async {
     // Put in Firestore cloud database
     reminders.add({
       'userId': _uuid,
@@ -48,7 +54,8 @@ class DatabaseServices {
     }).catchError((error) => throw ('Error: $error'));
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getIncompleteAlerts() {
+  Stream<QuerySnapshot<Map<String, dynamic>>> getIncompleteAlertsSnapshotCall(
+      String uuid) {
     return FirebaseFirestore.instance
         .collection('reminders')
         .where('userId', isEqualTo: _uuid)
@@ -57,7 +64,19 @@ class DatabaseServices {
         .snapshots();
   }
 
-  void deleteAlert(String id) async {
+  Future<QuerySnapshot<Map<String, dynamic>>> getIncompleteAlertsGetCall(
+      String uuid) async {
+    dynamic variable = await FirebaseFirestore.instance
+        .collection('reminders')
+        .where('userId', isEqualTo: uuid)
+        .where('isCompleted', isEqualTo: false)
+        .orderBy('dateTimeCreated', descending: true)
+        .get();
+    print('hi');
+    return variable;
+  }
+
+  void deleteAlert(String uuid, String id) async {
     // Retrieve alert
     await FirebaseFirestore.instance
         .collection('reminders')
@@ -70,7 +89,8 @@ class DatabaseServices {
     }).catchError((error) => throw ('Error: $error'));
   }
 
-  void updateAlert(String id, String reminderBody, String location) async {
+  void updateAlert(
+      String uuid, String id, String reminderBody, String location) async {
     // Retrieve alert
     await FirebaseFirestore.instance
         .collection('reminders')

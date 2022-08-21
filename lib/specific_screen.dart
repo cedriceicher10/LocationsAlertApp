@@ -5,6 +5,7 @@ import 'database_services.dart';
 import 'location_services.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
+import 'start_screen.dart';
 
 class SpecificScreen extends StatefulWidget {
   const SpecificScreen({Key? key}) : super(key: key);
@@ -142,6 +143,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
             formKey.currentState?.save();
             // Put in Firestore cloud database
             _dbServices.addToDatabase(
+                UUID_GLOBAL,
                 _reminderBody,
                 true,
                 false,

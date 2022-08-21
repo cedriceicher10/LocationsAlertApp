@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'notification_services.dart';
 
 class AlertServices {
-  final TRIGGER_DISTANCE = 1.0; //mi
+  final TRIGGER_DISTANCE = 0.5; //mi
 
   bool checkAlertDistance(
       double userLat, double userLon, double alertLat, double alertLon) {

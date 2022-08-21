@@ -1,6 +1,10 @@
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter/material.dart';
+import 'package:locationalertsapp/styles.dart';
+import 'database_services.dart';
 
 class NotificationServices {
+  String _docId = '';
   static final NotificationServices _notificationService =
       NotificationServices._internal();
 
@@ -8,45 +12,46 @@ class NotificationServices {
     return _notificationService;
   }
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-
   NotificationServices._internal();
 
+  final DatabaseServices _dbServices = DatabaseServices();
+
   Future<void> initNotifications() async {
-    final AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    AwesomeNotifications().initialize('resource://drawable/app_icon', [
+      NotificationChannel(
+          channelGroupKey: 'basic_tests',
+          channelKey: 'basic_channel',
+          channelName: 'Basic notifications',
+          channelDescription: 'Notification channel for basic tests',
+          defaultColor: Color(s_aquariumLighter),
+          ledColor: Colors.white,
+          importance: NotificationImportance.High,
+          enableVibration: true)
+    ]);
+    AwesomeNotifications().actionStream.listen((action) {
+      if (action.buttonKeyPressed == 'Completed') {
+        // Mark alert complete
+        _dbServices.deleteAlert(_docId);
+      } else if (action.buttonKeyPressed == 'Dismissed') {
+        // Alert is dismissed, remains active and notification dissappears
+      }
+    });
+  }
 
-    // final IOSInitializationSettings initializationSettingsIOS =
-    // IOSInitializationSettings(
-    //   requestAlertPermission: false,
-    //   requestBadgePermission: false,
-    //   requestSoundPermission: false,
-    // );
-
-    final InitializationSettings initializationSettings =
-        InitializationSettings(
-      android: initializationSettingsAndroid,
-      // iOS: initializationSettingsIOS
+  Future<void> showNotification(String docId, String title, String body) async {
+    // Save the docId in case this is marked complete
+    _docId = docId;
+    AwesomeNotifications().createNotification(
+      content: NotificationContent(
+          id: 0, channelKey: 'basic_channel', title: title, body: body),
+      actionButtons: <NotificationActionButton>[
+        NotificationActionButton(
+            key: 'Completed', label: 'Mark Complete', color: Color(s_aquarium)),
+        NotificationActionButton(
+            key: 'Dismissed',
+            label: 'Dismiss (next time)',
+            color: Color(s_disabledGray)),
+      ],
     );
-
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  }
-
-  Future<void> showNotification(String title, String body) async {
-    AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails('main_channel', 'Main Channel',
-            channelDescription: 'Main channel notifications',
-            importance: Importance.max,
-            priority: Priority.high,
-            ticker: '$title at $body');
-    NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-        0, title, body, platformChannelSpecifics);
-  }
-
-  Future<void> cancelAllNotifications() async {
-    await flutterLocalNotificationsPlugin.cancelAll();
   }
 }

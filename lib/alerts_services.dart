@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
 import 'notification_services.dart';
 
@@ -35,7 +34,8 @@ class AlertServices {
     return false;
   }
 
-  Future<void> showAlertNotification(String reminder, String location) async {
-    NotificationServices().showNotification(reminder, location);
+  Future<void> showAlertNotification(
+      String docId, String reminder, String location) async {
+    NotificationServices().showNotification(docId, reminder, location);
   }
 }

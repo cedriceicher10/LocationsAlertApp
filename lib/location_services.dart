@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'package:geocoding/geocoding.dart' as geocoding;
 
 Location location = Location();
 
 class LocationServices {
   double userLat = 0;
   double userLon = 0;
+  double alertLat = 0;
+  double alertLon = 0;
   bool permitted =
       false; // Used for lookups to stop infinite "ask for location" loop
 
@@ -38,5 +41,19 @@ class LocationServices {
       userLon = _locationData.longitude!;
     }
     return;
+  }
+
+  Future<bool> reverseGeolocateCheck(String locationQuery) async {
+    // Attempt to reverse geocode to get lat/lon
+    try {
+      List<geocoding.Location> latLonFromQuery =
+          await geocoding.locationFromAddress(locationQuery);
+      alertLat = latLonFromQuery[0].latitude;
+      alertLon = latLonFromQuery[0].longitude;
+      return true;
+    } catch (exception) {
+      print('REVERSE GEOLOCATE EXCEPTION: ' + exception.toString());
+      return false;
+    }
   }
 }

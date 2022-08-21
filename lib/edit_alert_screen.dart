@@ -7,10 +7,8 @@ import 'start_screen.dart';
 import 'my_alerts_screen.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
-
-// Firebase cloud firestore
-CollectionReference reminders =
-    FirebaseFirestore.instance.collection('reminders');
+import 'database_services.dart';
+import 'location_services.dart';
 
 class EditAlertScreen extends StatefulWidget {
   final ReminderTile reminderTile;
@@ -23,8 +21,11 @@ class EditAlertScreen extends StatefulWidget {
 
 class _EditAlertScreenState extends State<EditAlertScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final LocationServices _locationServices = LocationServices();
+  final DatabaseServices _dbServices = DatabaseServices();
   String _reminderBody = '';
   String _location = '';
+  bool _reverseGeolocateSuccess = false;
   final double topPadding = 80;
   final double textWidth = 325;
   final double buttonWidth = 260;
@@ -184,12 +185,16 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
               focusedBorder: const OutlineInputBorder(
                   borderSide:
                       BorderSide(color: Color(s_aquariumLighter), width: 2.0))),
-          onSaved: (value) {
+          onSaved: (value) async {
             _location = value!;
+            _reverseGeolocateSuccess =
+                await _locationServices.reverseGeolocateCheck(value);
           },
           validator: (value) {
             if (value!.isEmpty) {
               return 'Please enter a location';
+            } else if (!_reverseGeolocateSuccess) {
+              return 'Could not locate the location you entered. \nPlease be more specific.';
             } else {
               return null;
             }
@@ -232,19 +237,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   Widget deleteButton(double buttonWidth, double buttonHeight) {
     return ElevatedButton(
         onPressed: () async {
-          // Retrieve alert
-          await FirebaseFirestore.instance
-              .collection('reminders')
-              .doc(widget.reminderTile.id)
-              .get()
-              .catchError((error) => throw ('Error: $error'));
-          // Delete alert (set isCompleted == true)
-          await FirebaseFirestore.instance
-              .collection('reminders')
-              .doc(widget.reminderTile.id)
-              .update({
-            'isCompleted': true,
-          }).catchError((error) => throw ('Error: $error'));
+          _dbServices.deleteAlert(widget.reminderTile.id);
           // Remove keyboard
           FocusScopeNode currentFocus = FocusScope.of(context);
           if (!currentFocus.hasPrimaryFocus) {
@@ -278,22 +271,11 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   Widget updateButton(double buttonWidth, double buttonHeight) {
     return ElevatedButton(
         onPressed: () async {
+          formKey.currentState?.save();
           if (formKey.currentState!.validate()) {
             formKey.currentState?.save();
-            // Retrieve alert
-            await FirebaseFirestore.instance
-                .collection('reminders')
-                .doc(widget.reminderTile.id)
-                .get()
-                .catchError((error) => throw ('Error: $error'));
-            // Update alert
-            await FirebaseFirestore.instance
-                .collection('reminders')
-                .doc(widget.reminderTile.id)
-                .update({
-              'reminderBody': _reminderBody,
-              'location': _location,
-            }).catchError((error) => throw ('Error: $error'));
+            _dbServices.updateAlert(
+                widget.reminderTile.id, _reminderBody, _location);
             // Remove keyboard
             FocusScopeNode currentFocus = FocusScope.of(context);
             if (!currentFocus.hasPrimaryFocus) {

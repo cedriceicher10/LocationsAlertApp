@@ -1,13 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
-import 'start_screen.dart';
+import 'database_services.dart';
+import 'location_services.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
-
-// Firebase cloud firestore
-CollectionReference reminders =
-    FirebaseFirestore.instance.collection('reminders');
 
 class SpecificScreen extends StatefulWidget {
   const SpecificScreen({Key? key}) : super(key: key);
@@ -18,8 +15,11 @@ class SpecificScreen extends StatefulWidget {
 
 class _SpecificScreenState extends State<SpecificScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final LocationServices _locationServices = LocationServices();
+  final DatabaseServices _dbServices = DatabaseServices();
   String _reminderBody = '';
   String _specificLocation = '';
+  bool _reverseGeolocateSuccess = false;
   final double topPadding = 80;
   final double textWidth = 325;
   final double buttonWidth = 260;
@@ -118,12 +118,16 @@ class _SpecificScreenState extends State<SpecificScreen> {
             focusedBorder: OutlineInputBorder(
                 borderSide:
                     BorderSide(color: Color(s_aquariumLighter), width: 2.0))),
-        onSaved: (value) {
+        onSaved: (value) async {
           _specificLocation = value!;
+          _reverseGeolocateSuccess =
+              await _locationServices.reverseGeolocateCheck(value);
         },
         validator: (value) {
           if (value!.isEmpty) {
             return 'Please enter a location';
+          } else if (!_reverseGeolocateSuccess) {
+            return 'Could not locate the location you entered. \nPlease be more specific.';
           } else {
             return null;
           }
@@ -133,21 +137,17 @@ class _SpecificScreenState extends State<SpecificScreen> {
   Widget submitButton(double buttonWidth, double buttonHeight) {
     return ElevatedButton(
         onPressed: () async {
+          formKey.currentState?.save();
           if (formKey.currentState!.validate()) {
             formKey.currentState?.save();
-            // Retrieve unique user id (uuid) for the user of the app
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            String? uuid = prefs.getString('uuid');
             // Put in Firestore cloud database
-            reminders.add({
-              'userId': uuid,
-              'reminderBody': _reminderBody,
-              'isSpecific': true,
-              'isCompleted': false,
-              'location': _specificLocation,
-              'dateTimeCreated': Timestamp.now(),
-              'dateTimeCompleted': Timestamp.now(),
-            }).catchError((error) => throw ('Error: $error'));
+            _dbServices.addToDatabase(
+                _reminderBody,
+                true,
+                false,
+                _specificLocation,
+                _locationServices.alertLat,
+                _locationServices.alertLon);
             // Remove keyboard
             FocusScopeNode currentFocus = FocusScope.of(context);
             if (!currentFocus.hasPrimaryFocus) {

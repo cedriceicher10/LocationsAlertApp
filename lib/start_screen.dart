@@ -11,6 +11,7 @@ import 'generic_screen.dart';
 import 'specific_screen.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
+import 'database_services.dart';
 
 String UUID_GLOBAL = '';
 int ALERTS_NUM_GLOBAL = 0;
@@ -75,6 +76,8 @@ class _StartScreenState extends State<StartScreen> {
   final double buttonWidth = 260;
   final double buttonHeight = 60;
   final double buttonSpacing = 10;
+
+  final DatabaseServices _dbServices = DatabaseServices();
 
   final LocationServices _locationServices = LocationServices();
   bool locationSwitch = false;
@@ -153,10 +156,22 @@ class _StartScreenState extends State<StartScreen> {
                   .toString());
         });
       });
-
       if (_locationServices.permitted) {
         // Location is turned on
         print('LOCATION SERVICES: ON');
+
+        // CHECK IF IN LOCATION OF AN ALERT
+
+        // Retrieve alerts
+        // Stream<QuerySnapshot<Map<String, dynamic>>> alerts =
+        //     _dbServices.getIncompleteAlerts();
+
+        // Isolate location
+
+        // Geolocate (possible entry option) to see if matches
+
+        // Alert if matches
+
       } else {
         locationSwitch = false;
         locationSwitchColor = Colors.grey;
@@ -165,19 +180,7 @@ class _StartScreenState extends State<StartScreen> {
   }
 
   Future<void> setAlertCount() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? uuid = prefs.getString('uuid');
-    var snapshot = await FirebaseFirestore.instance
-        .collection('reminders')
-        .where('userId', isEqualTo: uuid)
-        .where('isCompleted', isEqualTo: false)
-        .get()
-        .catchError((error) => throw ('Error: $error'));
-    int alertCount = 0;
-    snapshot.docs.forEach((result) {
-      alertCount++;
-    });
-    ALERTS_NUM_GLOBAL = alertCount;
+    ALERTS_NUM_GLOBAL = await _dbServices.getAlertCount(UUID_GLOBAL);
   }
 
   Future<void> generateUniqueUserId() async {

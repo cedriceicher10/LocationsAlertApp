@@ -5,6 +5,7 @@ import 'edit_alert_screen.dart';
 import 'start_screen.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
+import 'database_services.dart';
 
 class ReminderTile {
   String id;
@@ -26,10 +27,6 @@ class ReminderTile {
       required this.userId});
 }
 
-// Firebase cloud firestore
-CollectionReference reminders =
-    FirebaseFirestore.instance.collection('reminders');
-
 class MyAlertsScreen extends StatefulWidget {
   const MyAlertsScreen({Key? key}) : super(key: key);
 
@@ -39,6 +36,7 @@ class MyAlertsScreen extends StatefulWidget {
 
 class _MyAlertsScreenState extends State<MyAlertsScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final DatabaseServices _dbServices = DatabaseServices();
 
   final double buttonWidth = 260;
   final double buttonHeight = 60;
@@ -80,7 +78,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
             AsyncSnapshot<QuerySnapshot> snapshotReminders) {
           if (snapshotReminders.hasData) {
             // Create list view
-            return listViewReminders(createreminderObjects(snapshotReminders));
+            return listViewReminders(createReminderObjects(snapshotReminders));
           } else {
             return const Center(
                 child: CircularProgressIndicator(
@@ -91,16 +89,10 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> retrieveReminders() {
-    var snapshot = FirebaseFirestore.instance
-        .collection('reminders')
-        .where('userId', isEqualTo: UUID_GLOBAL)
-        .where('isCompleted', isEqualTo: false)
-        .orderBy('dateTimeCreated', descending: true)
-        .snapshots();
-    return snapshot;
+    return _dbServices.getIncompleteAlerts();
   }
 
-  List<ReminderTile> createreminderObjects(
+  List<ReminderTile> createReminderObjects(
       AsyncSnapshot<QuerySnapshot> snapshotReminders) {
     List<ReminderTile> reminderObjects = [];
     for (var index = 0; index < snapshotReminders.data!.docs.length; ++index) {

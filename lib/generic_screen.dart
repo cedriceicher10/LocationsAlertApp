@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'database_services.dart';
 import 'start_screen.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
@@ -18,6 +19,7 @@ class GenericScreen extends StatefulWidget {
 
 class _GenericScreenState extends State<GenericScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final DatabaseServices _dbServices = DatabaseServices();
   String _reminderBody = '';
   String _genericLocation = 'Grocery Store';
   final double topPadding = 80;
@@ -121,19 +123,9 @@ class _GenericScreenState extends State<GenericScreen> {
         onPressed: () async {
           if (formKey.currentState!.validate()) {
             formKey.currentState?.save();
-            // Retrieve unique user id (uuid) for the user of the app
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            String? uuid = prefs.getString('uuid');
             // Put in Firestore cloud database
-            reminders.add({
-              'userId': uuid,
-              'reminderBody': _reminderBody,
-              'isSpecific': false,
-              'isCompleted': false,
-              'location': _genericLocation,
-              'dateTimeCreated': Timestamp.now(),
-              'dateTimeCompleted': Timestamp.now(),
-            }).catchError((error) => throw ('Error: $error'));
+            _dbServices.addToDatabase(
+                _reminderBody, false, false, _genericLocation, 404, 404);
             // Remove keyboard
             FocusScopeNode currentFocus = FocusScope.of(context);
             if (!currentFocus.hasPrimaryFocus) {

@@ -163,7 +163,7 @@ class _StartScreenState extends State<StartScreen> {
           // CHECK IF IN LOCATION OF AN ALERT
           // Retrieve alerts
           QuerySnapshot<Map<String, dynamic>> alerts =
-              await _dbServices.getIncompleteAlertsGetCall(UUID_GLOBAL);
+              await _dbServices.getIncompleteAlertsGetCall();
 
           // Isolate location
           for (var index = 0; index < alerts.docs.length; ++index) {
@@ -192,7 +192,7 @@ class _StartScreenState extends State<StartScreen> {
   }
 
   Future<void> setAlertCount() async {
-    ALERTS_NUM_GLOBAL = await _dbServices.getAlertCount(UUID_GLOBAL);
+    ALERTS_NUM_GLOBAL = await _dbServices.getAlertCount();
   }
 
   Future<void> generateUniqueUserId() async {

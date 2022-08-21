@@ -93,7 +93,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> retrieveReminders() {
-    return _dbServices.getIncompleteAlertsSnapshotCall(UUID_GLOBAL);
+    return _dbServices.getIncompleteAlertsSnapshotCall();
   }
 
   List<ReminderTile> createReminderObjects(

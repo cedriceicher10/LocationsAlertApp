@@ -4,24 +4,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
 class DatabaseServices {
-  String _uuid = UUID_GLOBAL;
-
   CollectionReference reminders =
       FirebaseFirestore.instance.collection('reminders');
 
-  // Future<String> getUuid() async {
-  //   // Retrieve unique user id (uuid) for the user of the app
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   _uuid = prefs.getString('uuid')!;
-  //   return _uuid;
-  // }
-
   // This one accepts the uuid because occasionally the _uuid above is still
   // "" by the time it gets here
-  Future<int> getAlertCount(String uuid) async {
+  Future<int> getAlertCount() async {
     var snapshot = await FirebaseFirestore.instance
         .collection('reminders')
-        .where('userId', isEqualTo: uuid)
+        .where('userId', isEqualTo: UUID_GLOBAL)
         .where('isCompleted', isEqualTo: false)
         .get()
         .catchError((error) => throw ('Error: $error'));
@@ -32,17 +23,11 @@ class DatabaseServices {
     return alertCount;
   }
 
-  void addToDatabase(
-      String uuid,
-      String reminderBody,
-      bool isSpecific,
-      bool isCompleted,
-      String location,
-      double latitude,
-      double longitude) async {
+  void addToDatabase(String reminderBody, bool isSpecific, bool isCompleted,
+      String location, double latitude, double longitude) async {
     // Put in Firestore cloud database
     reminders.add({
-      'userId': _uuid,
+      'userId': UUID_GLOBAL,
       'reminderBody': reminderBody,
       'isSpecific': isSpecific,
       'isCompleted': isCompleted,
@@ -54,21 +39,21 @@ class DatabaseServices {
     }).catchError((error) => throw ('Error: $error'));
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getIncompleteAlertsSnapshotCall(
-      String uuid) {
+  Stream<QuerySnapshot<Map<String, dynamic>>>
+      getIncompleteAlertsSnapshotCall() {
     return FirebaseFirestore.instance
         .collection('reminders')
-        .where('userId', isEqualTo: _uuid)
+        .where('userId', isEqualTo: UUID_GLOBAL)
         .where('isCompleted', isEqualTo: false)
         .orderBy('dateTimeCreated', descending: true)
         .snapshots();
   }
 
-  Future<QuerySnapshot<Map<String, dynamic>>> getIncompleteAlertsGetCall(
-      String uuid) async {
+  Future<QuerySnapshot<Map<String, dynamic>>>
+      getIncompleteAlertsGetCall() async {
     dynamic variable = await FirebaseFirestore.instance
         .collection('reminders')
-        .where('userId', isEqualTo: uuid)
+        .where('userId', isEqualTo: UUID_GLOBAL)
         .where('isCompleted', isEqualTo: false)
         .orderBy('dateTimeCreated', descending: true)
         .get();
@@ -76,7 +61,7 @@ class DatabaseServices {
     return variable;
   }
 
-  void deleteAlert(String uuid, String id) async {
+  void deleteAlert(String id) async {
     // Retrieve alert
     await FirebaseFirestore.instance
         .collection('reminders')
@@ -89,8 +74,7 @@ class DatabaseServices {
     }).catchError((error) => throw ('Error: $error'));
   }
 
-  void updateAlert(
-      String uuid, String id, String reminderBody, String location) async {
+  void updateAlert(String id, String reminderBody, String location) async {
     // Retrieve alert
     await FirebaseFirestore.instance
         .collection('reminders')

@@ -143,7 +143,6 @@ class _SpecificScreenState extends State<SpecificScreen> {
             formKey.currentState?.save();
             // Put in Firestore cloud database
             _dbServices.addToDatabase(
-                UUID_GLOBAL,
                 _reminderBody,
                 true,
                 false,

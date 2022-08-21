@@ -124,8 +124,8 @@ class _GenericScreenState extends State<GenericScreen> {
           if (formKey.currentState!.validate()) {
             formKey.currentState?.save();
             // Put in Firestore cloud database
-            _dbServices.addToDatabase(UUID_GLOBAL, _reminderBody, false, false,
-                _genericLocation, 404, 404);
+            _dbServices.addToDatabase(
+                _reminderBody, false, false, _genericLocation, 404, 404);
             // Remove keyboard
             FocusScopeNode currentFocus = FocusScope.of(context);
             if (!currentFocus.hasPrimaryFocus) {

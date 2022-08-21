@@ -1,4 +1,7 @@
 import 'dart:math';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/material.dart';
+import 'notification_services.dart';
 
 class AlertServices {
   final TRIGGER_DISTANCE = 1.0; //mi
@@ -30,5 +33,9 @@ class AlertServices {
       return true;
     }
     return false;
+  }
+
+  Future<void> showAlertNotification(String reminder, String location) async {
+    NotificationServices().showNotification(reminder, location);
   }
 }

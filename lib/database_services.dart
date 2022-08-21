@@ -51,14 +51,12 @@ class DatabaseServices {
 
   Future<QuerySnapshot<Map<String, dynamic>>>
       getIncompleteAlertsGetCall() async {
-    dynamic variable = await FirebaseFirestore.instance
+    return await FirebaseFirestore.instance
         .collection('reminders')
         .where('userId', isEqualTo: UUID_GLOBAL)
         .where('isCompleted', isEqualTo: false)
         .orderBy('dateTimeCreated', descending: true)
         .get();
-    print('hi');
-    return variable;
   }
 
   void deleteAlert(String id) async {

@@ -174,11 +174,15 @@ class _StartScreenState extends State<StartScreen> {
                   alerts.docs[index]['latitude'],
                   alerts.docs[index]['longitude'])) {
                 print('ALERT IS WITHIN DISTANCE');
+                // Send notification alert
                 _alertServices.showAlertNotification(
                     alerts.docs[index].id,
+                    alerts.docs[index]['latitude'],
+                    alerts.docs[index]['longitude'],
                     alerts.docs[index]['reminderBody'],
                     alerts.docs[index]['location']);
               } else {
+                _alertServices.purgeActive(userBgLat, userBgLon);
                 print('ALERT IS NOT WITHIN DISTANCE');
               }
             }

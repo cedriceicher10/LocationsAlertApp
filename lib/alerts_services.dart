@@ -5,6 +5,11 @@ import 'notification_services.dart';
 class AlertServices {
   final TRIGGER_DISTANCE = 0.5; //mi
 
+  // docId, latitude, longitude
+  List alertList = [
+    ['', 0.0, 0.0]
+  ];
+
   bool checkAlertDistance(
       double userLat, double userLon, double alertLat, double alertLon) {
     // All angles MUST BE IN RADIANS
@@ -34,8 +39,39 @@ class AlertServices {
     return false;
   }
 
-  Future<void> showAlertNotification(
-      String docId, String reminder, String location) async {
-    NotificationServices().showNotification(docId, reminder, location);
+  Future<void> showAlertNotification(String docId, double latitude,
+      double longitude, String reminder, String location) async {
+    //print('PURGE ALERT LIST: $docId');
+    if (!checkForActiveAlert(docId)) {
+      NotificationServices().showNotification(docId, reminder, location);
+      addToActive(docId, latitude, longitude);
+    }
+  }
+
+  bool checkForActiveAlert(String docId) {
+    for (int index = 1; index < alertList.length; ++index) {
+      if (alertList[index][0] == docId) {
+        //print('CHECK ALERT LIST: Already found! Not showing alert.');
+        return true;
+      }
+    }
+    //print('CHECK ALERT LIST: Not found! Showing alert.');
+    return false;
+  }
+
+  void addToActive(String docId, double latitude, double longitude) {
+    alertList.add([docId, latitude, longitude]);
+    //print('ADD ALERT LIST: $alertList');
+  }
+
+  void purgeActive(double userBgLat, double userBgLon) {
+    for (int index = 1; index < alertList.length; ++index) {
+      if (!checkAlertDistance(
+          userBgLat, userBgLon, alertList[index][1], alertList[index][2])) {
+        //print('PURGE ALERT LIST: Removing docid ${alertList[index][0]}');
+        alertList.removeAt(index);
+      }
+    }
+    //print('PURGE ALERT LIST: $alertList');
   }
 }

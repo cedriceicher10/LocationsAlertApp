@@ -45,15 +45,15 @@ class LocationServices {
 
   Future<bool> reverseGeolocateCheck(String locationQuery) async {
     // Attempt to reverse geocode to get lat/lon
+    List<geocoding.Location> latLonFromQuery;
     try {
-      List<geocoding.Location> latLonFromQuery =
-          await geocoding.locationFromAddress(locationQuery);
-      alertLat = latLonFromQuery[0].latitude;
-      alertLon = latLonFromQuery[0].longitude;
-      return true;
+      latLonFromQuery = await geocoding.locationFromAddress(locationQuery);
     } catch (exception) {
       print('REVERSE GEOLOCATE EXCEPTION: ' + exception.toString());
       return false;
     }
+    alertLat = latLonFromQuery[0].latitude;
+    alertLon = latLonFromQuery[0].longitude;
+    return true;
   }
 }

@@ -121,8 +121,6 @@ class _SpecificScreenState extends State<SpecificScreen> {
                     BorderSide(color: Color(s_aquariumLighter), width: 2.0))),
         onSaved: (value) async {
           _specificLocation = value!;
-          _reverseGeolocateSuccess =
-              await _locationServices.reverseGeolocateCheck(value);
         },
         validator: (value) {
           if (value!.isEmpty) {
@@ -139,6 +137,8 @@ class _SpecificScreenState extends State<SpecificScreen> {
     return ElevatedButton(
         onPressed: () async {
           formKey.currentState?.save();
+          _reverseGeolocateSuccess =
+              await _locationServices.reverseGeolocateCheck(_specificLocation);
           if (formKey.currentState!.validate()) {
             formKey.currentState?.save();
             // Put in Firestore cloud database

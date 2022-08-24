@@ -187,8 +187,6 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                       BorderSide(color: Color(s_aquariumLighter), width: 2.0))),
           onSaved: (value) async {
             _location = value!;
-            _reverseGeolocateSuccess =
-                await _locationServices.reverseGeolocateCheck(value);
           },
           validator: (value) {
             if (value!.isEmpty) {
@@ -272,6 +270,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     return ElevatedButton(
         onPressed: () async {
           formKey.currentState?.save();
+          _reverseGeolocateSuccess =
+              await _locationServices.reverseGeolocateCheck(_location);
           if (formKey.currentState!.validate()) {
             formKey.currentState?.save();
             _dbServices.updateAlert(

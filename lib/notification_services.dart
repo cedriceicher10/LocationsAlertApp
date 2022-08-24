@@ -50,7 +50,8 @@ class NotificationServices {
         NotificationActionButton(
             key: 'Dismissed',
             label: 'Dismiss (next time)',
-            color: Color(s_disabledGray)),
+            color: Color(s_disabledGray),
+            buttonType: ActionButtonType.DisabledAction),
       ],
     );
   }

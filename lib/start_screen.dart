@@ -160,12 +160,12 @@ class _StartScreenState extends State<StartScreen> {
               DateTime.fromMillisecondsSinceEpoch(bgLocationData.time!.toInt())
                   .toString());
 
-          // CHECK IF IN LOCATION OF AN ALERT
+          // NOTIFICATION KICKOFF LOGIC
           // Retrieve alerts
           QuerySnapshot<Map<String, dynamic>> alerts =
               await _dbServices.getIncompleteAlertsGetCall();
 
-          // Isolate location
+          // Check if within distance
           for (var index = 0; index < alerts.docs.length; ++index) {
             if (alerts.docs[index]['isSpecific']) {
               if (_alertServices.checkAlertDistance(
@@ -173,14 +173,24 @@ class _StartScreenState extends State<StartScreen> {
                   userBgLon,
                   alerts.docs[index]['latitude'],
                   alerts.docs[index]['longitude'])) {
-                print('ALERT IS WITHIN DISTANCE');
-                // Send notification alert
-                _alertServices.showAlertNotification(
-                    alerts.docs[index].id,
-                    alerts.docs[index]['latitude'],
-                    alerts.docs[index]['longitude'],
-                    alerts.docs[index]['reminderBody'],
-                    alerts.docs[index]['location']);
+                // Check if the alert is new (made at current location)
+                if (_alertServices
+                    .checkNewAlert(alerts.docs[index]['dateTimeCreated'])) {
+                  print('ALERT IS WITHIN DISTANCE: TOO NEW');
+                  _alertServices.addToActive(
+                      alerts.docs[index].id,
+                      alerts.docs[index]['latitude'],
+                      alerts.docs[index]['longitude']);
+                } else {
+                  print('ALERT IS WITHIN DISTANCE: NOTIFICATION');
+                  // Send notification alert
+                  _alertServices.showAlertNotification(
+                      alerts.docs[index].id,
+                      alerts.docs[index]['latitude'],
+                      alerts.docs[index]['longitude'],
+                      alerts.docs[index]['reminderBody'],
+                      alerts.docs[index]['location']);
+                }
               } else {
                 _alertServices.purgeActive(userBgLat, userBgLon);
                 print('ALERT IS NOT WITHIN DISTANCE');

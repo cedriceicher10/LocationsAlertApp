@@ -1,9 +1,11 @@
 import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'notification_services.dart';
 
 class AlertServices {
-  final TRIGGER_DISTANCE = 0.5; //mi
+  final TRIGGER_DISTANCE = 0.5; // mi
+  final NEW_ALERT_TIME = 2; // min
 
   // docId, latitude, longitude
   List alertList = [
@@ -73,5 +75,12 @@ class AlertServices {
       }
     }
     //print('PURGE ALERT LIST: $alertList');
+  }
+
+  bool checkNewAlert(Timestamp dateTimeCreated) {
+    if ((Timestamp.now().seconds - dateTimeCreated.seconds) < (2 * 60)) {
+      return true;
+    }
+    return false;
   }
 }

@@ -3,15 +3,17 @@ import 'package:locationalertsapp/start_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
+final COLLECTION = 'reminders';
+
 class DatabaseServices {
   CollectionReference reminders =
-      FirebaseFirestore.instance.collection('reminders');
+      FirebaseFirestore.instance.collection(COLLECTION);
 
   // This one accepts the uuid because occasionally the _uuid above is still
   // "" by the time it gets here
   Future<int> getAlertCount() async {
     var snapshot = await FirebaseFirestore.instance
-        .collection('reminders')
+        .collection(COLLECTION)
         .where('userId', isEqualTo: UUID_GLOBAL)
         .where('isCompleted', isEqualTo: false)
         .get()
@@ -42,7 +44,7 @@ class DatabaseServices {
   Stream<QuerySnapshot<Map<String, dynamic>>>
       getIncompleteAlertsSnapshotCall() {
     return FirebaseFirestore.instance
-        .collection('reminders')
+        .collection(COLLECTION)
         .where('userId', isEqualTo: UUID_GLOBAL)
         .where('isCompleted', isEqualTo: false)
         .orderBy('dateTimeCreated', descending: true)
@@ -52,7 +54,7 @@ class DatabaseServices {
   Future<QuerySnapshot<Map<String, dynamic>>>
       getIncompleteAlertsGetCall() async {
     return await FirebaseFirestore.instance
-        .collection('reminders')
+        .collection(COLLECTION)
         .where('userId', isEqualTo: UUID_GLOBAL)
         .where('isCompleted', isEqualTo: false)
         .orderBy('dateTimeCreated', descending: true)
@@ -62,27 +64,43 @@ class DatabaseServices {
   void deleteAlert(String id) async {
     // Retrieve alert
     await FirebaseFirestore.instance
-        .collection('reminders')
+        .collection(COLLECTION)
         .doc(id)
         .get()
         .catchError((error) => throw ('Error: $error'));
-    // Delete alert (set isCompleted == true)
-    await FirebaseFirestore.instance.collection('reminders').doc(id).update({
-      'isCompleted': true,
-    }).catchError((error) => throw ('Error: $error'));
+    // Delete alert
+    await FirebaseFirestore.instance
+        .collection(COLLECTION)
+        .doc(id)
+        .delete()
+        .catchError((error) => throw ('Error: $error'));
   }
 
   void updateAlert(String id, String reminderBody, String location) async {
     // Retrieve alert
     await FirebaseFirestore.instance
-        .collection('reminders')
+        .collection(COLLECTION)
         .doc(id)
         .get()
         .catchError((error) => throw ('Error: $error'));
     // Update alert
-    await FirebaseFirestore.instance.collection('reminders').doc(id).update({
+    await FirebaseFirestore.instance.collection(COLLECTION).doc(id).update({
       'reminderBody': reminderBody,
       'location': location,
+    }).catchError((error) => throw ('Error: $error'));
+  }
+
+  void completeAlert(String id) async {
+    // Retrieve alert
+    await FirebaseFirestore.instance
+        .collection(COLLECTION)
+        .doc(id)
+        .get()
+        .catchError((error) => throw ('Error: $error'));
+    // Complete alert
+    await FirebaseFirestore.instance.collection(COLLECTION).doc(id).update({
+      'dateTimeCompleted': Timestamp.now(),
+      'isCompleted': true,
     }).catchError((error) => throw ('Error: $error'));
   }
 }

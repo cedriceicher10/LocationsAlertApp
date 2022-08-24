@@ -31,7 +31,7 @@ class NotificationServices {
     AwesomeNotifications().actionStream.listen((action) {
       if (action.buttonKeyPressed == 'Completed') {
         // Mark alert complete
-        _dbServices.deleteAlert(_docId);
+        _dbServices.completeAlert(_docId);
       } else if (action.buttonKeyPressed == 'Dismissed') {
         // Alert is dismissed, remains active and notification dissappears
       }

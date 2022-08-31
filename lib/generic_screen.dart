@@ -81,7 +81,7 @@ class _GenericScreenState extends State<GenericScreen> {
   Widget reminderEntry() {
     return TextFormField(
         autofocus: true,
-        style: const TextStyle(color: Color(s_aquarium)),
+        style: const TextStyle(color: Colors.black),
         decoration: const InputDecoration(
             labelStyle: TextStyle(
                 color: Color(s_aquarium), fontWeight: FontWeight.bold),

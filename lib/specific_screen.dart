@@ -27,6 +27,10 @@ class _SpecificScreenState extends State<SpecificScreen> {
   final double buttonHeight = 60;
   final double buttonSpacing = 10;
 
+  final TextEditingController _controllerRecentLocations =
+      new TextEditingController();
+  var _recentLocations = ['Make a few reminders to see their locations here!'];
+
   @override
   Widget build(BuildContext context) {
     // Wrapping the MaterialApp allows the user to tap anywhere on the screen
@@ -80,7 +84,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
   Widget reminderEntry() {
     return TextFormField(
         autofocus: true,
-        style: const TextStyle(color: Color(s_aquariumLighter)),
+        style: const TextStyle(color: Colors.black),
         decoration: const InputDecoration(
             labelStyle: TextStyle(
                 color: Color(s_aquariumLighter), fontWeight: FontWeight.bold),
@@ -105,32 +109,49 @@ class _SpecificScreenState extends State<SpecificScreen> {
   }
 
   Widget locationEntry() {
-    return TextFormField(
-        autofocus: true,
-        style: const TextStyle(color: Color(s_aquariumLighter)),
-        decoration: const InputDecoration(
-            labelStyle: TextStyle(
-                color: Color(s_aquariumLighter), fontWeight: FontWeight.bold),
-            hintText: '675 W Beech St, San Diego, CA 92101',
-            hintStyle: TextStyle(color: Color(s_disabledGray)),
-            errorStyle: TextStyle(
-                color: Color(s_declineRed), fontWeight: FontWeight.bold),
-            border: OutlineInputBorder(),
-            focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: Color(s_aquariumLighter), width: 2.0))),
-        onSaved: (value) async {
-          _specificLocation = value!;
+    return Row(children: <Widget>[
+      Flexible(
+        child: TextFormField(
+            controller: _controllerRecentLocations,
+            autofocus: true,
+            style: const TextStyle(color: Colors.black),
+            decoration: const InputDecoration(
+                labelStyle:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                hintText: 'LAX Airport',
+                hintStyle: TextStyle(color: Color(s_disabledGray)),
+                errorStyle: TextStyle(
+                    color: Color(s_declineRed), fontWeight: FontWeight.bold),
+                border: OutlineInputBorder(),
+                focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Color(s_aquariumLighter), width: 2.0))),
+            onSaved: (value) async {
+              _specificLocation = value!;
+            },
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Please enter a location';
+              } else if (!_reverseGeolocateSuccess) {
+                return 'Could not locate the location you entered. \nPlease be more specific.';
+              } else {
+                return null;
+              }
+            }),
+      ),
+      PopupMenuButton<String>(
+        icon: const Icon(Icons.arrow_drop_down,
+            size: 40, color: Color(s_aquariumLighter)),
+        onSelected: (String value) {
+          _controllerRecentLocations.text = value;
         },
-        validator: (value) {
-          if (value!.isEmpty) {
-            return 'Please enter a location';
-          } else if (!_reverseGeolocateSuccess) {
-            return 'Could not locate the location you entered. \nPlease be more specific.';
-          } else {
-            return null;
-          }
-        });
+        itemBuilder: (BuildContext context) {
+          return _recentLocations.map<PopupMenuItem<String>>((String value) {
+            return PopupMenuItem(child: Text(value), value: value);
+          }).toList();
+        },
+      )
+    ]);
   }
 
   Widget submitButton(double buttonWidth, double buttonHeight) {

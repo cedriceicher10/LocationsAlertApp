@@ -103,7 +103,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
         decoration: const InputDecoration(
             labelStyle: TextStyle(
                 color: Color(s_aquariumLighter), fontWeight: FontWeight.bold),
-            hintText: 'Check the pantry for extra paper towels',
+            hintText: 'Pickup some more olive oil',
             hintStyle: TextStyle(color: Color(s_disabledGray)),
             errorStyle: TextStyle(
                 color: Color(s_declineRed), fontWeight: FontWeight.bold),
@@ -133,7 +133,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
             decoration: const InputDecoration(
                 labelStyle:
                     TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                hintText: 'LAX Airport',
+                hintText: 'Sprouts, Redlands, CA',
                 hintStyle: TextStyle(color: Color(s_disabledGray)),
                 errorStyle: TextStyle(
                     color: Color(s_declineRed), fontWeight: FontWeight.bold),
@@ -183,7 +183,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
                 prefs.getStringList('recentLocationsList');
             if ((recentLocationsList == null) ||
                 (recentLocationsList.length < 5)) {
-              recentLocationsList!.add(_specificLocation);
+              recentLocationsList!.insert(0, _specificLocation);
               prefs.setStringList('recentLocationsList', recentLocationsList);
             } else {
               recentLocationsList.removeLast();

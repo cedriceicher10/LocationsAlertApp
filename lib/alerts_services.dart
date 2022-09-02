@@ -78,7 +78,8 @@ class AlertServices {
   }
 
   bool checkNewAlert(Timestamp dateTimeCreated) {
-    if ((Timestamp.now().seconds - dateTimeCreated.seconds) < (2 * 60)) {
+    if ((Timestamp.now().seconds - dateTimeCreated.seconds) <
+        (NEW_ALERT_TIME * 60)) {
       return true;
     }
     return false;

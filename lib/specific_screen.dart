@@ -33,6 +33,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
 
   @override
   Widget build(BuildContext context) {
+    loadRecentLocations();
     // Wrapping the MaterialApp allows the user to tap anywhere on the screen
     // to remove the keyboard focus
     // See: https://flutterigniter.com/dismiss-keyboard-form-lose-focus/
@@ -55,6 +56,20 @@ class _SpecificScreenState extends State<SpecificScreen> {
             body: specificScreenBody(),
           ),
         ));
+  }
+
+  Future<void> loadRecentLocations() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? recentLocationsList =
+        prefs.getStringList('recentLocationsList');
+    if ((recentLocationsList != null) && (recentLocationsList.length != 0)) {
+      _recentLocations.clear();
+      for (int index = 0; index < recentLocationsList.length; ++index) {
+        _recentLocations.add(recentLocationsList[index]);
+      }
+    }
+    // Remove duplicates
+    _recentLocations = _recentLocations.toSet().toList();
   }
 
   Widget specificScreenBody() {
@@ -162,6 +177,22 @@ class _SpecificScreenState extends State<SpecificScreen> {
               await _locationServices.reverseGeolocateCheck(_specificLocation);
           if (formKey.currentState!.validate()) {
             formKey.currentState?.save();
+            // Save for previously chosen locations
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            List<String>? recentLocationsList =
+                prefs.getStringList('recentLocationsList');
+            if ((recentLocationsList == null) ||
+                (recentLocationsList.length < 5)) {
+              recentLocationsList!.add(_specificLocation);
+              prefs.setStringList('recentLocationsList', recentLocationsList);
+            } else {
+              recentLocationsList.removeLast();
+              recentLocationsList.insert(0, _specificLocation);
+              // Remove duplicates
+              recentLocationsList = recentLocationsList.toSet().toList();
+              prefs.setStringList('recentLocationsList', recentLocationsList);
+            }
+
             // Put in Firestore cloud database
             _dbServices.addToDatabase(
                 _reminderBody,

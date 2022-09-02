@@ -125,7 +125,10 @@ class _StartScreenState extends State<StartScreen> {
     await generateUniqueUserId();
     // Tally the number of uncompleted alerts for the My Alerts button
     await setAlertCount();
+    // Check for location services and kickoff background location tracking
     await locationToggleCheck();
+    // Set up shared prefs for recently chosen locations
+    await sharedPrefsSetup();
     return true;
   }
 
@@ -176,13 +179,15 @@ class _StartScreenState extends State<StartScreen> {
                 // Check if the alert is new (made at current location)
                 if (_alertServices
                     .checkNewAlert(alerts.docs[index]['dateTimeCreated'])) {
-                  print('ALERT IS WITHIN DISTANCE: TOO NEW');
+                  print(
+                      'ALERT IS WITHIN DISTANCE: TOO NEW - ${alerts.docs[index]['reminderBody']}');
                   _alertServices.addToActive(
                       alerts.docs[index].id,
                       alerts.docs[index]['latitude'],
                       alerts.docs[index]['longitude']);
                 } else {
-                  print('ALERT IS WITHIN DISTANCE: NOTIFICATION');
+                  print(
+                      'ALERT IS WITHIN DISTANCE: NOTIFICATION - ${alerts.docs[index]['reminderBody']}');
                   // Send notification alert
                   _alertServices.showAlertNotification(
                       alerts.docs[index].id,
@@ -193,7 +198,8 @@ class _StartScreenState extends State<StartScreen> {
                 }
               } else {
                 _alertServices.purgeActive(userBgLat, userBgLon);
-                print('ALERT IS NOT WITHIN DISTANCE');
+                print(
+                    'ALERT IS NOT WITHIN DISTANCE - ${alerts.docs[index]['reminderBody']}');
               }
             }
           }
@@ -245,6 +251,16 @@ class _StartScreenState extends State<StartScreen> {
       UUID_GLOBAL = uuid;
     } else {
       UUID_GLOBAL = uuidSP;
+    }
+  }
+
+  Future<void> sharedPrefsSetup() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? recentLocationsList =
+        prefs.getStringList('recentLocationsList');
+    if (recentLocationsList == null) {
+      List<String> emptyList = [];
+      prefs.setStringList('recentLocationsList', emptyList);
     }
   }
 

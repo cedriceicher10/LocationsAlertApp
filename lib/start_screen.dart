@@ -81,8 +81,8 @@ class _StartScreenState extends State<StartScreen> {
   final DatabaseServices _dbServices = DatabaseServices();
   final AlertServices _alertServices = AlertServices();
   final LocationServices _locationServices = LocationServices();
-  bool locationSwitch = false;
-  Color locationSwitchColor = Colors.grey;
+  bool _masterLocationToggle = false;
+  Color masterLocationColor = Colors.grey;
   double userBgLat = 0;
   double userBgLon = 0;
 
@@ -135,7 +135,14 @@ class _StartScreenState extends State<StartScreen> {
   Future<void> locationToggleCheck() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool? showLocationDisclosure = prefs.getBool('showLocationDisclosure');
-    if ((locationSwitch) &&
+    bool? masterLocationToggle = prefs.getBool('masterLocationToggle');
+    if (masterLocationToggle == null) {
+      _masterLocationToggle = false;
+      prefs.setBool('masterLocationToggle', false);
+    } else {
+      _masterLocationToggle = masterLocationToggle;
+    }
+    if ((_masterLocationToggle) &&
         ((showLocationDisclosure == false) &&
             (showLocationDisclosure != null))) {
       await _locationServices.getLocation();
@@ -153,15 +160,14 @@ class _StartScreenState extends State<StartScreen> {
         userBgLon = bgLocationData.longitude!;
         setState(() async {
           print('BACKGROUND LOCATION TRIGGERED ==============');
-          print('Latitude : ' + bgLocationData.latitude.toString());
-          print('Longitude: ' + bgLocationData.longitude.toString());
-          print('Accuracy : ' + bgLocationData.accuracy.toString());
-          print('Altitude : ' + bgLocationData.altitude.toString());
-          print('Bearing  : ' + bgLocationData.bearing.toString());
-          print('Speed    : ' + bgLocationData.speed.toString());
-          print('Time     : ' +
-              DateTime.fromMillisecondsSinceEpoch(bgLocationData.time!.toInt())
-                  .toString());
+          print('Latitude : ${bgLocationData.latitude}');
+          print('Longitude: ${bgLocationData.longitude}');
+          print('Accuracy : ${bgLocationData.accuracy}');
+          print('Altitude : ${bgLocationData.altitude}');
+          print('Bearing  : ${bgLocationData.bearing}');
+          print('Speed    : ${bgLocationData.speed}');
+          print(
+              'Time     : ${DateTime.fromMillisecondsSinceEpoch(bgLocationData.time!.toInt())}');
 
           // NOTIFICATION KICKOFF LOGIC
           // Retrieve alerts
@@ -207,11 +213,15 @@ class _StartScreenState extends State<StartScreen> {
       });
       if (_locationServices.permitted) {
         // Location is turned on
-        print('LOCATION SERVICES: ON');
+        print('LOCATION SERVICES: $_masterLocationToggle');
       } else {
-        locationSwitch = false;
-        locationSwitchColor = Colors.grey;
+        _masterLocationToggle = false;
+        prefs.setBool('masterLocationToggle', false);
+        masterLocationColor = Colors.grey;
       }
+    } else {
+      // Location toggle is turned off
+      print('LOCATION SERVICES: $_masterLocationToggle');
     }
   }
 
@@ -403,7 +413,7 @@ class _StartScreenState extends State<StartScreen> {
       FormattedText(
           text: 'Allow My Location: ',
           size: s_fontSizeExtraSmall + 2,
-          color: locationSwitchColor,
+          color: masterLocationColor,
           font: s_font_IBMPlexSans,
           weight: FontWeight.bold,
           align: TextAlign.center),
@@ -411,7 +421,7 @@ class _StartScreenState extends State<StartScreen> {
         inactiveThumbColor: Colors.grey,
         activeTrackColor: Colors.lightGreenAccent,
         activeColor: Colors.green,
-        value: locationSwitch,
+        value: _masterLocationToggle,
         onChanged: (value) async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           bool? showLocationDisclosure =
@@ -419,13 +429,14 @@ class _StartScreenState extends State<StartScreen> {
           if ((showLocationDisclosure == false) &&
               (showLocationDisclosure != null)) {
             setState(() {
-              locationSwitch = value;
-              if (locationSwitchColor == Colors.grey) {
-                locationSwitchColor = Colors.green;
+              _masterLocationToggle = value;
+              prefs.setBool('masterLocationToggle', value);
+              if (masterLocationColor == Colors.grey) {
+                masterLocationColor = Colors.green;
               } else {
-                locationSwitchColor = Colors.grey;
+                masterLocationColor = Colors.grey;
               }
-              print('Location Switch: ' + locationSwitch.toString());
+              print('LOCATION TOGGLE: $_masterLocationToggle');
             });
           } else {
             showLocationDisclosureAlert(context, prefs);

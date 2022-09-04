@@ -6,6 +6,7 @@ import 'location_services.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
 import 'start_screen.dart';
+import 'pick_on_map_screen.dart';
 
 class SpecificScreen extends StatefulWidget {
   const SpecificScreen({Key? key}) : super(key: key);
@@ -27,8 +28,10 @@ class _SpecificScreenState extends State<SpecificScreen> {
   final double buttonHeight = 60;
   final double buttonSpacing = 10;
 
+  PickOnMapLocation __pickOnMapLocation = PickOnMapLocation('', 0.0, 0.0);
+
   final TextEditingController _controllerRecentLocations =
-      new TextEditingController();
+      TextEditingController();
   var _recentLocations = ['Make a few reminders to see their locations here!'];
 
   @override
@@ -89,7 +92,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
                   SizedBox(height: buttonSpacing),
                   titleText('At the specific location...'),
                   SizedBox(width: textWidth, child: locationEntry()),
-                  SizedBox(height: buttonSpacing * 2),
+                  SizedBox(height: buttonSpacing),
+                  pickOnMapButton(buttonWidth, buttonHeight),
+                  SizedBox(height: buttonSpacing),
                   submitButton(buttonWidth, buttonHeight),
                   SizedBox(height: buttonSpacing / 2),
                   cancelButton(buttonWidth, buttonHeight)
@@ -124,6 +129,11 @@ class _SpecificScreenState extends State<SpecificScreen> {
   }
 
   Widget locationEntry() {
+    if (__pickOnMapLocation.location != '') {
+      _controllerRecentLocations.text = __pickOnMapLocation.location;
+      _controllerRecentLocations.selection = TextSelection.fromPosition(
+          TextPosition(offset: _controllerRecentLocations.text.length));
+    } // Puts cursor at end of field
     return Row(children: <Widget>[
       Flexible(
         child: TextFormField(
@@ -229,6 +239,43 @@ class _SpecificScreenState extends State<SpecificScreen> {
             font: s_font_BonaNova,
             weight: FontWeight.bold,
           )
+        ]));
+  }
+
+  void populateLocationFromPickOnMap(PickOnMapLocation pickOnMapLocation) {
+    __pickOnMapLocation.location = pickOnMapLocation.location;
+    __pickOnMapLocation.lat = pickOnMapLocation.lat;
+    __pickOnMapLocation.lon = pickOnMapLocation.lon;
+  }
+
+  Widget pickOnMapButton(double buttonWidth, double buttonHeight) {
+    return ElevatedButton(
+        onPressed: () {
+          // Remove keyboard
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+          // Pick on map screen
+          Navigator.of(context)
+              .push(createRoute(const PickOnMapScreen(), 'from_right'))
+              .then((value) => setState(() {
+                    populateLocationFromPickOnMap(value);
+                  }));
+        },
+        style: ElevatedButton.styleFrom(
+            backgroundColor: Color.fromARGB(255, 4, 123, 221),
+            fixedSize: Size(buttonWidth / 1.5, buttonHeight / 2)),
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          const Icon(
+            Icons.add_location_alt_outlined,
+            color: Colors.white,
+            size: 16,
+          ),
+          SizedBox(
+            width: buttonWidth / 20,
+          ),
+          cancelText('Pick on Map')
         ]));
   }
 

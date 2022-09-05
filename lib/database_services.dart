@@ -52,7 +52,7 @@ class DatabaseServices {
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>>
-      getIncompleteAlertsGetCall() async {
+      getIsCompleteAlertsGetCall() async {
     return await FirebaseFirestore.instance
         .collection(COLLECTION)
         .where('userId', isEqualTo: UUID_GLOBAL)

@@ -153,8 +153,8 @@ class _StartScreenState extends State<StartScreen> {
         message: 'Background services currently in progress',
         icon: '@mipmap/ic_launcher',
       );
-      //await BackgroundLocation.setAndroidConfiguration(1000);
-      await BackgroundLocation.startLocationService(distanceFilter: 1);
+      await BackgroundLocation.setAndroidConfiguration(1000);
+      await BackgroundLocation.startLocationService(distanceFilter: 0);
       BackgroundLocation.getLocationUpdates((bgLocationData) {
         userBgLat = bgLocationData.latitude!;
         userBgLon = bgLocationData.longitude!;
@@ -172,41 +172,14 @@ class _StartScreenState extends State<StartScreen> {
           // NOTIFICATION KICKOFF LOGIC
           // Retrieve alerts
           QuerySnapshot<Map<String, dynamic>> alerts =
-              await _dbServices.getIncompleteAlertsGetCall();
+              await _dbServices.getIsCompleteAlertsGetCall();
 
-          // Check if within distance
+          // Alert trigger
           for (var index = 0; index < alerts.docs.length; ++index) {
+            // For now only specific alerts
             if (alerts.docs[index]['isSpecific']) {
-              if (_alertServices.checkAlertDistance(
-                  userBgLat,
-                  userBgLon,
-                  alerts.docs[index]['latitude'],
-                  alerts.docs[index]['longitude'])) {
-                // Check if the alert is new (made at current location)
-                if (_alertServices
-                    .checkNewAlert(alerts.docs[index]['dateTimeCreated'])) {
-                  print(
-                      'ALERT IS WITHIN DISTANCE: TOO NEW - ${alerts.docs[index]['reminderBody']}');
-                  _alertServices.addToActive(
-                      alerts.docs[index].id,
-                      alerts.docs[index]['latitude'],
-                      alerts.docs[index]['longitude']);
-                } else {
-                  print(
-                      'ALERT IS WITHIN DISTANCE: NOTIFICATION - ${alerts.docs[index]['reminderBody']}');
-                  // Send notification alert
-                  _alertServices.showAlertNotification(
-                      alerts.docs[index].id,
-                      alerts.docs[index]['latitude'],
-                      alerts.docs[index]['longitude'],
-                      alerts.docs[index]['reminderBody'],
-                      alerts.docs[index]['location']);
-                }
-              } else {
-                _alertServices.purgeActive(userBgLat, userBgLon);
-                print(
-                    'ALERT IS NOT WITHIN DISTANCE - ${alerts.docs[index]['reminderBody']}');
-              }
+              _alertServices.alertDeterminationLogic(
+                  userBgLat, userBgLon, alerts.docs[index]);
             }
           }
         });
@@ -220,6 +193,7 @@ class _StartScreenState extends State<StartScreen> {
         masterLocationColor = Colors.grey;
       }
     } else {
+      BackgroundLocation.stopLocationService();
       // Location toggle is turned off
       print('LOCATION SERVICES: $_masterLocationToggle');
     }
@@ -431,10 +405,10 @@ class _StartScreenState extends State<StartScreen> {
             setState(() {
               _masterLocationToggle = value;
               prefs.setBool('masterLocationToggle', value);
-              if (masterLocationColor == Colors.grey) {
-                masterLocationColor = Colors.green;
-              } else {
+              if (_masterLocationToggle == false) {
                 masterLocationColor = Colors.grey;
+              } else {
+                masterLocationColor = Colors.green;
               }
               print('LOCATION TOGGLE: $_masterLocationToggle');
             });

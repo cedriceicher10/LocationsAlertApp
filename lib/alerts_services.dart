@@ -5,10 +5,13 @@ import 'notification_services.dart';
 
 class AlertServices {
   final TRIGGER_DISTANCE = 0.5; // mi
-  final NEW_ALERT_TIME = 2; // min
+  final NEW_ALERT_TIME = 1; // min
 
-  // docId, latitude, longitude
-  List alertList = [
+  // doNotAlertList [docId, lat, lon]
+  //  - If alert is already active
+  //  - If alert is new
+  //  - If alert is new && within distance
+  List doNotAlertList = [
     ['', 0.0, 0.0]
   ];
 
@@ -35,51 +38,80 @@ class AlertServices {
     double greatCircleDistanceMiles = greatCircleDistanceMeters / 1609; // mi
     //double greatCircleDistanceYards = greatCircleDistanceMiles * 1760; // yd
 
+    print(
+        'ALERT DET: ${greatCircleDistanceMiles.toStringAsFixed(2)} vs ${TRIGGER_DISTANCE} mi');
+
     if (greatCircleDistanceMiles <= TRIGGER_DISTANCE) {
       return true;
     }
     return false;
   }
 
-  Future<void> showAlertNotification(String docId, double latitude,
-      double longitude, String reminder, String location) async {
-    //print('PURGE ALERT LIST: $docId');
-    if (!checkForActiveAlert(docId)) {
-      NotificationServices().showNotification(docId, reminder, location);
-      addToActive(docId, latitude, longitude);
+  //**
+  // Trigger Alert Logic Tree
+  // Trigger if: 1) Alert is not new, 2) Alert is not active, 3) Alert is within distance
+  // Purge doNotAlertList if: Everytime
+  //
+  // Note: If a new alert is made and the user is within distance, it will NOT
+  //       trigger until the user is out of distance and then back within.
+  //
+  // */
+  void alertDeterminationLogic(double userBgLat, double userBgLon, var alert) {
+    if (checkNewAlert(alert['dateTimeCreated'])) {
+      print('ALERT DET: NEW - ${alert['reminderBody']}');
+      addToDoNotAlertList(alert.id, alert['latitude'], alert['longitude']);
+    } else {
+      if (!checkDoNotAlertList(alert.id)) {
+        print('ALERT DET: NOT IN DoNotAlert - ${alert['reminderBody']}');
+        if (checkAlertDistance(
+            userBgLat, userBgLon, alert['latitude'], alert['longitude'])) {
+          print('ALERT DET: WITHIN DISTANCE - ${alert['reminderBody']}');
+          NotificationServices().showNotification(
+              alert.id, alert['reminderBody'], alert['location']);
+          addToDoNotAlertList(alert.id, alert['latitude'], alert['longitude']);
+        } else {
+          print('ALERT DET: NOT WITHIN DISTANCE - ${alert['reminderBody']}');
+        }
+      } else {
+        print('ALERT DET: IN DoNotAlert - ${alert['reminderBody']}');
+      }
     }
+    print('=======================================================');
+    purgeDoNotAlertList(userBgLat, userBgLon);
   }
 
-  bool checkForActiveAlert(String docId) {
-    for (int index = 1; index < alertList.length; ++index) {
-      if (alertList[index][0] == docId) {
-        //print('CHECK ALERT LIST: Already found! Not showing alert.');
+  void showAlertNotification(String docId, String reminder, String location) {
+    NotificationServices().showNotification(docId, reminder, location);
+  }
+
+  bool checkDoNotAlertList(String docId) {
+    for (int index = 1; index < doNotAlertList.length; ++index) {
+      if (doNotAlertList[index][0] == docId) {
         return true;
       }
     }
-    //print('CHECK ALERT LIST: Not found! Showing alert.');
     return false;
   }
 
-  void addToActive(String docId, double latitude, double longitude) {
-    alertList.add([docId, latitude, longitude]);
-    //print('ADD ALERT LIST: $alertList');
+  void addToDoNotAlertList(String docId, double latitude, double longitude) {
+    doNotAlertList.add([docId, latitude, longitude]);
   }
 
-  void purgeActive(double userBgLat, double userBgLon) {
-    for (int index = 1; index < alertList.length; ++index) {
-      if (!checkAlertDistance(
-          userBgLat, userBgLon, alertList[index][1], alertList[index][2])) {
-        //print('PURGE ALERT LIST: Removing docid ${alertList[index][0]}');
-        alertList.removeAt(index);
+  // Purging removes all alerts that are
+  // 1. No longer within distance
+  // 2. No longer new (&& no longer within distance)
+  void purgeDoNotAlertList(double userBgLat, double userBgLon) {
+    for (int index = 1; index < doNotAlertList.length; ++index) {
+      if (!checkAlertDistance(userBgLat, userBgLon, doNotAlertList[index][1],
+          doNotAlertList[index][2])) {
+        doNotAlertList.removeAt(index);
       }
     }
-    //print('PURGE ALERT LIST: $alertList');
   }
 
   bool checkNewAlert(Timestamp dateTimeCreated) {
-    if ((Timestamp.now().seconds - dateTimeCreated.seconds) <
-        (NEW_ALERT_TIME * 60)) {
+    int timeDiff = (Timestamp.now().seconds - dateTimeCreated.seconds);
+    if (timeDiff < (NEW_ALERT_TIME * 60)) {
       return true;
     }
     return false;

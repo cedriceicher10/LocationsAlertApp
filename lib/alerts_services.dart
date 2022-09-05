@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'notification_services.dart';
 
 class AlertServices {
-  final TRIGGER_DISTANCE = 0.5; // mi
+  final TRIGGER_DISTANCE = 0.25; // mi
   final NEW_ALERT_TIME = 1; // min
 
   // doNotAlertList [docId, lat, lon]

@@ -33,6 +33,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
   final TextEditingController _controllerRecentLocations =
       TextEditingController();
   var _recentLocations = ['Make a few reminders to see their locations here!'];
+  Map _recentLocationsMap = new Map();
 
   @override
   Widget build(BuildContext context) {
@@ -68,11 +69,41 @@ class _SpecificScreenState extends State<SpecificScreen> {
     if ((recentLocationsList != null) && (recentLocationsList.length != 0)) {
       _recentLocations.clear();
       for (int index = 0; index < recentLocationsList.length; ++index) {
-        _recentLocations.add(recentLocationsList[index]);
+        _recentLocations
+            .add(shortenRecentLocations(recentLocationsList[index]));
+        _recentLocationsMap[
+                shortenRecentLocations(recentLocationsList[index])] =
+            recentLocationsList[index];
       }
     }
     // Remove duplicates
     _recentLocations = _recentLocations.toSet().toList();
+  }
+
+  String shortenRecentLocations(String longRecentLocation) {
+    int RECENT_LOCATION_MAX_STRING_LENGTH = 70;
+    // Shorten recent location strings that are >RECENT_LOCATION_MAX_STRING_LENGTH characters long
+    if (longRecentLocation.length < RECENT_LOCATION_MAX_STRING_LENGTH) {
+      return longRecentLocation;
+    } else {
+      // Split by commas
+      List<String> longRecentLocationSplit = longRecentLocation.split(',');
+      int stringLength = 0;
+      String shortRecentLocation = '';
+      for (int index = 0; index < longRecentLocationSplit.length; ++index) {
+        stringLength += longRecentLocationSplit[index].length;
+        if (stringLength < RECENT_LOCATION_MAX_STRING_LENGTH) {
+          shortRecentLocation += longRecentLocationSplit[index];
+          shortRecentLocation += ',';
+        } else {
+          if (shortRecentLocation.endsWith(',')) {
+            shortRecentLocation = shortRecentLocation.substring(
+                0, shortRecentLocation.length - 1);
+          }
+        }
+      }
+      return shortRecentLocation;
+    }
   }
 
   Widget specificScreenBody() {
@@ -172,7 +203,8 @@ class _SpecificScreenState extends State<SpecificScreen> {
         },
         itemBuilder: (BuildContext context) {
           return _recentLocations.map<PopupMenuItem<String>>((String value) {
-            return PopupMenuItem(child: Text(value), value: value);
+            return PopupMenuItem(
+                child: Text(value), value: value, padding: EdgeInsets.all(5));
           }).toList();
         },
       )
@@ -183,8 +215,8 @@ class _SpecificScreenState extends State<SpecificScreen> {
     return ElevatedButton(
         onPressed: () async {
           formKey.currentState?.save();
-          _reverseGeolocateSuccess =
-              await _locationServices.reverseGeolocateCheck(_specificLocation);
+          _reverseGeolocateSuccess = await _locationServices
+              .reverseGeolocateCheck(_recentLocationsMap[_specificLocation]);
           if (formKey.currentState!.validate()) {
             formKey.currentState?.save();
             // Save for previously chosen locations
@@ -193,11 +225,13 @@ class _SpecificScreenState extends State<SpecificScreen> {
                 prefs.getStringList('recentLocationsList');
             if ((recentLocationsList == null) ||
                 (recentLocationsList.length < 5)) {
-              recentLocationsList!.insert(0, _specificLocation);
+              recentLocationsList!
+                  .insert(0, _recentLocationsMap[_specificLocation]);
               prefs.setStringList('recentLocationsList', recentLocationsList);
             } else {
               recentLocationsList.removeLast();
-              recentLocationsList.insert(0, _specificLocation);
+              recentLocationsList.insert(
+                  0, _recentLocationsMap[_specificLocation]);
               // Remove duplicates
               recentLocationsList = recentLocationsList.toSet().toList();
               prefs.setStringList('recentLocationsList', recentLocationsList);
@@ -208,7 +242,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
                 _reminderBody,
                 true,
                 false,
-                _specificLocation,
+                _recentLocationsMap[_specificLocation],
                 _locationServices.alertLat,
                 _locationServices.alertLon);
             // Remove keyboard

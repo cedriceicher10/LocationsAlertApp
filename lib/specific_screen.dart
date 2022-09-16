@@ -244,8 +244,14 @@ class _SpecificScreenState extends State<SpecificScreen> {
             }
 
             // Put in Firestore cloud database
-            _dbServices.addToDatabase(_reminderBody, true, false, locationToUse,
-                _locationServices.alertLat, _locationServices.alertLon);
+            _dbServices.addToDatabase(
+                context,
+                _reminderBody,
+                true,
+                false,
+                locationToUse,
+                _locationServices.alertLat,
+                _locationServices.alertLon);
             // Remove keyboard
             FocusScopeNode currentFocus = FocusScope.of(context);
             if (!currentFocus.hasPrimaryFocus) {

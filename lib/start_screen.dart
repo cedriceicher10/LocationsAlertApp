@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:background_location/background_location.dart';
+import 'package:locationalertsapp/exception_services.dart';
 import 'dart:math';
 import 'location_services.dart';
 import 'my_alerts_screen.dart';
@@ -40,6 +41,9 @@ List<DropdownMenuItem<String>> generalLocations() {
 // Firebase cloud firestore
 CollectionReference reminders =
     FirebaseFirestore.instance.collection('reminders');
+
+// Exceptions
+ExceptionServices _exception = ExceptionServices();
 
 // Enables screen transition to the right (instead of default bottom)
 Route createRoute(Widget page, String direction) {
@@ -172,7 +176,7 @@ class _StartScreenState extends State<StartScreen> {
           // NOTIFICATION KICKOFF LOGIC
           // Retrieve alerts
           QuerySnapshot<Map<String, dynamic>> alerts =
-              await _dbServices.getIsCompleteAlertsGetCall();
+              await _dbServices.getIsCompleteAlertsGetCall(context);
 
           // Alert trigger
           for (var index = 0; index < alerts.docs.length; ++index) {
@@ -200,7 +204,7 @@ class _StartScreenState extends State<StartScreen> {
   }
 
   Future<void> setAlertCount() async {
-    ALERTS_NUM_GLOBAL = await _dbServices.getAlertCount();
+    ALERTS_NUM_GLOBAL = await _dbServices.getAlertCount(context);
   }
 
   Future<void> generateUniqueUserId() async {
@@ -221,7 +225,11 @@ class _StartScreenState extends State<StartScreen> {
             .collection('reminders')
             .where('userId', isEqualTo: uuid)
             .get()
-            .catchError((error) => throw ('Error: $error'));
+            .catchError((error) {
+          _exception.popUp(context,
+              'Get from database: Action failed\n error string: ${error.toString()}\nerror raw: $error');
+          throw ('Error: $error');
+        });
         bool alreadyTaken = false;
         snapshot.docs.forEach((result) {
           alreadyTaken = true;
@@ -576,7 +584,10 @@ class _StartScreenState extends State<StartScreen> {
           recognizer: TapGestureRecognizer()
             ..onTap = () async {
               var url = "https://www.linkedin.com/in/cedriceicher/";
-              if (!await launch(url)) throw 'Could not launch $url';
+              if (!await launch(url)) {
+                _exception.popUp(context, 'Launch URL: Could not launch $url');
+                throw 'Could not launch $url';
+              }
             }),
     );
   }

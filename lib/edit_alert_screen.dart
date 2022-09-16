@@ -235,7 +235,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   Widget deleteButton(double buttonWidth, double buttonHeight) {
     return ElevatedButton(
         onPressed: () async {
-          _dbServices.deleteAlert(widget.reminderTile.id);
+          _dbServices.deleteAlert(context, widget.reminderTile.id);
           // Remove keyboard
           FocusScopeNode currentFocus = FocusScope.of(context);
           if (!currentFocus.hasPrimaryFocus) {
@@ -275,7 +275,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
           if (formKey.currentState!.validate()) {
             formKey.currentState?.save();
             _dbServices.updateAlert(
-                widget.reminderTile.id, _reminderBody, _location);
+                context, widget.reminderTile.id, _reminderBody, _location);
             // Remove keyboard
             FocusScopeNode currentFocus = FocusScope.of(context);
             if (!currentFocus.hasPrimaryFocus) {

@@ -22,6 +22,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
   String _reminderBody = '';
   String _specificLocation = '';
   bool _reverseGeolocateSuccess = false;
+  bool _usingRecentLocation = false;
   final double topPadding = 80;
   final double textWidth = 325;
   final double buttonWidth = 260;
@@ -215,8 +216,15 @@ class _SpecificScreenState extends State<SpecificScreen> {
     return ElevatedButton(
         onPressed: () async {
           formKey.currentState?.save();
+          _usingRecentLocation = checkRecentLocationMap(_specificLocation);
+          String locationToUse;
+          if (_usingRecentLocation) {
+            locationToUse = _recentLocationsMap[_specificLocation];
+          } else {
+            locationToUse = _specificLocation;
+          }
           _reverseGeolocateSuccess = await _locationServices
-              .reverseGeolocateCheck(_recentLocationsMap[_specificLocation]);
+              .reverseGeolocateCheck(context, locationToUse);
           if (formKey.currentState!.validate()) {
             formKey.currentState?.save();
             // Save for previously chosen locations
@@ -225,26 +233,19 @@ class _SpecificScreenState extends State<SpecificScreen> {
                 prefs.getStringList('recentLocationsList');
             if ((recentLocationsList == null) ||
                 (recentLocationsList.length < 5)) {
-              recentLocationsList!
-                  .insert(0, _recentLocationsMap[_specificLocation]);
+              recentLocationsList!.insert(0, locationToUse);
               prefs.setStringList('recentLocationsList', recentLocationsList);
             } else {
               recentLocationsList.removeLast();
-              recentLocationsList.insert(
-                  0, _recentLocationsMap[_specificLocation]);
+              recentLocationsList.insert(0, locationToUse);
               // Remove duplicates
               recentLocationsList = recentLocationsList.toSet().toList();
               prefs.setStringList('recentLocationsList', recentLocationsList);
             }
 
             // Put in Firestore cloud database
-            _dbServices.addToDatabase(
-                _reminderBody,
-                true,
-                false,
-                _recentLocationsMap[_specificLocation],
-                _locationServices.alertLat,
-                _locationServices.alertLon);
+            _dbServices.addToDatabase(_reminderBody, true, false, locationToUse,
+                _locationServices.alertLat, _locationServices.alertLon);
             // Remove keyboard
             FocusScopeNode currentFocus = FocusScope.of(context);
             if (!currentFocus.hasPrimaryFocus) {
@@ -280,6 +281,19 @@ class _SpecificScreenState extends State<SpecificScreen> {
     __pickOnMapLocation.location = pickOnMapLocation.location;
     __pickOnMapLocation.lat = pickOnMapLocation.lat;
     __pickOnMapLocation.lon = pickOnMapLocation.lon;
+  }
+
+  bool checkRecentLocationMap(String location) {
+    if (_recentLocationsMap[location] == null) {
+      return false;
+    }
+    return true;
+    // try {
+    //   _recentLocationsMap[location];
+    // } catch (exception) {
+    //   return false;
+    // }
+    // return true;
   }
 
   Widget pickOnMapButton(double buttonWidth, double buttonHeight) {

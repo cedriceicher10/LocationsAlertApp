@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'exception_services.dart';
 import 'package:geocoding/geocoding.dart' as geocoding;
 
-Location location = Location();
+Location _location = Location();
+ExceptionServices _exception = ExceptionServices();
 
 class LocationServices {
   double userLat = 0;
@@ -18,37 +20,39 @@ class LocationServices {
     bool _serviceEnabled;
     PermissionStatus _permissionGranted;
     LocationData _locationData;
-    _serviceEnabled = await location.serviceEnabled();
+    _serviceEnabled = await _location.serviceEnabled();
     if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
+      _serviceEnabled = await _location.requestService();
       if (!_serviceEnabled) {
         Icons.assignment_return;
         return;
       }
     }
-    _permissionGranted = await location.hasPermission();
+    _permissionGranted = await _location.hasPermission();
     if (_permissionGranted == PermissionStatus.granted) {
       permitted = true;
     } else {
-      _permissionGranted = await location.requestPermission();
+      _permissionGranted = await _location.requestPermission();
       if (_permissionGranted == PermissionStatus.granted) {
         permitted = true;
       }
     }
     if (permitted) {
-      _locationData = await location.getLocation();
+      _locationData = await _location.getLocation();
       userLat = _locationData.latitude!;
       userLon = _locationData.longitude!;
     }
     return;
   }
 
-  Future<bool> reverseGeolocateCheck(String locationQuery) async {
+  Future<bool> reverseGeolocateCheck(
+      BuildContext context, String locationQuery) async {
     // Attempt to reverse geocode to get lat/lon
     List<geocoding.Location> latLonFromQuery;
     try {
       latLonFromQuery = await geocoding.locationFromAddress(locationQuery);
     } catch (exception) {
+      _exception.popUp(context, 'Location finding: ' + exception.toString());
       print('REVERSE GEOLOCATE EXCEPTION: ' + exception.toString());
       return false;
     }

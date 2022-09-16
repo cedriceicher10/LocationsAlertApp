@@ -271,7 +271,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
         onPressed: () async {
           formKey.currentState?.save();
           _reverseGeolocateSuccess =
-              await _locationServices.reverseGeolocateCheck(_location);
+              await _locationServices.reverseGeolocateCheck(context, _location);
           if (formKey.currentState!.validate()) {
             formKey.currentState?.save();
             _dbServices.updateAlert(

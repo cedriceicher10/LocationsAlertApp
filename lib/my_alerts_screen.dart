@@ -122,6 +122,8 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
 
   Widget listViewReminders(List<ReminderTile> reminderObjects) {
     return ListView.builder(
+      physics:
+          NeverScrollableScrollPhysics(), // allows precedence to be taken by SingleChildScrollView()?
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),

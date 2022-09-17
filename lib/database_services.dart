@@ -106,7 +106,7 @@ class DatabaseServices {
   }
 
   void updateAlert(BuildContext context, String id, String reminderBody,
-      String location) async {
+      String location, bool isSpecific) async {
     // Retrieve alert
     await FirebaseFirestore.instance
         .collection(COLLECTION)
@@ -121,6 +121,7 @@ class DatabaseServices {
     await FirebaseFirestore.instance.collection(COLLECTION).doc(id).update({
       'reminderBody': reminderBody,
       'location': location,
+      'isSpecific': isSpecific,
     }).catchError((error) {
       _exception.popUp(context,
           'Update in database: Action failed\n error string: ${error.toString()}\nerror raw: $error');

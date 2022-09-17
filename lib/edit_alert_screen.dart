@@ -177,16 +177,18 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                 });
               }));
     } else {
-      if (__pickOnMapLocation.location != '') {
-        _controllerRecentLocations.text = __pickOnMapLocation.location;
-        _controllerRecentLocations.selection = TextSelection.fromPosition(
-            TextPosition(offset: _controllerRecentLocations.text.length));
-      } // Puts cursor at end of field
+      _controllerRecentLocations.selection = TextSelection.fromPosition(
+          TextPosition(
+              offset: _controllerRecentLocations
+                  .text.length)); // Puts cursor at end of field
       String hintTextForGeneric = '';
       TextStyle hintColor = const TextStyle(color: Colors.black);
       if (widget.reminderTile.isSpecific) {
         _controllerRecentLocations.text = widget.reminderTile.location;
         hintTextForGeneric = widget.reminderTile.location;
+        if (__pickOnMapLocation.location != '') {
+          _controllerRecentLocations.text = __pickOnMapLocation.location;
+        }
       } else {
         _controllerRecentLocations.text = '';
         hintTextForGeneric = '42 Wallaby Way, Sydney, NSW';
@@ -279,34 +281,36 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   }
 
   Widget pickOnMapButton(double buttonWidth, double buttonHeight) {
-    return ElevatedButton(
-        onPressed: () {
-          // Remove keyboard
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus) {
-            currentFocus.unfocus();
-          }
-          // Pick on map screen
-          Navigator.of(context)
-              .push(createRoute(const PickOnMapScreen(), 'from_right'))
-              .then((value) => setState(() {
-                    populateLocationFromPickOnMap(value);
-                  }));
-        },
-        style: ElevatedButton.styleFrom(
-            backgroundColor: Color.fromARGB(255, 4, 123, 221),
-            fixedSize: Size(buttonWidth / 1.5, buttonHeight / 2)),
-        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Icon(
-            Icons.add_location_alt_outlined,
-            color: Colors.white,
-            size: 16,
-          ),
-          SizedBox(
-            width: buttonWidth / 20,
-          ),
-          cancelText('Pick on Map')
-        ]));
+    return Visibility(
+        visible: !_isGeneric,
+        child: ElevatedButton(
+            onPressed: () {
+              // Remove keyboard
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+              // Pick on map screen
+              Navigator.of(context)
+                  .push(createRoute(const PickOnMapScreen(), 'from_right'))
+                  .then((value) => setState(() {
+                        populateLocationFromPickOnMap(value);
+                      }));
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 4, 123, 221),
+                fixedSize: Size(buttonWidth / 1.5, buttonHeight / 2)),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              const Icon(
+                Icons.add_location_alt_outlined,
+                color: Colors.white,
+                size: 16,
+              ),
+              SizedBox(
+                width: buttonWidth / 20,
+              ),
+              cancelText('Pick on Map')
+            ])));
   }
 
   Widget deleteButton(double buttonWidth, double buttonHeight) {
@@ -360,7 +364,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
             if (formKey.currentState!.validate()) {
               formKey.currentState?.save();
               _dbServices.updateAlert(context, widget.reminderTile.id,
-                  _reminderBody, locationToUse);
+                  _reminderBody, locationToUse, !_isGeneric);
               // Save for previously chosen locations
               SharedPreferences prefs = await SharedPreferences.getInstance();
               List<String>? recentLocationsList =
@@ -376,21 +380,20 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                 recentLocationsList = recentLocationsList.toSet().toList();
                 prefs.setStringList('recentLocationsList', recentLocationsList);
               }
-            } else {
-              if (formKey.currentState!.validate()) {
-                formKey.currentState?.save();
-                _dbServices.updateAlert(context, widget.reminderTile.id,
-                    _reminderBody, locationToUse);
-              }
             }
-
-            // Remove keyboard
-            FocusScopeNode currentFocus = FocusScope.of(context);
-            if (!currentFocus.hasPrimaryFocus) {
-              currentFocus.unfocus();
+          } else {
+            if (formKey.currentState!.validate()) {
+              formKey.currentState?.save();
+              _dbServices.updateAlert(context, widget.reminderTile.id,
+                  _reminderBody, _location, !_isGeneric);
             }
-            Navigator.pop(context);
           }
+          // Remove keyboard
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+          Navigator.pop(context);
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: const Color(s_aquarium),

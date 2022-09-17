@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:locationalertsapp/recent_locations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'database_services.dart';
@@ -7,6 +8,7 @@ import 'formatted_text.dart';
 import 'styles.dart';
 import 'start_screen.dart';
 import 'pick_on_map_screen.dart';
+import 'recent_locations.dart';
 
 class SpecificScreen extends StatefulWidget {
   const SpecificScreen({Key? key}) : super(key: key);
@@ -63,48 +65,11 @@ class _SpecificScreenState extends State<SpecificScreen> {
         ));
   }
 
-  Future<void> loadRecentLocations() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? recentLocationsList =
-        prefs.getStringList('recentLocationsList');
-    if ((recentLocationsList != null) && (recentLocationsList.length != 0)) {
-      _recentLocations.clear();
-      for (int index = 0; index < recentLocationsList.length; ++index) {
-        _recentLocations
-            .add(shortenRecentLocations(recentLocationsList[index]));
-        _recentLocationsMap[
-                shortenRecentLocations(recentLocationsList[index])] =
-            recentLocationsList[index];
-      }
-    }
-    // Remove duplicates
-    _recentLocations = _recentLocations.toSet().toList();
-  }
-
-  String shortenRecentLocations(String longRecentLocation) {
-    int RECENT_LOCATION_MAX_STRING_LENGTH = 70;
-    // Shorten recent location strings that are >RECENT_LOCATION_MAX_STRING_LENGTH characters long
-    if (longRecentLocation.length < RECENT_LOCATION_MAX_STRING_LENGTH) {
-      return longRecentLocation;
-    } else {
-      // Split by commas
-      List<String> longRecentLocationSplit = longRecentLocation.split(',');
-      int stringLength = 0;
-      String shortRecentLocation = '';
-      for (int index = 0; index < longRecentLocationSplit.length; ++index) {
-        stringLength += longRecentLocationSplit[index].length;
-        if (stringLength < RECENT_LOCATION_MAX_STRING_LENGTH) {
-          shortRecentLocation += longRecentLocationSplit[index];
-          shortRecentLocation += ',';
-        } else {
-          if (shortRecentLocation.endsWith(',')) {
-            shortRecentLocation = shortRecentLocation.substring(
-                0, shortRecentLocation.length - 1);
-          }
-        }
-      }
-      return shortRecentLocation;
-    }
+  void loadRecentLocations() {
+    RecentLocations rl = RecentLocations();
+    rl.retrieveRecentLocations();
+    _recentLocations = rl.recentLocations;
+    _recentLocationsMap = rl.recentLocationsMap;
   }
 
   Widget specificScreenBody() {
@@ -294,12 +259,6 @@ class _SpecificScreenState extends State<SpecificScreen> {
       return false;
     }
     return true;
-    // try {
-    //   _recentLocationsMap[location];
-    // } catch (exception) {
-    //   return false;
-    // }
-    // return true;
   }
 
   Widget pickOnMapButton(double buttonWidth, double buttonHeight) {

@@ -9,6 +9,8 @@ import 'formatted_text.dart';
 import 'styles.dart';
 import 'database_services.dart';
 import 'location_services.dart';
+import 'pick_on_map_screen.dart';
+import 'recent_locations.dart';
 
 class EditAlertScreen extends StatefulWidget {
   final ReminderTile reminderTile;
@@ -23,6 +25,10 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final LocationServices _locationServices = LocationServices();
   final DatabaseServices _dbServices = DatabaseServices();
+  final TextEditingController _controllerRecentLocations =
+      TextEditingController();
+  var _recentLocations = ['Make a few reminders to see their locations here!'];
+  Map _recentLocationsMap = new Map();
   String _reminderBody = '';
   String _location = '';
   bool _reverseGeolocateSuccess = false;
@@ -33,6 +39,9 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   final double buttonSpacing = 10;
   final double switchButtonHeight = 20;
   final double switchButtonWidth = 200;
+
+  PickOnMapLocation __pickOnMapLocation = PickOnMapLocation('', 0.0, 0.0);
+  bool _usingRecentLocation = false;
 
   String atLocationText = '';
   String atLocationTextOpposite = '';
@@ -48,6 +57,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
 
   @override
   Widget build(BuildContext context) {
+    loadRecentLocations();
     if (_isGeneric) {
       atLocationText = 'generic';
       atLocationTextOpposite = 'specific';
@@ -79,9 +89,16 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
         ));
   }
 
+  void loadRecentLocations() {
+    RecentLocations rl = RecentLocations();
+    rl.retrieveRecentLocations();
+    _recentLocations = rl.recentLocations;
+    _recentLocationsMap = rl.recentLocationsMap;
+  }
+
   Widget editAlertScreenBody() {
     return SizedBox(
-        height: 500,
+        //height: 500,
         width: 400,
         child: Form(
             key: formKey,
@@ -98,6 +115,9 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                   SizedBox(width: textWidth, child: locationEntry()),
                   switchReminderTypeButton(
                       switchButtonWidth, switchButtonHeight),
+                  SizedBox(height: buttonSpacing / 2),
+                  pickOnMapButton(buttonWidth, buttonHeight),
+                  SizedBox(height: buttonSpacing / 2),
                   deleteButton(switchButtonWidth, switchButtonHeight),
                   SizedBox(height: buttonSpacing / 2),
                   updateButton(buttonWidth, buttonHeight),
@@ -157,46 +177,66 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                 });
               }));
     } else {
+      if (__pickOnMapLocation.location != '') {
+        _controllerRecentLocations.text = __pickOnMapLocation.location;
+        _controllerRecentLocations.selection = TextSelection.fromPosition(
+            TextPosition(offset: _controllerRecentLocations.text.length));
+      } // Puts cursor at end of field
       String hintTextForGeneric = '';
       TextStyle hintColor = const TextStyle(color: Colors.black);
-      TextEditingController controller = TextEditingController();
-      controller.selection = TextSelection.fromPosition(TextPosition(
-          offset: controller.text.length)); // Puts cursor at end of field
       if (widget.reminderTile.isSpecific) {
-        controller.text = widget.reminderTile.location;
+        _controllerRecentLocations.text = widget.reminderTile.location;
         hintTextForGeneric = widget.reminderTile.location;
       } else {
-        controller.text = '';
+        _controllerRecentLocations.text = '';
         hintTextForGeneric = '42 Wallaby Way, Sydney, NSW';
         hintColor = const TextStyle(color: Color(s_disabledGray));
       }
-      return TextFormField(
-          autofocus: true,
-          controller: controller,
-          style: const TextStyle(color: Colors.black),
-          decoration: InputDecoration(
-              labelStyle: const TextStyle(
-                  color: Color(s_aquariumLighter), fontWeight: FontWeight.bold),
-              hintText: hintTextForGeneric,
-              hintStyle: hintColor,
-              errorStyle: const TextStyle(
-                  color: Color(s_declineRed), fontWeight: FontWeight.bold),
-              border: const OutlineInputBorder(),
-              focusedBorder: const OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: Color(s_aquariumLighter), width: 2.0))),
-          onSaved: (value) async {
-            _location = value!;
+      return Row(children: <Widget>[
+        Flexible(
+            child: TextFormField(
+                autofocus: true,
+                controller: _controllerRecentLocations,
+                style: const TextStyle(color: Colors.black),
+                decoration: InputDecoration(
+                    labelStyle: const TextStyle(
+                        color: Color(s_aquariumLighter),
+                        fontWeight: FontWeight.bold),
+                    hintText: hintTextForGeneric,
+                    hintStyle: hintColor,
+                    errorStyle: const TextStyle(
+                        color: Color(s_declineRed),
+                        fontWeight: FontWeight.bold),
+                    border: const OutlineInputBorder(),
+                    focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color(s_aquariumLighter), width: 2.0))),
+                onSaved: (value) async {
+                  _location = value!;
+                },
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter a location';
+                  } else if (!_reverseGeolocateSuccess) {
+                    return 'Could not locate the location you entered. \nPlease be more specific.';
+                  } else {
+                    return null;
+                  }
+                })),
+        PopupMenuButton<String>(
+          icon: const Icon(Icons.arrow_drop_down,
+              size: 40, color: Color(s_aquariumLighter)),
+          onSelected: (String value) {
+            _controllerRecentLocations.text = value;
           },
-          validator: (value) {
-            if (value!.isEmpty) {
-              return 'Please enter a location';
-            } else if (!_reverseGeolocateSuccess) {
-              return 'Could not locate the location you entered. \nPlease be more specific.';
-            } else {
-              return null;
-            }
-          });
+          itemBuilder: (BuildContext context) {
+            return _recentLocations.map<PopupMenuItem<String>>((String value) {
+              return PopupMenuItem(
+                  child: Text(value), value: value, padding: EdgeInsets.all(5));
+            }).toList();
+          },
+        )
+      ]);
     }
   }
 
@@ -229,6 +269,43 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
             color: Colors.white,
             font: s_font_IBMPlexSans,
           )
+        ]));
+  }
+
+  void populateLocationFromPickOnMap(PickOnMapLocation pickOnMapLocation) {
+    __pickOnMapLocation.location = pickOnMapLocation.location;
+    __pickOnMapLocation.lat = pickOnMapLocation.lat;
+    __pickOnMapLocation.lon = pickOnMapLocation.lon;
+  }
+
+  Widget pickOnMapButton(double buttonWidth, double buttonHeight) {
+    return ElevatedButton(
+        onPressed: () {
+          // Remove keyboard
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+          // Pick on map screen
+          Navigator.of(context)
+              .push(createRoute(const PickOnMapScreen(), 'from_right'))
+              .then((value) => setState(() {
+                    populateLocationFromPickOnMap(value);
+                  }));
+        },
+        style: ElevatedButton.styleFrom(
+            backgroundColor: Color.fromARGB(255, 4, 123, 221),
+            fixedSize: Size(buttonWidth / 1.5, buttonHeight / 2)),
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          const Icon(
+            Icons.add_location_alt_outlined,
+            color: Colors.white,
+            size: 16,
+          ),
+          SizedBox(
+            width: buttonWidth / 20,
+          ),
+          cancelText('Pick on Map')
         ]));
   }
 
@@ -270,12 +347,43 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     return ElevatedButton(
         onPressed: () async {
           formKey.currentState?.save();
-          _reverseGeolocateSuccess =
-              await _locationServices.reverseGeolocateCheck(context, _location);
-          if (formKey.currentState!.validate()) {
-            formKey.currentState?.save();
-            _dbServices.updateAlert(
-                context, widget.reminderTile.id, _reminderBody, _location);
+          if (!_isGeneric) {
+            _usingRecentLocation = checkRecentLocationMap(_location);
+            String locationToUse;
+            if (_usingRecentLocation) {
+              locationToUse = _recentLocationsMap[_location];
+            } else {
+              locationToUse = _location;
+            }
+            _reverseGeolocateSuccess = await _locationServices
+                .reverseGeolocateCheck(context, locationToUse);
+            if (formKey.currentState!.validate()) {
+              formKey.currentState?.save();
+              _dbServices.updateAlert(context, widget.reminderTile.id,
+                  _reminderBody, locationToUse);
+              // Save for previously chosen locations
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              List<String>? recentLocationsList =
+                  prefs.getStringList('recentLocationsList');
+              if ((recentLocationsList == null) ||
+                  (recentLocationsList.length < 5)) {
+                recentLocationsList!.insert(0, locationToUse);
+                prefs.setStringList('recentLocationsList', recentLocationsList);
+              } else {
+                recentLocationsList.removeLast();
+                recentLocationsList.insert(0, locationToUse);
+                // Remove duplicates
+                recentLocationsList = recentLocationsList.toSet().toList();
+                prefs.setStringList('recentLocationsList', recentLocationsList);
+              }
+            } else {
+              if (formKey.currentState!.validate()) {
+                formKey.currentState?.save();
+                _dbServices.updateAlert(context, widget.reminderTile.id,
+                    _reminderBody, locationToUse);
+              }
+            }
+
             // Remove keyboard
             FocusScopeNode currentFocus = FocusScope.of(context);
             if (!currentFocus.hasPrimaryFocus) {
@@ -331,6 +439,13 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
           ),
           cancelText('Cancel')
         ]));
+  }
+
+  bool checkRecentLocationMap(String location) {
+    if (_recentLocationsMap[location] == null) {
+      return false;
+    }
+    return true;
   }
 
   Widget cancelText(String text) {

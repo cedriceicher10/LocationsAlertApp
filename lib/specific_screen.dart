@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:locationalertsapp/recent_locations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:flutter/material.dart';
 import 'database_services.dart';
 import 'location_services.dart';
@@ -90,7 +91,11 @@ class _SpecificScreenState extends State<SpecificScreen> {
                   titleText('At the specific location...'),
                   SizedBox(width: textWidth, child: locationEntry()),
                   SizedBox(height: buttonSpacing),
-                  pickOnMapButton(buttonWidth, buttonHeight),
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    atMyLocationButton(buttonWidth / 1.7, buttonHeight / 2),
+                    SizedBox(width: buttonSpacing),
+                    pickOnMapButton(buttonWidth / 1.7, buttonHeight / 2),
+                  ]),
                   SizedBox(height: buttonSpacing),
                   submitButton(buttonWidth, buttonHeight),
                   SizedBox(height: buttonSpacing / 2),
@@ -261,6 +266,60 @@ class _SpecificScreenState extends State<SpecificScreen> {
     return true;
   }
 
+  Widget atMyLocationButton(double buttonWidth, double buttonHeight) {
+    return ElevatedButton(
+        onPressed: () async {
+          // Remove keyboard
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+          // Location look up
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          bool? showLocationDisclosure =
+              prefs.getBool('showLocationDisclosure');
+          bool? masterLocationToggle = prefs.getBool('masterLocationToggle');
+          // Show location disclosure on the start screen
+          if ((showLocationDisclosure != null) && (showLocationDisclosure)) {
+            Navigator.pop(context);
+          } else {
+            // Set master location toggle if not set yet
+            if (masterLocationToggle == null) {
+              prefs.setBool('masterLocationToggle', false);
+            } else {
+              await _locationServices.getLocation();
+            }
+            if (_locationServices.permitted) {
+              prefs.setBool('masterLocationToggle', true);
+              var placemarks = await placemarkFromCoordinates(
+                  _locationServices.userLat, _locationServices.userLon);
+              _specificLocation = placemarks[0].street! +
+                  ', ' +
+                  placemarks[0].locality! +
+                  ', ' +
+                  placemarks[0].administrativeArea! +
+                  ', ' +
+                  placemarks[0].postalCode!;
+              _controllerRecentLocations.text = _specificLocation;
+            }
+          }
+        },
+        style: ElevatedButton.styleFrom(
+            backgroundColor: Color.fromARGB(255, 4, 123, 221),
+            fixedSize: Size(buttonWidth, buttonHeight)),
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          const Icon(
+            Icons.my_location_sharp,
+            color: Colors.white,
+            size: 16,
+          ),
+          SizedBox(
+            width: buttonWidth / 20,
+          ),
+          cancelText('My Location')
+        ]));
+  }
+
   Widget pickOnMapButton(double buttonWidth, double buttonHeight) {
     return ElevatedButton(
         onPressed: () {
@@ -278,7 +337,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: Color.fromARGB(255, 4, 123, 221),
-            fixedSize: Size(buttonWidth / 1.5, buttonHeight / 2)),
+            fixedSize: Size(buttonWidth, buttonHeight)),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           const Icon(
             Icons.add_location_alt_outlined,

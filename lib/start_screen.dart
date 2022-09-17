@@ -478,23 +478,23 @@ class _StartScreenState extends State<StartScreen> {
   Widget specificLocationButton(BuildContext context, String text) {
     return ElevatedButton(
         onPressed: () async {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          bool? showLocationDisclosure =
-              prefs.getBool('showLocationDisclosure');
-          if ((showLocationDisclosure == null) ||
-              (showLocationDisclosure == true)) {
-            showLocationDisclosureAlert(context, prefs);
-          } else {
-            // Old way: From the bottom
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => const SpecificScreen()),
-            // );
-            // New way: From a direction
-            Navigator.of(context)
-                .push(createRoute(const SpecificScreen(), 'from_right'))
-                .then((value) => setState(() {}));
-          }
+          // SharedPreferences prefs = await SharedPreferences.getInstance();
+          // bool? showLocationDisclosure =
+          //     prefs.getBool('showLocationDisclosure');
+          // if ((showLocationDisclosure == null) ||
+          //     (showLocationDisclosure == true)) {
+          //   showLocationDisclosureAlert(context, prefs);
+          // } else {
+          // Old way: From the bottom
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const SpecificScreen()),
+          // );
+          // New way: From a direction
+          Navigator.of(context)
+              .push(createRoute(const SpecificScreen(), 'from_right'))
+              .then((value) => setState(() {}));
+          // }
         },
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           buttonText(text),

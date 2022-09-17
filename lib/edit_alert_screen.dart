@@ -2,6 +2,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:flutter/material.dart';
 import 'start_screen.dart';
 import 'my_alerts_screen.dart';
@@ -99,7 +100,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   Widget editAlertScreenBody() {
     return SizedBox(
         //height: 500,
-        width: 400,
+        //width: 400,
         child: Form(
             key: formKey,
             child: SingleChildScrollView(
@@ -116,7 +117,11 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                   switchReminderTypeButton(
                       switchButtonWidth, switchButtonHeight),
                   SizedBox(height: buttonSpacing / 2),
-                  pickOnMapButton(buttonWidth, buttonHeight),
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    atMyLocationButton(buttonWidth / 1.7, buttonHeight / 2),
+                    SizedBox(width: buttonSpacing),
+                    pickOnMapButton(buttonWidth / 1.7, buttonHeight / 2),
+                  ]),
                   SizedBox(height: buttonSpacing / 2),
                   deleteButton(switchButtonWidth, switchButtonHeight),
                   SizedBox(height: buttonSpacing / 2),
@@ -280,6 +285,64 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     __pickOnMapLocation.lon = pickOnMapLocation.lon;
   }
 
+  Widget atMyLocationButton(double buttonWidth, double buttonHeight) {
+    return Visibility(
+        visible: !_isGeneric,
+        child: ElevatedButton(
+            onPressed: () async {
+              // Remove keyboard
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+              // Location look up
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              bool? showLocationDisclosure =
+                  prefs.getBool('showLocationDisclosure');
+              bool? masterLocationToggle =
+                  prefs.getBool('masterLocationToggle');
+              // Show location disclosure on the start screen
+              if ((showLocationDisclosure != null) &&
+                  (showLocationDisclosure)) {
+                Navigator.pop(context, true);
+              } else {
+                // Set master location toggle if not set yet
+                if (masterLocationToggle == null) {
+                  prefs.setBool('masterLocationToggle', false);
+                } else {
+                  await _locationServices.getLocation();
+                }
+                if (_locationServices.permitted) {
+                  prefs.setBool('masterLocationToggle', true);
+                  var placemarks = await placemarkFromCoordinates(
+                      _locationServices.userLat, _locationServices.userLon);
+                  _location = placemarks[0].street! +
+                      ', ' +
+                      placemarks[0].locality! +
+                      ', ' +
+                      placemarks[0].administrativeArea! +
+                      ', ' +
+                      placemarks[0].postalCode!;
+                  _controllerRecentLocations.text = _location;
+                }
+              }
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 4, 123, 221),
+                fixedSize: Size(buttonWidth, buttonHeight)),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              const Icon(
+                Icons.my_location_sharp,
+                color: Colors.white,
+                size: 16,
+              ),
+              SizedBox(
+                width: buttonWidth / 20,
+              ),
+              cancelText('My Location')
+            ])));
+  }
+
   Widget pickOnMapButton(double buttonWidth, double buttonHeight) {
     return Visibility(
         visible: !_isGeneric,
@@ -299,7 +362,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: Color.fromARGB(255, 4, 123, 221),
-                fixedSize: Size(buttonWidth / 1.5, buttonHeight / 2)),
+                fixedSize: Size(buttonWidth, buttonHeight)),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               const Icon(
                 Icons.add_location_alt_outlined,
@@ -322,7 +385,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
           if (!currentFocus.hasPrimaryFocus) {
             currentFocus.unfocus();
           }
-          Navigator.pop(context);
+          Navigator.pop(context, false);
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: const Color(s_declineRed),
@@ -393,7 +456,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
           if (!currentFocus.hasPrimaryFocus) {
             currentFocus.unfocus();
           }
-          Navigator.pop(context);
+          Navigator.pop(context, false);
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: const Color(s_aquarium),
@@ -426,7 +489,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
           if (!currentFocus.hasPrimaryFocus) {
             currentFocus.unfocus();
           }
-          Navigator.pop(context);
+          Navigator.pop(context, false);
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: const Color(s_darkSalmon),

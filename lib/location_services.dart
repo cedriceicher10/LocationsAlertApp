@@ -52,7 +52,8 @@ class LocationServices {
     try {
       latLonFromQuery = await geocoding.locationFromAddress(locationQuery);
     } catch (exception) {
-      _exception.popUp(context, 'Location finding: ' + exception.toString());
+      // Removed because form validation took care of this
+      //_exception.popUp(context, 'Location finding: ' + exception.toString());
       print('REVERSE GEOLOCATE EXCEPTION: ' + exception.toString());
       return false;
     }

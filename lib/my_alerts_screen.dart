@@ -162,9 +162,19 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
               //   MaterialPageRoute(builder: (context) => EditAlertScreen(reminderTile: reminderTile)),
               // );
               // New way: From a direction
-              Navigator.of(context).push(createRoute(
-                  EditAlertScreen(reminderTile: reminderTile), 'from_right'));
+              Navigator.of(context)
+                  .push(createRoute(EditAlertScreen(reminderTile: reminderTile),
+                      'from_right'))
+                  .then((value) => setState(() {
+                        checkIfInstaPop(value);
+                      }));
             }));
+  }
+
+  void checkIfInstaPop(bool value) {
+    if (value) {
+      Navigator.pop(context);
+    }
   }
 
   Widget reminderCardTitleText(String text) {

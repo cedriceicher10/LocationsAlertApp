@@ -188,11 +188,12 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
       String hintTextForGeneric = '';
       TextStyle hintColor = const TextStyle(color: Colors.black);
       if (!_isGeneric) {
-        //if (widget.reminderTile.isSpecific) {
         _controllerRecentLocations.text = widget.reminderTile.location;
         hintTextForGeneric = widget.reminderTile.location;
         if (__pickOnMapLocation.location != '') {
           _controllerRecentLocations.text = __pickOnMapLocation.location;
+          _controllerRecentLocations.selection = TextSelection.fromPosition(
+              TextPosition(offset: _controllerRecentLocations.text.length));
         }
       } else {
         _controllerRecentLocations.text = '';

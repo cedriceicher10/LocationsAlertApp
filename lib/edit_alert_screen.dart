@@ -53,6 +53,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     if (widget.reminderTile.isSpecific) {
       _isGeneric = false;
     }
+    _location = widget.reminderTile.location;
     super.initState();
   }
 
@@ -167,8 +168,6 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     if (_isGeneric) {
       if (widget.reminderTile.isSpecific) {
         _location = 'Grocery Store';
-      } else {
-        _location = widget.reminderTile.location;
       }
       return Center(
           child: DropdownButton<String>(
@@ -188,7 +187,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                   .text.length)); // Puts cursor at end of field
       String hintTextForGeneric = '';
       TextStyle hintColor = const TextStyle(color: Colors.black);
-      if (widget.reminderTile.isSpecific) {
+      if (!_isGeneric) {
+        //if (widget.reminderTile.isSpecific) {
         _controllerRecentLocations.text = widget.reminderTile.location;
         hintTextForGeneric = widget.reminderTile.location;
         if (__pickOnMapLocation.location != '') {
@@ -306,24 +306,22 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                   (showLocationDisclosure)) {
                 Navigator.pop(context, true);
               } else {
-                // Set master location toggle if not set yet
-                if (masterLocationToggle == null) {
-                  prefs.setBool('masterLocationToggle', false);
-                } else {
+                if ((masterLocationToggle != null) &&
+                    (masterLocationToggle == false)) {
                   await _locationServices.getLocation();
-                }
-                if (_locationServices.permitted) {
-                  prefs.setBool('masterLocationToggle', true);
-                  var placemarks = await placemarkFromCoordinates(
-                      _locationServices.userLat, _locationServices.userLon);
-                  _location = placemarks[0].street! +
-                      ', ' +
-                      placemarks[0].locality! +
-                      ', ' +
-                      placemarks[0].administrativeArea! +
-                      ', ' +
-                      placemarks[0].postalCode!;
-                  _controllerRecentLocations.text = _location;
+                  if (_locationServices.permitted) {
+                    prefs.setBool('masterLocationToggle', true);
+                    var placemarks = await placemarkFromCoordinates(
+                        _locationServices.userLat, _locationServices.userLon);
+                    _location = placemarks[0].street! +
+                        ', ' +
+                        placemarks[0].locality! +
+                        ', ' +
+                        placemarks[0].administrativeArea! +
+                        ', ' +
+                        placemarks[0].postalCode!;
+                    _controllerRecentLocations.text = _location;
+                  }
                 }
               }
             },

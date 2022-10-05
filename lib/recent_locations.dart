@@ -47,4 +47,22 @@ class RecentLocations {
       return shortRecentLocation;
     }
   }
+
+  Future<void> add(String locationToUse) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? recentLocationsList =
+        prefs.getStringList('recentLocationsList');
+    if ((recentLocationsList == null) || (recentLocationsList.length < 5)) {
+      recentLocationsList!.insert(0, locationToUse);
+      // Remove duplicates
+      recentLocationsList = recentLocationsList.toSet().toList();
+      prefs.setStringList('recentLocationsList', recentLocationsList);
+    } else {
+      recentLocationsList.removeLast();
+      recentLocationsList.insert(0, locationToUse);
+      // Remove duplicates
+      recentLocationsList = recentLocationsList.toSet().toList();
+      prefs.setStringList('recentLocationsList', recentLocationsList);
+    }
+  }
 }

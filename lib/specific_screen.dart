@@ -9,7 +9,6 @@ import 'formatted_text.dart';
 import 'styles.dart';
 import 'start_screen.dart';
 import 'pick_on_map_screen.dart';
-import 'recent_locations.dart';
 
 class SpecificScreen extends StatefulWidget {
   const SpecificScreen({Key? key}) : super(key: key);
@@ -22,6 +21,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final LocationServices _locationServices = LocationServices();
   final DatabaseServices _dbServices = DatabaseServices();
+  RecentLocations _rl = RecentLocations();
   String _reminderBody = '';
   String _specificLocation = '';
   bool _reverseGeolocateSuccess = false;
@@ -67,10 +67,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
   }
 
   void loadRecentLocations() {
-    RecentLocations rl = RecentLocations();
-    rl.retrieveRecentLocations();
-    _recentLocations = rl.recentLocations;
-    _recentLocationsMap = rl.recentLocationsMap;
+    _rl.retrieveRecentLocations();
+    _recentLocations = _rl.recentLocations;
+    _recentLocationsMap = _rl.recentLocationsMap;
   }
 
   Widget specificScreenBody() {
@@ -198,21 +197,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           if (formKey.currentState!.validate()) {
             formKey.currentState?.save();
             // Save for previously chosen locations
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            List<String>? recentLocationsList =
-                prefs.getStringList('recentLocationsList');
-            if ((recentLocationsList == null) ||
-                (recentLocationsList.length < 5)) {
-              recentLocationsList!.insert(0, locationToUse);
-              prefs.setStringList('recentLocationsList', recentLocationsList);
-            } else {
-              recentLocationsList.removeLast();
-              recentLocationsList.insert(0, locationToUse);
-              // Remove duplicates
-              recentLocationsList = recentLocationsList.toSet().toList();
-              prefs.setStringList('recentLocationsList', recentLocationsList);
-            }
-
+            _rl.add(locationToUse);
             // Put in Firestore cloud database
             _dbServices.addToDatabase(
                 context,

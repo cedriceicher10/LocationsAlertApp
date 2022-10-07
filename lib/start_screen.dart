@@ -366,8 +366,9 @@ class _StartScreenState extends State<StartScreen> {
             size: 150,
           ),
           locationToggle(),
-          genericLocationButton(context, 'Generic'),
-          genericHelpText(),
+          // Turning off generic alerts for first prod version
+          // genericLocationButton(context, 'Generic'),
+          // genericHelpText(),
           SizedBox(height: buttonSpacing),
           specificLocationButton(context, 'Specific'),
           specificHelpText(),

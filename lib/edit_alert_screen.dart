@@ -115,8 +115,9 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                   SizedBox(height: buttonSpacing),
                   titleText('At the $atLocationText location...'),
                   SizedBox(width: textWidth, child: locationEntry()),
-                  switchReminderTypeButton(
-                      switchButtonWidth, switchButtonHeight),
+                  // Turning off generic alerts for first prod version
+                  // switchReminderTypeButton(
+                  //     switchButtonWidth, switchButtonHeight),
                   SizedBox(height: buttonSpacing / 2),
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     atMyLocationButton(buttonWidth / 1.7, buttonHeight / 2),

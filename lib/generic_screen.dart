@@ -5,6 +5,7 @@ import 'database_services.dart';
 import 'start_screen.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
+import 'go_back_button.dart';
 
 // Firebase cloud firestore
 CollectionReference reminders =
@@ -159,29 +160,8 @@ class _GenericScreenState extends State<GenericScreen> {
   }
 
   Widget cancelButton(double buttonWidth, double buttonHeight) {
-    return ElevatedButton(
-        onPressed: () {
-          // Remove keyboard
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus) {
-            currentFocus.unfocus();
-          }
-          Navigator.pop(context);
-        },
-        style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(s_declineRed),
-            fixedSize: Size(buttonWidth / 2, buttonHeight / 2)),
-        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Icon(
-            Icons.arrow_back_ios_rounded,
-            color: Colors.white,
-            size: 16,
-          ),
-          SizedBox(
-            width: buttonWidth / 12,
-          ),
-          cancelText('Cancel')
-        ]));
+    return GoBackButton().back(
+        'Cancel', buttonWidth, buttonHeight, context, Color(s_declineRed));
   }
 
   Widget cancelText(String text) {

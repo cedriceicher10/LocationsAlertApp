@@ -370,8 +370,8 @@ class _StartScreenState extends State<StartScreen> {
           // genericLocationButton(context, 'Generic'),
           // genericHelpText(),
           SizedBox(height: buttonSpacing),
-          specificLocationButton(context, 'Specific'),
-          specificHelpText(),
+          specificLocationButton(context, 'Create Alert'),
+          //specificHelpText(),
           SizedBox(height: buttonSpacing),
           myAlertsButton(context, 'View my Alerts ($ALERTS_NUM_GLOBAL)'),
           SizedBox(height: buttonSpacing),
@@ -498,10 +498,17 @@ class _StartScreenState extends State<StartScreen> {
           // }
         },
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          buttonText(text),
-          SizedBox(
-            width: buttonWidth / 3,
+          const Icon(
+            Icons.add_alert,
+            color: Colors.white,
+            size: 24,
           ),
+          SizedBox(width: 4),
+          buttonText(text),
+          Expanded(
+              child: SizedBox(
+            width: 1,
+          )),
           const Icon(
             Icons.arrow_forward_ios_rounded,
             color: Colors.white,
@@ -544,12 +551,21 @@ class _StartScreenState extends State<StartScreen> {
             const Icon(
               Icons.doorbell,
               color: Colors.white,
-              size: 32,
+              size: 24,
             ),
             const SizedBox(
               width: 4,
             ),
-            buttonText(text)
+            buttonText(text),
+            Expanded(
+                child: SizedBox(
+              width: 1,
+            )),
+            const Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: Colors.white,
+              size: 24,
+            )
           ],
         ));
   }

@@ -9,6 +9,7 @@ import 'formatted_text.dart';
 import 'styles.dart';
 import 'start_screen.dart';
 import 'pick_on_map_screen.dart';
+import 'go_back_button.dart';
 
 class SpecificScreen extends StatefulWidget {
   const SpecificScreen({Key? key}) : super(key: key);
@@ -56,7 +57,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           title: 'Specific Screen',
           home: Scaffold(
             appBar: AppBar(
-              title: specificScreenTitle('Specific Alert'),
+              title: specificScreenTitle('Create Alert'),
               backgroundColor: const Color(s_aquariumLighter),
               centerTitle: true,
             ),
@@ -87,7 +88,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
                   titleText('Remind me to...'),
                   SizedBox(width: textWidth, child: reminderEntry()),
                   SizedBox(height: buttonSpacing),
-                  titleText('At the specific location...'),
+                  titleText('At the location...'),
                   SizedBox(width: textWidth, child: locationEntry()),
                   SizedBox(height: buttonSpacing),
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -109,7 +110,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
         decoration: const InputDecoration(
             labelStyle: TextStyle(
                 color: Color(s_aquariumLighter), fontWeight: FontWeight.bold),
-            hintText: 'Pickup some more olive oil',
+            hintText: 'Pick up some limes',
             hintStyle: TextStyle(color: Color(s_disabledGray)),
             errorStyle: TextStyle(
                 color: Color(s_declineRed), fontWeight: FontWeight.bold),
@@ -337,29 +338,8 @@ class _SpecificScreenState extends State<SpecificScreen> {
   }
 
   Widget cancelButton(double buttonWidth, double buttonHeight) {
-    return ElevatedButton(
-        onPressed: () {
-          // Remove keyboard
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus) {
-            currentFocus.unfocus();
-          }
-          Navigator.pop(context);
-        },
-        style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(s_declineRed),
-            fixedSize: Size(buttonWidth / 2, buttonHeight / 2)),
-        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Icon(
-            Icons.arrow_back_ios_rounded,
-            color: Colors.white,
-            size: 16,
-          ),
-          SizedBox(
-            width: buttonWidth / 12,
-          ),
-          cancelText('Cancel')
-        ]));
+    return GoBackButton().back(
+        'Cancel', buttonWidth, buttonHeight, context, Color(s_declineRed));
   }
 
   Widget cancelText(String text) {

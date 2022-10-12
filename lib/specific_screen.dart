@@ -27,11 +27,25 @@ class _SpecificScreenState extends State<SpecificScreen> {
   String _specificLocation = '';
   bool _reverseGeolocateSuccess = false;
   bool _usingRecentLocation = false;
-  final double topPadding = 80;
-  final double textWidth = 325;
-  final double buttonWidth = 260;
-  final double buttonHeight = 60;
-  final double buttonSpacing = 10;
+
+  double _topPadding = 0;
+  double _submitButtonTopPadding = 0;
+  double _buttonHeight = 0;
+  double _buttonSpacing = 0;
+  double _locationButtonHeight = 0;
+  double _locationButtonWidth = 0;
+  double _textWidth = 0;
+  double _iconGapWidth = 0;
+  double _titleTextFontSize = 0;
+  double _guideTextFontSize = 0;
+  double _formFontSize = 0;
+  double _locationButtonTextFontSize = 0;
+  double _submitButtonFontSize = 0;
+  double _atMyLocationIconSize = 0;
+  double _pickOnMapIconSize = 0;
+  double _dropDownIconSize = 0;
+  double _submitButtonIconSize = 0;
+  double _cancelIconSize = 0;
 
   PickOnMapLocation __pickOnMapLocation = PickOnMapLocation('', 0.0, 0.0);
 
@@ -42,6 +56,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
 
   @override
   Widget build(BuildContext context) {
+    generateLayout();
     loadRecentLocations();
     // Wrapping the MaterialApp allows the user to tap anywhere on the screen
     // to remove the keyboard focus
@@ -74,39 +89,52 @@ class _SpecificScreenState extends State<SpecificScreen> {
   }
 
   Widget specificScreenBody() {
-    return SizedBox(
-        height: 500,
-        width: 400,
-        child: Form(
-            key: formKey,
-            child: SingleChildScrollView(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                  SizedBox(height: topPadding),
-                  titleText('Remind me to...'),
-                  SizedBox(width: textWidth, child: reminderEntry()),
-                  SizedBox(height: buttonSpacing),
-                  titleText('At the location...'),
-                  SizedBox(width: textWidth, child: locationEntry()),
-                  SizedBox(height: buttonSpacing),
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    atMyLocationButton(buttonWidth / 1.7, buttonHeight / 2),
-                    SizedBox(width: buttonSpacing),
-                    pickOnMapButton(buttonWidth / 1.7, buttonHeight / 2),
-                  ]),
-                  SizedBox(height: buttonSpacing),
-                  submitButton(buttonWidth, buttonHeight),
-                  SizedBox(height: buttonSpacing / 2),
-                  cancelButton(buttonWidth, buttonHeight)
-                ]))));
+    return SafeArea(
+        child: SizedBox(
+            child: Form(
+                key: formKey,
+                child: SingleChildScrollView(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                      SizedBox(height: _topPadding),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          titleText('Remind me to...'),
+                          SizedBox(width: _textWidth, child: reminderEntry()),
+                        ],
+                      ),
+                      SizedBox(height: _buttonSpacing),
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            titleText('At the location...'),
+                            SizedBox(width: _textWidth, child: locationEntry()),
+                          ]),
+                      SizedBox(height: _buttonSpacing),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            atMyLocationButton(
+                                _locationButtonWidth, _locationButtonHeight),
+                            SizedBox(width: _buttonSpacing),
+                            pickOnMapButton(
+                                _locationButtonWidth, _locationButtonHeight),
+                          ]),
+                      SizedBox(height: _submitButtonTopPadding),
+                      submitButton(_textWidth, _buttonHeight),
+                      SizedBox(height: _buttonSpacing),
+                      cancelButton(_textWidth, _buttonHeight),
+                      SizedBox(height: _buttonSpacing),
+                    ])))));
   }
 
   Widget reminderEntry() {
     return TextFormField(
         autofocus: true,
-        style: const TextStyle(color: Colors.black),
+        style: TextStyle(color: Colors.black, fontSize: _formFontSize),
         decoration: const InputDecoration(
             labelStyle: TextStyle(
                 color: Color(s_aquariumLighter), fontWeight: FontWeight.bold),
@@ -141,7 +169,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
         child: TextFormField(
             controller: _controllerRecentLocations,
             autofocus: true,
-            style: const TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black, fontSize: _formFontSize),
             decoration: const InputDecoration(
                 labelStyle:
                     TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
@@ -167,8 +195,8 @@ class _SpecificScreenState extends State<SpecificScreen> {
             }),
       ),
       PopupMenuButton<String>(
-        icon: const Icon(Icons.arrow_drop_down,
-            size: 40, color: Color(s_aquariumLighter)),
+        icon: Icon(Icons.arrow_drop_down,
+            size: _dropDownIconSize, color: Color(s_raisinBlack)),
         onSelected: (String value) {
           _controllerRecentLocations.text = value;
         },
@@ -219,19 +247,18 @@ class _SpecificScreenState extends State<SpecificScreen> {
         style: ElevatedButton.styleFrom(
             backgroundColor: const Color(s_aquariumLighter),
             fixedSize: Size(buttonWidth, buttonHeight)),
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
             Icons.add,
             color: Colors.white,
-            size: 32,
+            size: _submitButtonIconSize,
           ),
           SizedBox(
-            width: 4,
+            width: _iconGapWidth,
           ),
           FormattedText(
             text: 'Create Alert',
-            size: s_fontSizeMedium,
+            size: _submitButtonFontSize,
             color: Colors.white,
             font: s_font_BonaNova,
             weight: FontWeight.bold,
@@ -294,13 +321,13 @@ class _SpecificScreenState extends State<SpecificScreen> {
             backgroundColor: Color.fromARGB(255, 4, 123, 221),
             fixedSize: Size(buttonWidth, buttonHeight)),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Icon(
+          Icon(
             Icons.my_location_sharp,
             color: Colors.white,
-            size: 16,
+            size: _atMyLocationIconSize,
           ),
           SizedBox(
-            width: buttonWidth / 20,
+            width: _iconGapWidth,
           ),
           cancelText('My Location')
         ]));
@@ -322,30 +349,30 @@ class _SpecificScreenState extends State<SpecificScreen> {
                   }));
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: Color.fromARGB(255, 4, 123, 221),
+            backgroundColor: Color.fromARGB(255, 1, 117, 16),
             fixedSize: Size(buttonWidth, buttonHeight)),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Icon(
+          Icon(
             Icons.add_location_alt_outlined,
             color: Colors.white,
-            size: 16,
+            size: _pickOnMapIconSize,
           ),
           SizedBox(
-            width: buttonWidth / 20,
+            width: _iconGapWidth,
           ),
           cancelText('Pick on Map')
         ]));
   }
 
   Widget cancelButton(double buttonWidth, double buttonHeight) {
-    return GoBackButton().back(
-        'Cancel', buttonWidth, buttonHeight, context, Color(s_declineRed));
+    return GoBackButton().back('Cancel', buttonWidth, buttonHeight,
+        _submitButtonFontSize, _cancelIconSize, context, Color(s_declineRed));
   }
 
   Widget cancelText(String text) {
     return FormattedText(
       text: text,
-      size: s_fontSizeSmall,
+      size: _locationButtonTextFontSize,
       color: Colors.white,
       font: s_font_BonaNova,
       weight: FontWeight.bold,
@@ -355,7 +382,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
   Widget specificScreenTitle(String title) {
     return FormattedText(
       text: title,
-      size: s_fontSizeLarge,
+      size: _titleTextFontSize,
       color: Colors.white,
       font: s_font_BerkshireSwash,
     );
@@ -364,9 +391,43 @@ class _SpecificScreenState extends State<SpecificScreen> {
   Widget titleText(String title) {
     return FormattedText(
         text: title,
-        size: s_fontSizeMedLarge,
+        size: _guideTextFontSize,
         color: const Color(s_blackBlue),
         font: s_font_BonaNova,
         weight: FontWeight.bold);
+  }
+
+  void generateLayout() {
+    double _screenWidth = MediaQuery.of(context).size.width;
+    double _screenHeight = MediaQuery.of(context).size.height;
+
+    // Original ratios based on a Google Pixel 5 (392 x 781) screen
+    // and a 56 height appBar
+
+    // Height
+    _topPadding = (80 / 781) * _screenHeight;
+    _buttonHeight = (60 / 781) * _screenHeight;
+    _submitButtonTopPadding = (175 / 781) * _screenHeight;
+    _locationButtonHeight = (30 / 781) * _screenHeight;
+
+    // Width
+    _textWidth = (325 / 392) * _screenWidth;
+    _buttonSpacing = (10 / 392) * _screenWidth;
+    _locationButtonWidth = ((_textWidth - _buttonSpacing) / 2);
+    _iconGapWidth = 8;
+
+    // Font
+    _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height;
+    _guideTextFontSize = (26 / 781) * _screenHeight;
+    _formFontSize = (16 / 60) * _buttonHeight;
+    _locationButtonTextFontSize = (16 / 30) * _locationButtonHeight;
+    _submitButtonFontSize = (20 / 60) * _buttonHeight;
+
+    // Icons
+    _atMyLocationIconSize = (16 / 30) * _locationButtonHeight;
+    _pickOnMapIconSize = (16 / 30) * _locationButtonHeight;
+    _dropDownIconSize = 40;
+    _submitButtonIconSize = (32 / 60) * _buttonHeight;
+    _cancelIconSize = (24 / 60) * _buttonHeight;
   }
 }

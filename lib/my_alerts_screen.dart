@@ -211,8 +211,8 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   }
 
   Widget backButton(double buttonWidth, double buttonHeight) {
-    return GoBackButton()
-        .back('Back', buttonWidth, buttonHeight, context, Color(s_darkSalmon));
+    return GoBackButton().back('Back', buttonWidth, buttonHeight, 20, 24,
+        context, Color(s_darkSalmon));
   }
 
   Widget backText(String text) {

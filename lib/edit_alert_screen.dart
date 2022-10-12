@@ -472,8 +472,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   }
 
   Widget cancelButton(double buttonWidth, double buttonHeight) {
-    return GoBackButton().back('Cancel', buttonWidth, buttonHeight, context,
-        Color(s_declineRed), 1); // return false
+    return GoBackButton().back('Cancel', buttonWidth, buttonHeight, 20, 24,
+        context, Color(s_declineRed), 1); // return false
   }
 
   bool checkRecentLocationMap(String location) {

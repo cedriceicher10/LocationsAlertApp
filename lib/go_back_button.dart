@@ -6,7 +6,7 @@ import 'styles.dart';
 class GoBackButton {
   // Package back: -1 = none, 0 = true, 1 = false
   Widget back(String text, double buttonWidth, double buttonHeight,
-      BuildContext context, Color color,
+      double fontSize, double iconSize, BuildContext context, Color color,
       [int package = -1]) {
     return ElevatedButton(
         onPressed: () {
@@ -24,26 +24,28 @@ class GoBackButton {
           }
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: color,
-            fixedSize: Size(buttonWidth / 2, buttonHeight / 2)),
+            backgroundColor: color, fixedSize: Size(buttonWidth, buttonHeight)),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Icon(
+          Icon(
             Icons.arrow_back_ios_rounded,
             color: Colors.white,
-            size: 16,
+            size: iconSize,
           ),
-          Expanded(
-              child: SizedBox(
-            width: 1,
-          )),
-          buttonText(text)
+          // Expanded(
+          //     child: SizedBox(
+          //   width: 1,
+          // )),
+          SizedBox(
+            width: 8,
+          ),
+          buttonText(text, fontSize)
         ]));
   }
 
-  Widget buttonText(String text) {
+  Widget buttonText(String text, double fontSize) {
     return FormattedText(
       text: text,
-      size: s_fontSizeSmall,
+      size: fontSize,
       color: Colors.white,
       font: s_font_BonaNova,
       weight: FontWeight.bold,

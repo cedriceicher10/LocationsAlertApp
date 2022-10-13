@@ -160,7 +160,7 @@ class _GenericScreenState extends State<GenericScreen> {
   }
 
   Widget cancelButton(double buttonWidth, double buttonHeight) {
-    return GoBackButton().back('Cancel', buttonWidth, buttonHeight, 20, 24,
+    return GoBackButton().back('Cancel', buttonWidth, buttonHeight, 20, 24, 10,
         context, Color(s_declineRed));
   }
 

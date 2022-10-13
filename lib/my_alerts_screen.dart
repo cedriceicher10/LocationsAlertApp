@@ -157,12 +157,6 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
               size: 24,
             ),
             onTap: () {
-              // Old way: From the bottom
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => EditAlertScreen(reminderTile: reminderTile)),
-              // );
-              // New way: From a direction
               Navigator.of(context)
                   .push(createRoute(EditAlertScreen(reminderTile: reminderTile),
                       'from_right'))
@@ -211,7 +205,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   }
 
   Widget backButton(double buttonWidth, double buttonHeight) {
-    return GoBackButton().back('Back', buttonWidth, buttonHeight, 20, 24,
+    return GoBackButton().back('Back', buttonWidth, buttonHeight, 20, 24, 10,
         context, Color(s_darkSalmon));
   }
 

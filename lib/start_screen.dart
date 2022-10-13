@@ -77,11 +77,6 @@ class StartScreen extends StatefulWidget {
 }
 
 class _StartScreenState extends State<StartScreen> {
-  final double topPadding = 80;
-  final double buttonWidth = 260;
-  final double buttonHeight = 60;
-  final double buttonSpacing = 10;
-
   final DatabaseServices _dbServices = DatabaseServices();
   final AlertServices _alertServices = AlertServices();
   final LocationServices _locationServices = LocationServices();
@@ -90,8 +85,36 @@ class _StartScreenState extends State<StartScreen> {
   double userBgLat = 0;
   double userBgLon = 0;
 
+  double _topPadding = 0;
+  double _buttonWidth = 0;
+  double _buttonHeight = 0;
+  double _buttonSpacing = 0;
+  double _iconGap = 0;
+  double _titleIconSize = 0;
+  double _explainerTextPadding = 0;
+  double _specificLocationIconSize = 0;
+  double _locationDisclosureButtonHeight = 0;
+  double _locationDisclosureButtonWidth = 0;
+  double _locationDisclosureFontSize = 0;
+  double _titleTextFontSize = 0;
+  double _locationDisclosureIconSize = 0;
+  double _explainerFontSize = 0;
+  double _submitButtonFontSize = 0;
+  double _helpFontSize = 0;
+  double _signatureFontSize = 0;
+  double _locationToggleFontSize = 0;
+  double _locationDisclosureButtonCornerRadius = 0;
+  double _submitButtonCornerRadius = 0;
+  double _gapBeforeTitleIcon = 0;
+  double _gapAfterTitleIcon = 0;
+  double _gapBeforeButtons = 0;
+  double _gapAfterButtons = 0;
+  double _locationToggleScale = 0;
+  double _locationToggleGapWidth = 0;
+
   @override
   Widget build(BuildContext context) {
+    generateLayout();
     return MaterialApp(
       title: 'Start Screen',
       // This Builder is here so that routes needing a up-the-tree context can
@@ -348,43 +371,45 @@ class _StartScreenState extends State<StartScreen> {
   }
 
   Widget startScreenBody(BuildContext context) {
-    return SingleChildScrollView(
+    return SafeArea(
         child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-          SizedBox(height: topPadding),
+          SizedBox(height: _topPadding),
           Center(
               child: Container(
-                  padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  padding: EdgeInsets.fromLTRB(
+                      _explainerTextPadding, 0, _explainerTextPadding, 0),
                   child: explainerTitle(
                       'Phone alerts based on your current location!'))),
-          SizedBox(height: buttonSpacing),
-          const Icon(
+          SizedBox(height: _gapBeforeTitleIcon),
+          Icon(
             Icons.add_location_alt_outlined,
             color: Color(s_blackBlue),
-            size: 150,
+            size: _titleIconSize,
           ),
+          SizedBox(height: _gapAfterTitleIcon),
           locationToggle(),
           // Turning off generic alerts for first prod version
           // genericLocationButton(context, 'Generic'),
           // genericHelpText(),
-          SizedBox(height: buttonSpacing),
+          SizedBox(height: _gapBeforeButtons),
           specificLocationButton(context, 'Create Alert'),
           //specificHelpText(),
-          SizedBox(height: buttonSpacing),
+          SizedBox(height: _buttonSpacing),
           myAlertsButton(context, 'View my Alerts ($ALERTS_NUM_GLOBAL)'),
-          SizedBox(height: buttonSpacing),
+          SizedBox(height: _gapAfterButtons),
+          locationDisclosureButton(context),
+          SizedBox(height: _buttonSpacing),
           signatureText(),
-          SizedBox(height: buttonSpacing),
-          locationDisclosureButton(context)
         ]));
   }
 
   Widget explainerTitle(String text) {
     return FormattedText(
         text: text,
-        size: s_fontSizeMedLarge,
+        size: _explainerFontSize,
         color: Colors.black,
         font: s_font_BonaNova,
         weight: FontWeight.bold,
@@ -395,37 +420,40 @@ class _StartScreenState extends State<StartScreen> {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       FormattedText(
           text: 'Allow My Location: ',
-          size: s_fontSizeExtraSmall + 2,
+          size: _locationToggleFontSize,
           color: masterLocationColor,
           font: s_font_IBMPlexSans,
           weight: FontWeight.bold,
           align: TextAlign.center),
-      Switch(
-        inactiveThumbColor: Colors.grey,
-        activeTrackColor: Colors.lightGreenAccent,
-        activeColor: Colors.green,
-        value: _masterLocationToggle,
-        onChanged: (value) async {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          bool? showLocationDisclosure =
-              prefs.getBool('showLocationDisclosure');
-          if ((showLocationDisclosure == false) &&
-              (showLocationDisclosure != null)) {
-            setState(() {
-              _masterLocationToggle = value;
-              prefs.setBool('masterLocationToggle', value);
-              if (_masterLocationToggle == false) {
-                masterLocationColor = Colors.grey;
+      SizedBox(width: _locationToggleGapWidth),
+      Transform.scale(
+          scale: _locationToggleScale,
+          child: Switch(
+            inactiveThumbColor: Colors.grey,
+            activeTrackColor: Colors.lightGreenAccent,
+            activeColor: Colors.green,
+            value: _masterLocationToggle,
+            onChanged: (value) async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              bool? showLocationDisclosure =
+                  prefs.getBool('showLocationDisclosure');
+              if ((showLocationDisclosure == false) &&
+                  (showLocationDisclosure != null)) {
+                setState(() {
+                  _masterLocationToggle = value;
+                  prefs.setBool('masterLocationToggle', value);
+                  if (_masterLocationToggle == false) {
+                    masterLocationColor = Colors.grey;
+                  } else {
+                    masterLocationColor = Colors.green;
+                  }
+                  print('LOCATION TOGGLE: $_masterLocationToggle');
+                });
               } else {
-                masterLocationColor = Colors.green;
+                showLocationDisclosureAlert(context, prefs);
               }
-              print('LOCATION TOGGLE: $_masterLocationToggle');
-            });
-          } else {
-            showLocationDisclosureAlert(context, prefs);
-          }
-        },
-      ),
+            },
+          )),
     ]);
   }
 
@@ -439,12 +467,6 @@ class _StartScreenState extends State<StartScreen> {
               (showLocationDisclosure == true)) {
             showLocationDisclosureAlert(context, prefs);
           } else {
-            // Old way: From the bottom
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => const GenericScreen()),
-            // );
-            // New way: From a direction
             Navigator.of(context)
                 .push(createRoute(const GenericScreen(), 'from_right'))
                 .then((value) => setState(
@@ -454,23 +476,26 @@ class _StartScreenState extends State<StartScreen> {
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           buttonText(text),
           SizedBox(
-            width: buttonWidth / 3,
+            width: _iconGap,
           ),
-          const Icon(
+          Icon(
             Icons.arrow_forward_ios_rounded,
             color: Colors.white,
-            size: 24,
+            size: _specificLocationIconSize,
           )
         ]),
         style: ElevatedButton.styleFrom(
             backgroundColor: const Color(s_aquarium),
-            fixedSize: Size(buttonWidth, buttonHeight)));
+            fixedSize: Size(_buttonWidth, _buttonHeight),
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(_submitButtonCornerRadius))));
   }
 
   Widget genericHelpText() {
-    return const FormattedText(
+    return FormattedText(
         text: 'Such as: At any grocery store',
-        size: s_fontSizeSmall,
+        size: _helpFontSize,
         color: Color(s_blackBlue),
         font: s_font_BonaNova,
         weight: FontWeight.bold);
@@ -479,51 +504,41 @@ class _StartScreenState extends State<StartScreen> {
   Widget specificLocationButton(BuildContext context, String text) {
     return ElevatedButton(
         onPressed: () async {
-          // SharedPreferences prefs = await SharedPreferences.getInstance();
-          // bool? showLocationDisclosure =
-          //     prefs.getBool('showLocationDisclosure');
-          // if ((showLocationDisclosure == null) ||
-          //     (showLocationDisclosure == true)) {
-          //   showLocationDisclosureAlert(context, prefs);
-          // } else {
-          // Old way: From the bottom
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => const SpecificScreen()),
-          // );
-          // New way: From a direction
           Navigator.of(context)
               .push(createRoute(const SpecificScreen(), 'from_right'))
               .then((value) => setState(() {}));
           // }
         },
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Icon(
+          Icon(
             Icons.add_alert,
             color: Colors.white,
-            size: 24,
+            size: _specificLocationIconSize,
           ),
-          SizedBox(width: 4),
+          SizedBox(width: _iconGap),
           buttonText(text),
           Expanded(
               child: SizedBox(
             width: 1,
           )),
-          const Icon(
+          Icon(
             Icons.arrow_forward_ios_rounded,
             color: Colors.white,
-            size: 24,
+            size: _specificLocationIconSize,
           )
         ]),
         style: ElevatedButton.styleFrom(
             backgroundColor: const Color(s_aquariumLighter),
-            fixedSize: Size(buttonWidth, buttonHeight)));
+            fixedSize: Size(_buttonWidth, _buttonHeight),
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(_submitButtonCornerRadius))));
   }
 
   Widget specificHelpText() {
-    return const FormattedText(
+    return FormattedText(
         text: 'Such as: At a specific address',
-        size: s_fontSizeSmall,
+        size: _helpFontSize,
         color: Color(s_blackBlue),
         font: s_font_BonaNova,
         weight: FontWeight.bold);
@@ -532,39 +547,36 @@ class _StartScreenState extends State<StartScreen> {
   Widget myAlertsButton(BuildContext context, String text) {
     return ElevatedButton(
         onPressed: () {
-          // Old way: From the bottom
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => const MyAlertsScreen()),
-          // );
-          // New way: From a direction
           Navigator.of(context)
               .push(createRoute(const MyAlertsScreen(), 'from_right'))
               .then((value) => setState(() {}));
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: const Color(s_darkSalmon),
-            fixedSize: Size(buttonWidth, buttonHeight)),
+            fixedSize: Size(_buttonWidth, _buttonHeight),
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(_submitButtonCornerRadius))),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.doorbell,
               color: Colors.white,
-              size: 24,
+              size: _specificLocationIconSize,
             ),
-            const SizedBox(
-              width: 4,
+            SizedBox(
+              width: _iconGap,
             ),
             buttonText(text),
             Expanded(
                 child: SizedBox(
               width: 1,
             )),
-            const Icon(
+            Icon(
               Icons.arrow_forward_ios_rounded,
               color: Colors.white,
-              size: 24,
+              size: _specificLocationIconSize,
             )
           ],
         ));
@@ -573,7 +585,7 @@ class _StartScreenState extends State<StartScreen> {
   Widget startScreenTitle(String title) {
     return FormattedText(
       text: title,
-      size: s_fontSizeLarge,
+      size: _titleTextFontSize,
       color: Colors.white,
       font: s_font_BerkshireSwash,
     );
@@ -582,7 +594,7 @@ class _StartScreenState extends State<StartScreen> {
   Widget buttonText(String title) {
     return FormattedText(
         text: title,
-        size: s_fontSizeMedium,
+        size: _submitButtonFontSize,
         color: Colors.white,
         font: s_font_BonaNova,
         weight: FontWeight.bold);
@@ -591,10 +603,10 @@ class _StartScreenState extends State<StartScreen> {
   Widget signatureText() {
     return RichText(
       text: TextSpan(
-          style: const TextStyle(
+          style: TextStyle(
               color: Colors.black,
               fontFamily: s_font_IBMPlexSans,
-              fontSize: s_fontSizeExtraSmall,
+              fontSize: _signatureFontSize,
               fontWeight: FontWeight.bold,
               decoration: TextDecoration.underline),
           text: 'An App by Cedric Eicher',
@@ -611,18 +623,20 @@ class _StartScreenState extends State<StartScreen> {
 
   Widget locationDisclosureButton(BuildContext context) {
     return SizedBox(
-        height: 30,
-        width: 125,
+        height: _locationDisclosureButtonHeight,
+        width: _locationDisclosureButtonWidth,
         child: DecoratedBox(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
                 color: Color(s_blackBlue),
-                borderRadius: BorderRadius.all(Radius.circular(50))),
+                borderRadius: BorderRadius.all(
+                    Radius.circular(_locationDisclosureButtonCornerRadius))),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Icon(Icons.location_on,
-                      size: 12, color: Color(s_darkSalmon)),
+                  Icon(Icons.location_on,
+                      size: _locationDisclosureIconSize,
+                      color: Color(s_darkSalmon)),
                   TextButton(
                       style: TextButton.styleFrom(padding: EdgeInsets.zero),
                       child: locationDisclosureText('Location Disclosure'),
@@ -637,9 +651,54 @@ class _StartScreenState extends State<StartScreen> {
   Widget locationDisclosureText(String text) {
     return FormattedText(
         text: text,
-        size: 12 * 0.8,
+        size: _locationDisclosureFontSize,
         color: Colors.white,
         font: s_font_IBMPlexSans,
         weight: FontWeight.bold);
+  }
+
+  void generateLayout() {
+    double _screenWidth = MediaQuery.of(context).size.width;
+    double _screenHeight = MediaQuery.of(context).size.height;
+
+    // Original ratios based on a Google Pixel 5 (392 x 781) screen
+    // and a 56 height appBar
+
+    // Height
+    _topPadding = (80 / 781) * _screenHeight;
+    _buttonHeight = (60 / 781) * _screenHeight;
+    _locationDisclosureButtonHeight = (30 / 781) * _screenHeight;
+    _gapBeforeTitleIcon = (50 / 781) * _screenHeight;
+    _gapAfterTitleIcon = (45 / 781) * _screenHeight;
+    _gapBeforeButtons = (5 / 781) * _screenHeight;
+    _gapAfterButtons = (20 / 781) * _screenHeight;
+
+    // Width
+    _buttonWidth = (260 / 392) * _screenWidth;
+    _buttonSpacing = (10 / 392) * _screenWidth;
+    _iconGap = 8;
+    _explainerTextPadding = (20 / 392) * _screenWidth;
+    _locationDisclosureButtonWidth = (125 / 392) * _screenWidth;
+    _locationToggleGapWidth = (10 / 392) * _screenWidth;
+
+    // Font
+    _submitButtonFontSize = (20 / 60) * _buttonHeight;
+    _locationDisclosureFontSize = (9.6 / 30) * _locationDisclosureButtonHeight;
+    _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height;
+    _explainerFontSize = (26 / 781) * _screenHeight;
+    _helpFontSize = (16 / 781) * _screenHeight;
+    _signatureFontSize = (12 / 781) * _screenHeight;
+    _locationToggleFontSize = (14 / 781) * _screenHeight;
+
+    // Icons
+    _titleIconSize = (175 / 781) * _screenHeight;
+    _specificLocationIconSize = (24 / 60) * _buttonHeight;
+    _locationDisclosureIconSize = (12 / 30) * _locationDisclosureButtonHeight;
+
+    // Styling
+    _locationDisclosureButtonCornerRadius =
+        (50 / 30) * _locationDisclosureButtonHeight;
+    _submitButtonCornerRadius = (10 / _buttonHeight) * _buttonHeight;
+    _locationToggleScale = (_screenHeight / 781) * 1.15;
   }
 }

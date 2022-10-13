@@ -5,8 +5,15 @@ import 'styles.dart';
 
 class GoBackButton {
   // Package back: -1 = none, 0 = true, 1 = false
-  Widget back(String text, double buttonWidth, double buttonHeight,
-      double fontSize, double iconSize, BuildContext context, Color color,
+  Widget back(
+      String text,
+      double buttonWidth,
+      double buttonHeight,
+      double fontSize,
+      double iconSize,
+      double cornerRadius,
+      BuildContext context,
+      Color color,
       [int package = -1]) {
     return ElevatedButton(
         onPressed: () {
@@ -24,7 +31,10 @@ class GoBackButton {
           }
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: color, fixedSize: Size(buttonWidth, buttonHeight)),
+            backgroundColor: color,
+            fixedSize: Size(buttonWidth, buttonHeight),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(cornerRadius))),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
             Icons.arrow_back_ios_rounded,

@@ -46,6 +46,8 @@ class _SpecificScreenState extends State<SpecificScreen> {
   double _dropDownIconSize = 0;
   double _submitButtonIconSize = 0;
   double _cancelIconSize = 0;
+  double _smallButtonCornerRadius = 0;
+  double _largeButtonCornerRadius = 0;
 
   PickOnMapLocation __pickOnMapLocation = PickOnMapLocation('', 0.0, 0.0);
 
@@ -246,7 +248,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: const Color(s_aquariumLighter),
-            fixedSize: Size(buttonWidth, buttonHeight)),
+            fixedSize: Size(buttonWidth, buttonHeight),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(_largeButtonCornerRadius))),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
             Icons.add,
@@ -319,7 +323,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: Color.fromARGB(255, 4, 123, 221),
-            fixedSize: Size(buttonWidth, buttonHeight)),
+            fixedSize: Size(buttonWidth, buttonHeight),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
             Icons.my_location_sharp,
@@ -350,7 +356,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: Color.fromARGB(255, 1, 117, 16),
-            fixedSize: Size(buttonWidth, buttonHeight)),
+            fixedSize: Size(buttonWidth, buttonHeight),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
             Icons.add_location_alt_outlined,
@@ -365,8 +373,15 @@ class _SpecificScreenState extends State<SpecificScreen> {
   }
 
   Widget cancelButton(double buttonWidth, double buttonHeight) {
-    return GoBackButton().back('Cancel', buttonWidth, buttonHeight,
-        _submitButtonFontSize, _cancelIconSize, context, Color(s_declineRed));
+    return GoBackButton().back(
+        'Cancel',
+        buttonWidth,
+        buttonHeight,
+        _submitButtonFontSize,
+        _cancelIconSize,
+        _largeButtonCornerRadius,
+        context,
+        Color(s_declineRed));
   }
 
   Widget cancelText(String text) {
@@ -429,5 +444,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
     _dropDownIconSize = 40;
     _submitButtonIconSize = (32 / 60) * _buttonHeight;
     _cancelIconSize = (24 / 60) * _buttonHeight;
+
+    // Styling
+    _smallButtonCornerRadius = (20 / 30) * _locationButtonHeight;
+    _largeButtonCornerRadius = (10 / _buttonHeight) * _buttonHeight;
   }
 }

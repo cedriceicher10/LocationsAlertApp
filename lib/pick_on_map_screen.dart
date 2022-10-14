@@ -23,8 +23,12 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
   final LocationServices _locationServices = LocationServices();
   bool _initUserLocation = false;
 
+  double _titleTextFontSize = 0;
+  double _initMapZoom = 0;
+
   @override
   Widget build(BuildContext context) {
+    generateLayout();
     return GestureDetector(
         onTap: () {
           FocusScopeNode currentFocus = FocusScope.of(context);
@@ -57,6 +61,24 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
         ));
   }
 
+  void generateLayout() {
+    double _screenWidth = MediaQuery.of(context).size.width;
+    double _screenHeight = MediaQuery.of(context).size.height;
+
+    // Original ratios based on a Google Pixel 5 (392 x 781) screen
+    // and a 56 height appBar
+
+    // Height
+
+    // Width
+
+    // Font
+    _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height;
+
+    // Styling
+    _initMapZoom = (15 / _screenHeight) * _screenHeight;
+  }
+
   Future<bool> locationOnCheck() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool? showLocationDisclosure = prefs.getBool('showLocationDisclosure');
@@ -78,14 +100,15 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
   Widget pickOnMapBody() {
     // Pick on the map
     return FlutterLocationPicker(
-        initPosition: LatLong(32.72078130242355, -117.16897626202451),
+        initPosition:
+            LatLong(32.72078130242355, -117.16897626202451), // False Idol
         locationButtonsBackgroundColor: Color(s_darkSalmon),
         selectLocationButtonColor: Color(s_aquariumLighter),
         zoomButtonsBackgroundColor: Color(s_aquariumLighter),
         markerIconColor: Color(s_declineRed),
         markerIcon: Icons.location_on_sharp,
         selectLocationButtonText: 'Set Alert Location',
-        initZoom: 15,
+        initZoom: _initMapZoom,
         trackMyPosition: _initUserLocation,
         onPicked: (pickedData) {
           // Debug
@@ -103,7 +126,7 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
   Widget pickOnMapTitle(String title) {
     return FormattedText(
       text: title,
-      size: s_fontSizeLarge,
+      size: _titleTextFontSize,
       color: Colors.white,
       font: s_font_BerkshireSwash,
     );

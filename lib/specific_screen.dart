@@ -48,6 +48,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
   double _cancelIconSize = 0;
   double _smallButtonCornerRadius = 0;
   double _largeButtonCornerRadius = 0;
+  double _dropDownFontScale = 0;
 
   PickOnMapLocation __pickOnMapLocation = PickOnMapLocation('', 0.0, 0.0);
 
@@ -205,7 +206,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
         itemBuilder: (BuildContext context) {
           return _recentLocations.map<PopupMenuItem<String>>((String value) {
             return PopupMenuItem(
-                child: Text(value), value: value, padding: EdgeInsets.all(5));
+                child: Text(value, textScaleFactor: _dropDownFontScale),
+                value: value,
+                padding: EdgeInsets.all(5));
           }).toList();
         },
       )
@@ -448,5 +451,6 @@ class _SpecificScreenState extends State<SpecificScreen> {
     // Styling
     _smallButtonCornerRadius = (20 / 30) * _locationButtonHeight;
     _largeButtonCornerRadius = (10 / _buttonHeight) * _buttonHeight;
+    _dropDownFontScale = (_screenHeight / 781) * 1.0;
   }
 }

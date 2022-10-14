@@ -7,6 +7,11 @@ import 'formatted_text.dart';
 import 'styles.dart';
 import 'go_back_button.dart';
 
+// To get this to mirror SpecificScreen
+//   - Styling
+//   - Layout
+//   - Layout responsiveness
+
 // Firebase cloud firestore
 CollectionReference reminders =
     FirebaseFirestore.instance.collection('reminders');

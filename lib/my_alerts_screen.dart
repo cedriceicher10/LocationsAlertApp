@@ -43,12 +43,30 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final DatabaseServices _dbServices = DatabaseServices();
 
-  final double buttonWidth = 260;
-  final double buttonHeight = 60;
-  final double buttonSpacing = 10;
+  double _buttonWidth = 0;
+  double _buttonHeight = 0;
+  double _buttonSpacing = 0;
+  double _titleTextFontSize = 0;
+  double _explainerTextPadding = 0;
+  double _listViewPaddingTop = 0;
+  double _listViewPaddingSides = 0;
+  double _cardBorderWidth = 0;
+  double _cardCornerRadius = 0;
+  double _cardIconSize = 0;
+  double _cardTitleFontSize = 0;
+  double _cardBodyFontSize = 0;
+  double _cardSubtitleFontSize = 0;
+  double _explainerTextFontSize = 0;
+  double _backButtonFontSize = 0;
+  double _backButtonIconSize = 0;
+  double _backButtonCornerRadius = 0;
+  double _cardGap = 0;
+  double _cardPaddingRightLeft = 0;
+  double _cardPaddingTopBottom = 0;
 
   @override
   Widget build(BuildContext context) {
+    generateLayout();
     return MaterialApp(
       title: 'My Alerts Screen',
       home: Scaffold(
@@ -67,12 +85,13 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     return SingleChildScrollView(
         child: Column(children: [
       listViewReminderBuilder(),
-      SizedBox(height: buttonSpacing),
+      SizedBox(height: _buttonSpacing),
       Container(
-          padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+          padding: EdgeInsets.fromLTRB(
+              _explainerTextPadding, 0, _explainerTextPadding, 0),
           child: explainerText()),
-      SizedBox(height: buttonSpacing),
-      backButton(buttonWidth, buttonHeight)
+      SizedBox(height: _buttonSpacing),
+      backButton(_buttonWidth, _buttonHeight)
     ]));
   }
 
@@ -127,7 +146,8 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
           NeverScrollableScrollPhysics(), // allows precedence to be taken by SingleChildScrollView()?
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
-      padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
+      padding: EdgeInsets.fromLTRB(
+          _listViewPaddingSides, _listViewPaddingTop, _listViewPaddingSides, 0),
       itemCount: reminderObjects.length,
       itemBuilder: (context, index) {
         var tile = reminderObjects[index];
@@ -139,10 +159,16 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   Card reminderCard(ReminderTile reminderTile) {
     return Card(
         elevation: 2,
+        margin: EdgeInsets.fromLTRB(0, _cardGap, 0, _cardGap),
         shape: RoundedRectangleBorder(
-            side: const BorderSide(color: Color(s_aquarium), width: 3),
-            borderRadius: BorderRadius.circular(15)),
+            side: BorderSide(color: Color(s_aquarium), width: _cardBorderWidth),
+            borderRadius: BorderRadius.circular(_cardCornerRadius)),
         child: ListTile(
+            contentPadding: EdgeInsets.fromLTRB(
+                _cardPaddingTopBottom,
+                _cardPaddingRightLeft,
+                _cardPaddingTopBottom,
+                _cardPaddingRightLeft),
             isThreeLine: true,
             title: reminderCardTitleText(reminderTile.reminder),
             subtitle:
@@ -151,10 +177,10 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
               reminderCardDateText(
                   'Date Created: ${reminderTile.dateTimeCreated}')
             ]),
-            trailing: const Icon(
+            trailing: Icon(
               Icons.arrow_forward_ios_rounded,
               color: Color(s_darkSalmon),
-              size: 24,
+              size: _cardIconSize,
             ),
             onTap: () {
               Navigator.of(context)
@@ -175,7 +201,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   Widget reminderCardTitleText(String text) {
     return FormattedText(
       text: text,
-      size: s_fontSizeMedium,
+      size: _cardTitleFontSize,
       color: const Color(s_blackBlue),
       font: s_font_IBMPlexSans,
       weight: FontWeight.bold,
@@ -185,7 +211,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   Widget reminderCardLocationText(String text) {
     return FormattedText(
       text: text,
-      size: s_fontSizeSmall - 2,
+      size: _cardBodyFontSize,
       color: const Color(s_darkSalmon),
       font: s_font_IBMPlexSans,
       decoration: TextDecoration.underline,
@@ -196,7 +222,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   Widget reminderCardDateText(String text) {
     return FormattedText(
       text: text,
-      size: s_fontSizeExtraSmall,
+      size: _cardSubtitleFontSize,
       color: const Color(s_blackBlue),
       font: s_font_IBMPlexSans,
       style: FontStyle.italic,
@@ -205,37 +231,72 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   }
 
   Widget backButton(double buttonWidth, double buttonHeight) {
-    return GoBackButton().back('Back', buttonWidth, buttonHeight, 20, 24, 10,
-        context, Color(s_darkSalmon));
-  }
-
-  Widget backText(String text) {
-    return FormattedText(
-      text: text,
-      size: s_fontSizeSmall,
-      color: Colors.white,
-      font: s_font_BonaNova,
-      weight: FontWeight.bold,
-    );
+    return GoBackButton().back(
+        'Back',
+        buttonWidth,
+        buttonHeight,
+        _backButtonFontSize,
+        _backButtonIconSize,
+        _backButtonCornerRadius,
+        context,
+        Color(s_darkSalmon));
   }
 
   Widget myAlertsScreenTitle(String title) {
     return FormattedText(
       text: title,
-      size: s_fontSizeLarge,
+      size: _titleTextFontSize,
       color: Colors.white,
       font: s_font_BerkshireSwash,
     );
   }
 
   Widget explainerText() {
-    return const FormattedText(
+    return FormattedText(
       text:
-          'These are your current active location alerts.\n An alert will notify you when it is at the location specified!\n Once an alert is marked as finished it will be removed.\n Tap an alert to edit it.',
-      size: s_fontSizeExtraSmall,
+          'These are your current active location alerts.\n Once an alert is marked as complete it will be removed.\n Tap an alert to edit it.',
+      size: _explainerTextFontSize,
       color: Color(s_blackBlue),
       align: TextAlign.center,
       font: s_font_IBMPlexSans,
     );
+  }
+
+  void generateLayout() {
+    double _screenWidth = MediaQuery.of(context).size.width;
+    double _screenHeight = MediaQuery.of(context).size.height;
+
+    // Original ratios based on a Google Pixel 5 (392 x 781) screen
+    // and a 56 height appBar
+
+    // Height
+    _buttonHeight = (60 / 781) * _screenHeight;
+    _listViewPaddingTop = (10 / 781) * _screenHeight;
+    _cardGap = (4 / 781) * _screenHeight;
+    _cardPaddingTopBottom = (10 / 781) * _screenHeight;
+
+    // Width
+    _buttonWidth = (260 / 392) * _screenWidth;
+    _buttonSpacing = (10 / 392) * _screenWidth;
+    _explainerTextPadding = (12 / 392) * _screenWidth;
+    _listViewPaddingSides = (12 / 392) * _screenWidth;
+    _cardPaddingRightLeft = (5 / 392) * _screenWidth;
+
+    // Font
+    _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height;
+    _cardTitleFontSize = (20 / 60) * _buttonHeight;
+    _cardBodyFontSize = (14 / 60) * _buttonHeight;
+    _cardSubtitleFontSize = (12 / 60) * _buttonHeight;
+    _explainerTextFontSize = (12 / 781) * _screenHeight;
+    _backButtonFontSize = (20 / 60) * _buttonHeight;
+
+    // Icons
+    _cardIconSize = (24 / 60) * _buttonHeight;
+    _backButtonIconSize = (24 / 60) * _buttonHeight;
+
+    // Styling
+    _cardBorderWidth = (3 / 60) * _buttonHeight;
+    _cardCornerRadius = 15;
+    _backButtonCornerRadius = (10 / _buttonHeight) * _buttonHeight;
   }
 }

@@ -297,6 +297,6 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     // Styling
     _cardBorderWidth = (3 / 60) * _buttonHeight;
     _cardCornerRadius = 15;
-    _backButtonCornerRadius = (10 / _buttonHeight) * _buttonHeight;
+    _backButtonCornerRadius = (10 / 60) * _buttonHeight;
   }
 }

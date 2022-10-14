@@ -450,7 +450,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
 
     // Styling
     _smallButtonCornerRadius = (20 / 30) * _locationButtonHeight;
-    _largeButtonCornerRadius = (10 / _buttonHeight) * _buttonHeight;
+    _largeButtonCornerRadius = (10 / 60) * _buttonHeight;
     _dropDownFontScale = (_screenHeight / 781) * 1.0;
   }
 }

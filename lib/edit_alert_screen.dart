@@ -35,13 +35,30 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   String _reminderBody = '';
   String _location = '';
   bool _reverseGeolocateSuccess = false;
-  final double topPadding = 80;
-  final double textWidth = 325;
-  final double buttonWidth = 260;
-  final double buttonHeight = 60;
-  final double buttonSpacing = 10;
-  final double switchButtonHeight = 20;
-  final double switchButtonWidth = 200;
+
+  double _topPadding = 0;
+  double _deleteButtonTopPadding = 0;
+  double _buttonHeight = 0;
+  double _buttonSpacing = 0;
+  double _locationButtonHeight = 0;
+  double _locationButtonWidth = 0;
+  double _textWidth = 0;
+  double _iconGapWidth = 0;
+  double _titleTextFontSize = 0;
+  double _formFontSize = 0;
+  double _locationButtonTextFontSize = 0;
+  double _updateButtonFontSize = 0;
+  double _atMyLocationIconSize = 0;
+  double _pickOnMapIconSize = 0;
+  double _dropDownIconSize = 0;
+  double _updateButtonIconSize = 0;
+  double _cancelIconSize = 0;
+  double _smallButtonCornerRadius = 0;
+  double _largeButtonCornerRadius = 0;
+  double _dropDownFontScale = 0;
+  double _switchReminderTypeIconSize = 0;
+  double _switchReminderFontsize = 12;
+  double _guideTextFontSize = 0;
 
   PickOnMapLocation __pickOnMapLocation = PickOnMapLocation('', 0.0, 0.0);
   bool _usingRecentLocation = false;
@@ -61,6 +78,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
 
   @override
   Widget build(BuildContext context) {
+    generateLayout();
     loadRecentLocations();
     if (_isGeneric) {
       atLocationText = 'generic';
@@ -100,39 +118,49 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   }
 
   Widget editAlertScreenBody() {
-    return SizedBox(
-        //height: 500,
-        //width: 400,
-        child: Form(
-            key: formKey,
-            child: SingleChildScrollView(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                  SizedBox(height: topPadding),
-                  titleText('Remind me to...'),
-                  SizedBox(width: textWidth, child: reminderEntry()),
-                  SizedBox(height: buttonSpacing),
-                  //titleText('At the $atLocationText location...'),
-                  titleText('At the location...'),
-                  SizedBox(width: textWidth, child: locationEntry()),
-                  // Turning off generic alerts for first prod version
-                  // switchReminderTypeButton(
-                  //     switchButtonWidth, switchButtonHeight),
-                  SizedBox(height: buttonSpacing / 2),
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    atMyLocationButton(buttonWidth / 1.7, buttonHeight / 2),
-                    SizedBox(width: buttonSpacing),
-                    pickOnMapButton(buttonWidth / 1.7, buttonHeight / 2),
-                  ]),
-                  SizedBox(height: buttonSpacing / 2),
-                  deleteButton(switchButtonWidth, switchButtonHeight),
-                  SizedBox(height: buttonSpacing / 2),
-                  updateButton(buttonWidth, buttonHeight),
-                  SizedBox(height: buttonSpacing / 2),
-                  cancelButton(buttonWidth, buttonHeight)
-                ]))));
+    return SafeArea(
+        child: SizedBox(
+            child: Form(
+                key: formKey,
+                child: SingleChildScrollView(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                      SizedBox(height: _topPadding),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          titleText('Remind me to...'),
+                          SizedBox(width: _textWidth, child: reminderEntry()),
+                        ],
+                      ),
+                      SizedBox(height: _buttonSpacing),
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            titleText('At the location...'),
+                            SizedBox(width: _textWidth, child: locationEntry()),
+                          ]),
+                      SizedBox(height: _buttonSpacing),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            atMyLocationButton(
+                                _locationButtonWidth, _locationButtonHeight),
+                            SizedBox(width: _buttonSpacing),
+                            pickOnMapButton(
+                                _locationButtonWidth, _locationButtonHeight),
+                          ]),
+                      // switchReminderTypeButton(_locationButtonWidth, _locationButtonHeight),
+                      SizedBox(height: _deleteButtonTopPadding),
+                      deleteButton(_textWidth, _buttonHeight),
+                      SizedBox(height: _buttonSpacing),
+                      updateButton(_textWidth, _buttonHeight),
+                      SizedBox(height: _buttonSpacing),
+                      cancelButton(_textWidth, _buttonHeight),
+                      SizedBox(height: _buttonSpacing),
+                    ])))));
   }
 
   Widget reminderEntry() {
@@ -143,7 +171,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     return TextFormField(
         autofocus: true,
         controller: controller,
-        style: const TextStyle(color: Colors.black),
+        style: TextStyle(color: Colors.black, fontSize: _formFontSize),
         decoration: InputDecoration(
             labelStyle: const TextStyle(
                 color: Color(s_aquariumLighter), fontWeight: FontWeight.bold),
@@ -208,7 +236,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
             child: TextFormField(
                 autofocus: true,
                 controller: _controllerRecentLocations,
-                style: const TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.black, fontSize: _formFontSize),
                 decoration: InputDecoration(
                     labelStyle: const TextStyle(
                         color: Color(s_aquariumLighter),
@@ -235,15 +263,17 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                   }
                 })),
         PopupMenuButton<String>(
-          icon: const Icon(Icons.arrow_drop_down,
-              size: 40, color: Color(s_aquariumLighter)),
+          icon: Icon(Icons.arrow_drop_down,
+              size: _dropDownIconSize, color: Color(s_raisinBlack)),
           onSelected: (String value) {
             _controllerRecentLocations.text = value;
           },
           itemBuilder: (BuildContext context) {
             return _recentLocations.map<PopupMenuItem<String>>((String value) {
               return PopupMenuItem(
-                  child: Text(value), value: value, padding: EdgeInsets.all(5));
+                  child: Text(value, textScaleFactor: _dropDownFontScale),
+                  value: value,
+                  padding: EdgeInsets.all(5));
             }).toList();
           },
         )
@@ -266,17 +296,17 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
             backgroundColor: const Color(s_blackBlue),
             fixedSize: Size(buttonWidth, buttonHeight)),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Icon(
+          Icon(
             Icons.switch_access_shortcut,
             color: Colors.white,
-            size: 16,
+            size: _switchReminderTypeIconSize,
           ),
           const SizedBox(
             width: 4,
           ),
           FormattedText(
             text: 'Switch to $atLocationTextOpposite location',
-            size: s_fontSizeExtraSmall,
+            size: _switchReminderFontsize,
             color: Colors.white,
             font: s_font_IBMPlexSans,
           )
@@ -331,15 +361,18 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: Color.fromARGB(255, 4, 123, 221),
-                fixedSize: Size(buttonWidth, buttonHeight)),
+                fixedSize: Size(buttonWidth, buttonHeight),
+                shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(_smallButtonCornerRadius))),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const Icon(
+              Icon(
                 Icons.my_location_sharp,
                 color: Colors.white,
-                size: 16,
+                size: _atMyLocationIconSize,
               ),
               SizedBox(
-                width: buttonWidth / 20,
+                width: _iconGapWidth,
               ),
               cancelText('My Location')
             ])));
@@ -363,16 +396,19 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                       }));
             },
             style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 4, 123, 221),
-                fixedSize: Size(buttonWidth, buttonHeight)),
+                backgroundColor: Color.fromARGB(255, 1, 117, 16),
+                fixedSize: Size(buttonWidth, buttonHeight),
+                shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(_smallButtonCornerRadius))),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const Icon(
+              Icon(
                 Icons.add_location_alt_outlined,
                 color: Colors.white,
-                size: 16,
+                size: _pickOnMapIconSize,
               ),
               SizedBox(
-                width: buttonWidth / 20,
+                width: _iconGapWidth,
               ),
               cancelText('Pick on Map')
             ])));
@@ -391,20 +427,21 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: const Color(s_declineRed),
-            fixedSize: Size(buttonWidth, buttonHeight)),
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
+            fixedSize: Size(buttonWidth, buttonHeight),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(_largeButtonCornerRadius))),
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
             Icons.delete_forever,
             color: Colors.white,
-            size: 16,
+            size: _updateButtonIconSize,
           ),
           SizedBox(
-            width: 4,
+            width: _iconGapWidth,
           ),
           FormattedText(
             text: 'Delete Alert',
-            size: s_fontSizeExtraSmall,
+            size: _updateButtonFontSize,
             color: Colors.white,
             weight: FontWeight.bold,
             font: s_font_IBMPlexSans,
@@ -450,20 +487,21 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: const Color(s_aquarium),
-            fixedSize: Size(buttonWidth, buttonHeight)),
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
+            fixedSize: Size(buttonWidth, buttonHeight),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(_largeButtonCornerRadius))),
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
             Icons.update,
             color: Colors.white,
-            size: 32,
+            size: _updateButtonIconSize,
           ),
           SizedBox(
-            width: 4,
+            width: _iconGapWidth,
           ),
           FormattedText(
             text: 'Update Alert',
-            size: s_fontSizeMedium,
+            size: _updateButtonFontSize,
             color: Colors.white,
             font: s_font_BonaNova,
             weight: FontWeight.bold,
@@ -472,8 +510,16 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   }
 
   Widget cancelButton(double buttonWidth, double buttonHeight) {
-    return GoBackButton().back('Cancel', buttonWidth, buttonHeight, 20, 24, 10,
-        context, Color(s_declineRed), 1); // return false
+    return GoBackButton().back(
+        'Cancel',
+        buttonWidth,
+        buttonHeight,
+        _updateButtonFontSize,
+        _cancelIconSize,
+        _largeButtonCornerRadius,
+        context,
+        Color(s_declineRed),
+        1); // return false
   }
 
   bool checkRecentLocationMap(String location) {
@@ -486,7 +532,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   Widget cancelText(String text) {
     return FormattedText(
       text: text,
-      size: s_fontSizeSmall,
+      size: _locationButtonTextFontSize,
       color: Colors.white,
       font: s_font_BonaNova,
       weight: FontWeight.bold,
@@ -496,7 +542,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   Widget editAlertTitle(String title) {
     return FormattedText(
       text: title,
-      size: s_fontSizeLarge,
+      size: _titleTextFontSize,
       color: Colors.white,
       font: s_font_BerkshireSwash,
     );
@@ -505,9 +551,50 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   Widget titleText(String title) {
     return FormattedText(
         text: title,
-        size: s_fontSizeMedLarge,
+        size: _guideTextFontSize,
         color: const Color(s_blackBlue),
         font: s_font_BonaNova,
         weight: FontWeight.bold);
+  }
+
+  void generateLayout() {
+    double _screenWidth = MediaQuery.of(context).size.width;
+    double _screenHeight = MediaQuery.of(context).size.height;
+
+    // Original ratios based on a Google Pixel 5 (392 x 781) screen
+    // and a 56 height appBar
+
+    // Height
+    _topPadding = (80 / 781) * _screenHeight;
+    _buttonHeight = (60 / 781) * _screenHeight;
+    _deleteButtonTopPadding = (125 / 781) * _screenHeight;
+    _locationButtonHeight = (30 / 781) * _screenHeight;
+
+    // Width
+    _textWidth = (325 / 392) * _screenWidth;
+    _buttonSpacing = (10 / 392) * _screenWidth;
+    _locationButtonWidth = ((_textWidth - _buttonSpacing) / 2);
+    _iconGapWidth = 8;
+
+    // Font
+    _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height;
+    _guideTextFontSize = (26 / 781) * _screenHeight;
+    _formFontSize = (16 / 60) * _buttonHeight;
+    _locationButtonTextFontSize = (16 / 30) * _locationButtonHeight;
+    _updateButtonFontSize = (20 / 60) * _buttonHeight;
+    _switchReminderFontsize = (12 / 30) * _locationButtonHeight;
+
+    // Icons
+    _atMyLocationIconSize = (16 / 30) * _locationButtonHeight;
+    _pickOnMapIconSize = (16 / 30) * _locationButtonHeight;
+    _dropDownIconSize = 40;
+    _updateButtonIconSize = (32 / 60) * _buttonHeight;
+    _cancelIconSize = (24 / 60) * _buttonHeight;
+    _switchReminderTypeIconSize = (16 / _locationButtonHeight) * _screenHeight;
+
+    // Styling
+    _smallButtonCornerRadius = (20 / 30) * _locationButtonHeight;
+    _largeButtonCornerRadius = (10 / 60) * _buttonHeight;
+    _dropDownFontScale = (_screenHeight / 781) * 1.0;
   }
 }

@@ -698,7 +698,7 @@ class _StartScreenState extends State<StartScreen> {
     // Styling
     _locationDisclosureButtonCornerRadius =
         (50 / 30) * _locationDisclosureButtonHeight;
-    _submitButtonCornerRadius = (10 / _buttonHeight) * _buttonHeight;
+    _submitButtonCornerRadius = (10 / 60) * _buttonHeight;
     _locationToggleScale = (_screenHeight / 781) * 1.15;
   }
 }

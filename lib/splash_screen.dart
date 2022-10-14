@@ -22,8 +22,8 @@ class SplashScreen extends StatelessWidget {
                           offset: Offset(0, 0),
                         ),
                       ]),
-                      child: const Image(
-                          width: 185,
+                      child: Image(
+                          width: getImageWidth(context),
                           image: AssetImage(
                               'assets/images/CE_Ventures_Square.png')))),
               decoration: const BoxDecoration(
@@ -50,5 +50,11 @@ class SplashScreen extends StatelessWidget {
 
   double getScreenHeight(BuildContext context) {
     return MediaQuery.of(context).size.height;
+  }
+
+  double getImageWidth(BuildContext context) {
+    double _screenWidth = MediaQuery.of(context).size.width;
+    double _imageWidth = (185 / 392) * _screenWidth;
+    return _imageWidth;
   }
 }

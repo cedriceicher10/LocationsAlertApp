@@ -59,6 +59,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   double _switchReminderTypeIconSize = 0;
   double _switchReminderFontsize = 12;
   double _guideTextFontSize = 0;
+  double _deleteAlertIconSize = 0;
 
   PickOnMapLocation __pickOnMapLocation = PickOnMapLocation('', 0.0, 0.0);
   bool _usingRecentLocation = false;
@@ -152,10 +153,9 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                             pickOnMapButton(
                                 _locationButtonWidth, _locationButtonHeight),
                           ]),
+                      deleteButton(_locationButtonWidth, _locationButtonHeight),
                       // switchReminderTypeButton(_locationButtonWidth, _locationButtonHeight),
                       SizedBox(height: _deleteButtonTopPadding),
-                      deleteButton(_textWidth, _buttonHeight),
-                      SizedBox(height: _buttonSpacing),
                       updateButton(_textWidth, _buttonHeight),
                       SizedBox(height: _buttonSpacing),
                       cancelButton(_textWidth, _buttonHeight),
@@ -429,23 +429,17 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
             backgroundColor: const Color(s_declineRed),
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(_largeButtonCornerRadius))),
+                borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
             Icons.delete_forever,
             color: Colors.white,
-            size: _updateButtonIconSize,
+            size: _deleteAlertIconSize,
           ),
           SizedBox(
             width: _iconGapWidth,
           ),
-          FormattedText(
-            text: 'Delete Alert',
-            size: _updateButtonFontSize,
-            color: Colors.white,
-            weight: FontWeight.bold,
-            font: s_font_IBMPlexSans,
-          )
+          cancelText('Delete Alert')
         ]));
   }
 
@@ -518,7 +512,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
         _cancelIconSize,
         _largeButtonCornerRadius,
         context,
-        Color(s_declineRed),
+        Color(s_darkSalmon),
         1); // return false
   }
 
@@ -589,6 +583,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     _pickOnMapIconSize = (16 / 30) * _locationButtonHeight;
     _dropDownIconSize = 40;
     _updateButtonIconSize = (32 / 60) * _buttonHeight;
+    _deleteAlertIconSize = (20 / 60) * _buttonHeight;
     _cancelIconSize = (24 / 60) * _buttonHeight;
     _switchReminderTypeIconSize = (16 / _locationButtonHeight) * _screenHeight;
 

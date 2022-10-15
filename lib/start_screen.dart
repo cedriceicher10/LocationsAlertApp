@@ -111,6 +111,7 @@ class _StartScreenState extends State<StartScreen> {
   double _gapAfterButtons = 0;
   double _locationToggleScale = 0;
   double _locationToggleGapWidth = 0;
+  double _bottomPadding = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -403,6 +404,7 @@ class _StartScreenState extends State<StartScreen> {
           locationDisclosureButton(context),
           SizedBox(height: _buttonSpacing),
           signatureText(),
+          SizedBox(height: _bottomPadding),
         ]));
   }
 
@@ -528,7 +530,7 @@ class _StartScreenState extends State<StartScreen> {
           )
         ]),
         style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(s_aquariumLighter),
+            backgroundColor: const Color(s_aquarium),
             fixedSize: Size(_buttonWidth, _buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius:
@@ -672,9 +674,10 @@ class _StartScreenState extends State<StartScreen> {
     _gapAfterTitleIcon = (45 / 781) * _screenHeight;
     _gapBeforeButtons = (5 / 781) * _screenHeight;
     _gapAfterButtons = (20 / 781) * _screenHeight;
+    _bottomPadding = (20 / 781) * _screenHeight;
 
     // Width
-    _buttonWidth = (260 / 392) * _screenWidth;
+    _buttonWidth = (325 / 392) * _screenWidth;
     _buttonSpacing = (10 / 392) * _screenWidth;
     _iconGap = 8;
     _explainerTextPadding = (20 / 392) * _screenWidth;

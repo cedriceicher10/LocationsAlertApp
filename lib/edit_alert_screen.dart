@@ -60,6 +60,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   double _switchReminderFontsize = 12;
   double _guideTextFontSize = 0;
   double _deleteAlertIconSize = 0;
+  double _bottomPadding = 0;
+  double _formErrorFontSize = 0;
 
   PickOnMapLocation __pickOnMapLocation = PickOnMapLocation('', 0.0, 0.0);
   bool _usingRecentLocation = false;
@@ -103,7 +105,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
           home: Scaffold(
             appBar: AppBar(
               title: editAlertTitle('Edit Alert'),
-              backgroundColor: const Color(s_aquariumLighter),
+              backgroundColor: const Color(s_aquarium),
               centerTitle: true,
             ),
             resizeToAvoidBottomInset: false,
@@ -156,10 +158,10 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                       deleteButton(_locationButtonWidth, _locationButtonHeight),
                       // switchReminderTypeButton(_locationButtonWidth, _locationButtonHeight),
                       SizedBox(height: _deleteButtonTopPadding),
-                      updateButton(_textWidth, _buttonHeight),
-                      SizedBox(height: _buttonSpacing),
                       cancelButton(_textWidth, _buttonHeight),
                       SizedBox(height: _buttonSpacing),
+                      updateButton(_textWidth, _buttonHeight),
+                      SizedBox(height: _bottomPadding),
                     ])))));
   }
 
@@ -173,16 +175,17 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
         controller: controller,
         style: TextStyle(color: Colors.black, fontSize: _formFontSize),
         decoration: InputDecoration(
-            labelStyle: const TextStyle(
-                color: Color(s_aquariumLighter), fontWeight: FontWeight.bold),
+            labelStyle: TextStyle(
+                color: Color(s_aquarium), fontWeight: FontWeight.bold),
             hintText: widget.reminderTile.reminder,
-            hintStyle: const TextStyle(color: Colors.black),
-            errorStyle: const TextStyle(
-                color: Color(s_declineRed), fontWeight: FontWeight.bold),
+            hintStyle: TextStyle(color: Colors.black, fontSize: _formFontSize),
+            errorStyle: TextStyle(
+                color: Color(s_declineRed),
+                fontWeight: FontWeight.bold,
+                fontSize: _formErrorFontSize),
             border: const OutlineInputBorder(),
             focusedBorder: const OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: Color(s_aquariumLighter), width: 2.0))),
+                borderSide: BorderSide(color: Color(s_aquarium), width: 2.0))),
         onSaved: (value) {
           _reminderBody = value!;
         },
@@ -217,7 +220,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
               offset: _controllerRecentLocations
                   .text.length)); // Puts cursor at end of field
       String hintTextForGeneric = '';
-      TextStyle hintColor = const TextStyle(color: Colors.black);
+      TextStyle hintColor =
+          TextStyle(color: Colors.black, fontSize: _formFontSize);
       if (!_isGeneric) {
         _controllerRecentLocations.text = widget.reminderTile.location;
         hintTextForGeneric = widget.reminderTile.location;
@@ -239,17 +243,17 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                 style: TextStyle(color: Colors.black, fontSize: _formFontSize),
                 decoration: InputDecoration(
                     labelStyle: const TextStyle(
-                        color: Color(s_aquariumLighter),
-                        fontWeight: FontWeight.bold),
+                        color: Color(s_aquarium), fontWeight: FontWeight.bold),
                     hintText: hintTextForGeneric,
                     hintStyle: hintColor,
-                    errorStyle: const TextStyle(
+                    errorStyle: TextStyle(
                         color: Color(s_declineRed),
-                        fontWeight: FontWeight.bold),
+                        fontWeight: FontWeight.bold,
+                        fontSize: _formErrorFontSize),
                     border: const OutlineInputBorder(),
                     focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color(s_aquariumLighter), width: 2.0))),
+                        borderSide:
+                            BorderSide(color: Color(s_aquarium), width: 2.0))),
                 onSaved: (value) async {
                   _location = value!;
                 },
@@ -301,8 +305,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
             color: Colors.white,
             size: _switchReminderTypeIconSize,
           ),
-          const SizedBox(
-            width: 4,
+          SizedBox(
+            width: _iconGapWidth,
           ),
           FormattedText(
             text: 'Switch to $atLocationTextOpposite location',
@@ -563,6 +567,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     _buttonHeight = (60 / 781) * _screenHeight;
     _deleteButtonTopPadding = (125 / 781) * _screenHeight;
     _locationButtonHeight = (30 / 781) * _screenHeight;
+    _bottomPadding = (20 / 781) * _screenHeight;
 
     // Width
     _textWidth = (325 / 392) * _screenWidth;
@@ -577,6 +582,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     _locationButtonTextFontSize = (16 / 30) * _locationButtonHeight;
     _updateButtonFontSize = (20 / 60) * _buttonHeight;
     _switchReminderFontsize = (12 / 30) * _locationButtonHeight;
+    _formErrorFontSize = (12 / 60) * _buttonHeight;
 
     // Icons
     _atMyLocationIconSize = (16 / 30) * _locationButtonHeight;

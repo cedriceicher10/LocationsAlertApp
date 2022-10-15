@@ -49,6 +49,8 @@ class _SpecificScreenState extends State<SpecificScreen> {
   double _smallButtonCornerRadius = 0;
   double _largeButtonCornerRadius = 0;
   double _dropDownFontScale = 0;
+  double _bottomPadding = 0;
+  double _formErrorFontSize = 0;
 
   PickOnMapLocation __pickOnMapLocation = PickOnMapLocation('', 0.0, 0.0);
 
@@ -76,7 +78,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           home: Scaffold(
             appBar: AppBar(
               title: specificScreenTitle('Create Alert'),
-              backgroundColor: const Color(s_aquariumLighter),
+              backgroundColor: const Color(s_aquarium),
               centerTitle: true,
             ),
             resizeToAvoidBottomInset: false,
@@ -127,10 +129,10 @@ class _SpecificScreenState extends State<SpecificScreen> {
                                 _locationButtonWidth, _locationButtonHeight),
                           ]),
                       SizedBox(height: _submitButtonTopPadding),
-                      submitButton(_textWidth, _buttonHeight),
-                      SizedBox(height: _buttonSpacing),
                       cancelButton(_textWidth, _buttonHeight),
                       SizedBox(height: _buttonSpacing),
+                      submitButton(_textWidth, _buttonHeight),
+                      SizedBox(height: _bottomPadding),
                     ])))));
   }
 
@@ -138,17 +140,19 @@ class _SpecificScreenState extends State<SpecificScreen> {
     return TextFormField(
         autofocus: true,
         style: TextStyle(color: Colors.black, fontSize: _formFontSize),
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
             labelStyle: TextStyle(
-                color: Color(s_aquariumLighter), fontWeight: FontWeight.bold),
+                color: Color(s_aquarium), fontWeight: FontWeight.bold),
             hintText: 'Pick up some limes',
-            hintStyle: TextStyle(color: Color(s_disabledGray)),
+            hintStyle: TextStyle(
+                color: Color(s_disabledGray), fontSize: _formFontSize),
             errorStyle: TextStyle(
-                color: Color(s_declineRed), fontWeight: FontWeight.bold),
+                color: Color(s_declineRed),
+                fontWeight: FontWeight.bold,
+                fontSize: _formErrorFontSize),
             border: OutlineInputBorder(),
             focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: Color(s_aquariumLighter), width: 2.0))),
+                borderSide: BorderSide(color: Color(s_aquarium), width: 2.0))),
         onSaved: (value) {
           _reminderBody = value!;
         },
@@ -173,17 +177,20 @@ class _SpecificScreenState extends State<SpecificScreen> {
             controller: _controllerRecentLocations,
             autofocus: true,
             style: TextStyle(color: Colors.black, fontSize: _formFontSize),
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
                 labelStyle:
                     TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                 hintText: 'Sprouts, Redlands, CA',
-                hintStyle: TextStyle(color: Color(s_disabledGray)),
+                hintStyle: TextStyle(
+                    color: Color(s_disabledGray), fontSize: _formFontSize),
                 errorStyle: TextStyle(
-                    color: Color(s_declineRed), fontWeight: FontWeight.bold),
+                    color: Color(s_declineRed),
+                    fontWeight: FontWeight.bold,
+                    fontSize: _formErrorFontSize),
                 border: OutlineInputBorder(),
                 focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Color(s_aquariumLighter), width: 2.0))),
+                    borderSide:
+                        BorderSide(color: Color(s_aquarium), width: 2.0))),
             onSaved: (value) async {
               _specificLocation = value!;
             },
@@ -250,7 +257,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           }
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(s_aquariumLighter),
+            backgroundColor: const Color(s_aquarium),
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_largeButtonCornerRadius))),
@@ -427,6 +434,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
     _buttonHeight = (60 / 781) * _screenHeight;
     _submitButtonTopPadding = (175 / 781) * _screenHeight;
     _locationButtonHeight = (30 / 781) * _screenHeight;
+    _bottomPadding = (20 / 781) * _screenHeight;
 
     // Width
     _textWidth = (325 / 392) * _screenWidth;
@@ -440,6 +448,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
     _formFontSize = (16 / 60) * _buttonHeight;
     _locationButtonTextFontSize = (16 / 30) * _locationButtonHeight;
     _submitButtonFontSize = (20 / 60) * _buttonHeight;
+    _formErrorFontSize = (12 / 60) * _buttonHeight;
 
     // Icons
     _atMyLocationIconSize = (16 / 30) * _locationButtonHeight;

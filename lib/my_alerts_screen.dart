@@ -63,6 +63,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   double _cardGap = 0;
   double _cardPaddingRightLeft = 0;
   double _cardPaddingTopBottom = 0;
+  double _bottomPadding = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +92,8 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
               _explainerTextPadding, 0, _explainerTextPadding, 0),
           child: explainerText()),
       SizedBox(height: _buttonSpacing),
-      backButton(_buttonWidth, _buttonHeight)
+      backButton(_buttonWidth, _buttonHeight),
+      SizedBox(height: _bottomPadding)
     ]));
   }
 
@@ -274,9 +276,10 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     _listViewPaddingTop = (10 / 781) * _screenHeight;
     _cardGap = (4 / 781) * _screenHeight;
     _cardPaddingTopBottom = (10 / 781) * _screenHeight;
+    _bottomPadding = (20 / 781) * _screenHeight;
 
     // Width
-    _buttonWidth = (260 / 392) * _screenWidth;
+    _buttonWidth = (325 / 392) * _screenWidth;
     _buttonSpacing = (10 / 392) * _screenWidth;
     _explainerTextPadding = (12 / 392) * _screenWidth;
     _listViewPaddingSides = (12 / 392) * _screenWidth;

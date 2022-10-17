@@ -78,6 +78,8 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
         ),
         resizeToAvoidBottomInset: false,
         body: myAlertsScreenBody(),
+        floatingActionButton: backButtonFAB(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }
@@ -91,9 +93,9 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
           padding: EdgeInsets.fromLTRB(
               _explainerTextPadding, 0, _explainerTextPadding, 0),
           child: explainerText()),
-      SizedBox(height: _buttonSpacing),
-      backButton(_buttonWidth, _buttonHeight),
-      SizedBox(height: _bottomPadding)
+      SizedBox(height: _bottomPadding),
+      //backButton(_buttonWidth, _buttonHeight),
+      //SizedBox(height: _bottomPadding)
     ]));
   }
 
@@ -200,6 +202,63 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     }
   }
 
+  Widget backButtonFAB() {
+    return Container(
+        height: _buttonHeight,
+        width: _buttonWidth,
+        child: FloatingActionButton.extended(
+            onPressed: () {
+              // Remove keyboard
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+              Navigator.pop(context);
+            },
+            backgroundColor: Color(s_darkSalmon),
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.all(Radius.circular(_backButtonCornerRadius))),
+            label: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(
+                Icons.arrow_back_ios_rounded,
+                color: Colors.white,
+                size: _backButtonIconSize,
+              ),
+              // Expanded(
+              //     child: SizedBox(
+              //   width: 1,
+              // )),
+              SizedBox(
+                width: 8,
+              ),
+              buttonText('Back', _backButtonFontSize)
+            ])));
+  }
+
+  Widget buttonText(String text, double fontSize) {
+    return FormattedText(
+      text: text,
+      size: fontSize,
+      color: Colors.white,
+      font: s_font_BonaNova,
+      weight: FontWeight.bold,
+    );
+  }
+
+  // This was the old back button at the bottom of the list instead of the current FAB
+  //   Widget backButton(double buttonWidth, double buttonHeight) {
+  //   return GoBackButton().back(
+  //       'Back',
+  //       buttonWidth,
+  //       buttonHeight,
+  //       _backButtonFontSize,
+  //       _backButtonIconSize,
+  //       _backButtonCornerRadius,
+  //       context,
+  //       Color(s_darkSalmon));
+  // }
+
   Widget reminderCardTitleText(String text) {
     return FormattedText(
       text: text,
@@ -230,18 +289,6 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
       style: FontStyle.italic,
       weight: FontWeight.bold,
     );
-  }
-
-  Widget backButton(double buttonWidth, double buttonHeight) {
-    return GoBackButton().back(
-        'Back',
-        buttonWidth,
-        buttonHeight,
-        _backButtonFontSize,
-        _backButtonIconSize,
-        _backButtonCornerRadius,
-        context,
-        Color(s_darkSalmon));
   }
 
   Widget myAlertsScreenTitle(String title) {
@@ -276,7 +323,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     _listViewPaddingTop = (10 / 781) * _screenHeight;
     _cardGap = (4 / 781) * _screenHeight;
     _cardPaddingTopBottom = (10 / 781) * _screenHeight;
-    _bottomPadding = (20 / 781) * _screenHeight;
+    _bottomPadding = (90 / 781) * _screenHeight;
 
     // Width
     _buttonWidth = (325 / 392) * _screenWidth;

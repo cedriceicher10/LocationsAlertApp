@@ -143,7 +143,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
         decoration: InputDecoration(
             labelStyle: TextStyle(
                 color: Color(s_aquarium), fontWeight: FontWeight.bold),
-            hintText: 'Pick up some limes',
+            hintText: 'E.g. Pick up some limes',
             hintStyle: TextStyle(
                 color: Color(s_disabledGray), fontSize: _formFontSize),
             errorStyle: TextStyle(
@@ -180,7 +180,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
             decoration: InputDecoration(
                 labelStyle:
                     TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                hintText: 'Sprouts, Redlands, CA',
+                hintText: 'E.g. Sprouts, Redlands, CA',
                 hintStyle: TextStyle(
                     color: Color(s_disabledGray), fontSize: _formFontSize),
                 errorStyle: TextStyle(

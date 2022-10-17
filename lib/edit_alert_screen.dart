@@ -13,6 +13,7 @@ import 'location_services.dart';
 import 'pick_on_map_screen.dart';
 import 'recent_locations.dart';
 import 'go_back_button.dart';
+import 'background_theme.dart';
 
 class EditAlertScreen extends StatefulWidget {
   final ReminderTile reminderTile;
@@ -30,6 +31,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   RecentLocations _rl = RecentLocations();
   final TextEditingController _controllerRecentLocations =
       TextEditingController();
+  final BackgroundTheme _background =
+      BackgroundTheme(Screen.EDIT_ALERTS_SCREEN);
   var _recentLocations = ['Make a few reminders to see their locations here!'];
   Map _recentLocationsMap = new Map();
   String _reminderBody = '';
@@ -125,14 +128,14 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
 
   Widget editAlertScreenBody() {
     return SafeArea(
-        child: SizedBox(
+        child: Container(
+            decoration: _background.getBackground(),
             child: Form(
                 key: formKey,
-                child: SingleChildScrollView(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
                       SizedBox(height: _topPadding),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,14 +168,14 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                       SizedBox(height: _buttonSpacing),
                       updateButton(_textWidth, _buttonHeight),
                       SizedBox(height: _bottomPadding),
-                    ])))));
+                    ]))));
   }
 
   Widget reminderEntry() {
     return TextFormField(
         autofocus: true,
         initialValue: widget.reminderTile.reminder,
-        style: TextStyle(color: Colors.black, fontSize: _formFontSize),
+        style: TextStyle(color: Colors.white, fontSize: _formFontSize),
         decoration: InputDecoration(
             labelStyle: TextStyle(
                 color: Color(s_aquarium), fontWeight: FontWeight.bold),
@@ -184,7 +187,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                 fontSize: _formErrorFontSize),
             border: const OutlineInputBorder(),
             focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Color(s_aquarium), width: 2.0))),
+                borderSide:
+                    BorderSide(color: Color(s_darkSalmon), width: 2.0))),
         onSaved: (value) {
           _reminderBody = value!;
         },
@@ -222,7 +226,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
       }
       String hintTextForGeneric = '';
       TextStyle hintColor =
-          TextStyle(color: Colors.grey, fontSize: _formFontSize);
+          TextStyle(color: Color(s_disabledGray), fontSize: _formFontSize);
       if (!_isGeneric) {
         if (_locationTextUserEntered) {
           // User entered text
@@ -246,7 +250,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
             child: TextFormField(
                 autofocus: true,
                 controller: _controllerRecentLocations,
-                style: TextStyle(color: Colors.black, fontSize: _formFontSize),
+                style: TextStyle(color: Colors.white, fontSize: _formFontSize),
                 decoration: InputDecoration(
                     labelStyle: const TextStyle(
                         color: Color(s_aquarium), fontWeight: FontWeight.bold),
@@ -258,8 +262,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                         fontSize: _formErrorFontSize),
                     border: const OutlineInputBorder(),
                     focusedBorder: const OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Color(s_aquarium), width: 2.0))),
+                        borderSide: BorderSide(
+                            color: Color(s_darkSalmon), width: 2.0))),
                 onSaved: (value) async {
                   _location = value!;
                 },
@@ -274,7 +278,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                 })),
         PopupMenuButton<String>(
           icon: Icon(Icons.arrow_drop_down,
-              size: _dropDownIconSize, color: Color(s_raisinBlack)),
+              size: _dropDownIconSize, color: Color(s_darkSalmon)),
           onSelected: (String value) {
             _controllerRecentLocations.text = value;
             _locationTextUserEntered = true;
@@ -562,7 +566,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     return FormattedText(
         text: title,
         size: _guideTextFontSize,
-        color: const Color(s_blackBlue),
+        color: Colors.white,
         font: s_font_BonaNova,
         weight: FontWeight.bold);
   }

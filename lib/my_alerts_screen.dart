@@ -6,7 +6,7 @@ import 'start_screen.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
 import 'database_services.dart';
-import 'go_back_button.dart';
+import 'background_theme.dart';
 
 class ReminderTile {
   String id;
@@ -42,6 +42,7 @@ class MyAlertsScreen extends StatefulWidget {
 class _MyAlertsScreenState extends State<MyAlertsScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final DatabaseServices _dbServices = DatabaseServices();
+  final BackgroundTheme _background = BackgroundTheme(Screen.MY_ALERTS_SCREEN);
 
   double _buttonWidth = 0;
   double _buttonHeight = 0;
@@ -85,18 +86,20 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   }
 
   Widget myAlertsScreenBody() {
-    return SingleChildScrollView(
-        child: Column(children: [
-      listViewReminderBuilder(),
-      SizedBox(height: _buttonSpacing),
-      Container(
-          padding: EdgeInsets.fromLTRB(
-              _explainerTextPadding, 0, _explainerTextPadding, 0),
-          child: explainerText()),
-      SizedBox(height: _bottomPadding),
-      //backButton(_buttonWidth, _buttonHeight),
-      //SizedBox(height: _bottomPadding)
-    ]));
+    return Container(
+        decoration: _background.getBackground(),
+        child: SingleChildScrollView(
+            child: Column(children: [
+          listViewReminderBuilder(),
+          SizedBox(height: _buttonSpacing),
+          Container(
+              padding: EdgeInsets.fromLTRB(
+                  _explainerTextPadding, 0, _explainerTextPadding, 0),
+              child: explainerText()),
+          SizedBox(height: _bottomPadding),
+          //backButton(_buttonWidth, _buttonHeight),
+          //SizedBox(height: _bottomPadding)
+        ])));
   }
 
   Widget listViewReminderBuilder() {
@@ -164,6 +167,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     return Card(
         elevation: 2,
         margin: EdgeInsets.fromLTRB(0, _cardGap, 0, _cardGap),
+        //color: Color.fromARGB(255, 188, 227, 245),
         shape: RoundedRectangleBorder(
             side: BorderSide(color: Color(s_aquarium), width: _cardBorderWidth),
             borderRadius: BorderRadius.circular(_cardCornerRadius)),

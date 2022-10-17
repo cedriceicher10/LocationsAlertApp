@@ -14,6 +14,7 @@ import 'formatted_text.dart';
 import 'styles.dart';
 import 'database_services.dart';
 import 'alerts_services.dart';
+import 'background_theme.dart';
 
 String UUID_GLOBAL = '';
 int ALERTS_NUM_GLOBAL = 0;
@@ -80,8 +81,9 @@ class _StartScreenState extends State<StartScreen> {
   final DatabaseServices _dbServices = DatabaseServices();
   final AlertServices _alertServices = AlertServices();
   final LocationServices _locationServices = LocationServices();
+  final BackgroundTheme _background = BackgroundTheme(Screen.START_SCREEN);
   bool _masterLocationToggle = false;
-  Color masterLocationColor = Colors.grey;
+  Color masterLocationColor = Colors.white;
   double userBgLat = 0;
   double userBgLon = 0;
 
@@ -173,6 +175,7 @@ class _StartScreenState extends State<StartScreen> {
     if ((_masterLocationToggle) &&
         ((showLocationDisclosure == false) &&
             (showLocationDisclosure != null))) {
+      masterLocationColor = Color.fromARGB(255, 105, 235, 66);
       await _locationServices.getLocation();
 
       // Background location service
@@ -218,7 +221,7 @@ class _StartScreenState extends State<StartScreen> {
       } else {
         _masterLocationToggle = false;
         prefs.setBool('masterLocationToggle', false);
-        masterLocationColor = Colors.grey;
+        masterLocationColor = Colors.white;
       }
     } else {
       BackgroundLocation.stopLocationService();
@@ -373,39 +376,42 @@ class _StartScreenState extends State<StartScreen> {
 
   Widget startScreenBody(BuildContext context) {
     return SafeArea(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-          SizedBox(height: _topPadding),
-          Center(
-              child: Container(
-                  padding: EdgeInsets.fromLTRB(
-                      _explainerTextPadding, 0, _explainerTextPadding, 0),
-                  child: explainerTitle(
-                      'Phone alerts based on your current location!'))),
-          SizedBox(height: _gapBeforeTitleIcon),
-          Icon(
-            Icons.add_location_alt_outlined,
-            color: Color(s_blackBlue),
-            size: _titleIconSize,
-          ),
-          SizedBox(height: _gapAfterTitleIcon),
-          locationToggle(),
-          // Turning off generic alerts for first prod version
-          // genericLocationButton(context, 'Generic'),
-          // genericHelpText(),
-          SizedBox(height: _gapBeforeButtons),
-          specificLocationButton(context, 'Create Alert'),
-          //specificHelpText(),
-          SizedBox(height: _buttonSpacing),
-          myAlertsButton(context, 'View my Alerts ($ALERTS_NUM_GLOBAL)'),
-          SizedBox(height: _gapAfterButtons),
-          locationDisclosureButton(context),
-          SizedBox(height: _buttonSpacing),
-          signatureText(),
-          SizedBox(height: _bottomPadding),
-        ]));
+        child: Container(
+            decoration: _background.getBackground(),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: _topPadding),
+                  Center(
+                      child: Container(
+                          padding: EdgeInsets.fromLTRB(_explainerTextPadding, 0,
+                              _explainerTextPadding, 0),
+                          child: explainerTitle(
+                              'Phone alerts based on your current location!'))),
+                  SizedBox(height: _gapBeforeTitleIcon),
+                  Icon(
+                    Icons.add_location_alt_outlined,
+                    color: Color(s_blackBlue),
+                    size: _titleIconSize,
+                  ),
+                  SizedBox(height: _gapAfterTitleIcon),
+                  locationToggle(),
+                  // Turning off generic alerts for first prod version
+                  // genericLocationButton(context, 'Generic'),
+                  // genericHelpText(),
+                  SizedBox(height: _gapBeforeButtons),
+                  specificLocationButton(context, 'Create Alert'),
+                  //specificHelpText(),
+                  SizedBox(height: _buttonSpacing),
+                  myAlertsButton(
+                      context, 'View my Alerts ($ALERTS_NUM_GLOBAL)'),
+                  SizedBox(height: _gapAfterButtons),
+                  locationDisclosureButton(context),
+                  SizedBox(height: _buttonSpacing),
+                  signatureText(),
+                  SizedBox(height: _bottomPadding),
+                ])));
   }
 
   Widget explainerTitle(String text) {
@@ -431,7 +437,7 @@ class _StartScreenState extends State<StartScreen> {
       Transform.scale(
           scale: _locationToggleScale,
           child: Switch(
-            inactiveThumbColor: Colors.grey,
+            inactiveThumbColor: Colors.white,
             activeTrackColor: Colors.lightGreenAccent,
             activeColor: Colors.green,
             value: _masterLocationToggle,
@@ -445,9 +451,9 @@ class _StartScreenState extends State<StartScreen> {
                   _masterLocationToggle = value;
                   prefs.setBool('masterLocationToggle', value);
                   if (_masterLocationToggle == false) {
-                    masterLocationColor = Colors.grey;
+                    masterLocationColor = Colors.white;
                   } else {
-                    masterLocationColor = Colors.green;
+                    masterLocationColor = Color.fromARGB(255, 105, 235, 66);
                   }
                   print('LOCATION TOGGLE: $_masterLocationToggle');
                 });

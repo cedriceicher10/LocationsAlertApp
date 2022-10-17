@@ -10,6 +10,7 @@ import 'styles.dart';
 import 'start_screen.dart';
 import 'pick_on_map_screen.dart';
 import 'go_back_button.dart';
+import 'background_theme.dart';
 
 class SpecificScreen extends StatefulWidget {
   const SpecificScreen({Key? key}) : super(key: key);
@@ -22,6 +23,8 @@ class _SpecificScreenState extends State<SpecificScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final LocationServices _locationServices = LocationServices();
   final DatabaseServices _dbServices = DatabaseServices();
+  final BackgroundTheme _background =
+      BackgroundTheme(Screen.SPECIFIC_ALERT_SCREEN);
   RecentLocations _rl = RecentLocations();
   String _reminderBody = '';
   String _specificLocation = '';
@@ -95,14 +98,14 @@ class _SpecificScreenState extends State<SpecificScreen> {
 
   Widget specificScreenBody() {
     return SafeArea(
-        child: SizedBox(
+        child: Container(
+            decoration: _background.getBackground(),
             child: Form(
                 key: formKey,
-                child: SingleChildScrollView(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
                       SizedBox(height: _topPadding),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,13 +136,13 @@ class _SpecificScreenState extends State<SpecificScreen> {
                       SizedBox(height: _buttonSpacing),
                       submitButton(_textWidth, _buttonHeight),
                       SizedBox(height: _bottomPadding),
-                    ])))));
+                    ]))));
   }
 
   Widget reminderEntry() {
     return TextFormField(
         autofocus: true,
-        style: TextStyle(color: Colors.black, fontSize: _formFontSize),
+        style: TextStyle(color: Colors.white, fontSize: _formFontSize),
         decoration: InputDecoration(
             labelStyle: TextStyle(
                 color: Color(s_aquarium), fontWeight: FontWeight.bold),
@@ -152,7 +155,8 @@ class _SpecificScreenState extends State<SpecificScreen> {
                 fontSize: _formErrorFontSize),
             border: OutlineInputBorder(),
             focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color(s_aquarium), width: 2.0))),
+                borderSide:
+                    BorderSide(color: Color(s_darkSalmon), width: 2.0))),
         onSaved: (value) {
           _reminderBody = value!;
         },
@@ -176,7 +180,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
         child: TextFormField(
             controller: _controllerRecentLocations,
             autofocus: true,
-            style: TextStyle(color: Colors.black, fontSize: _formFontSize),
+            style: TextStyle(color: Colors.white, fontSize: _formFontSize),
             decoration: InputDecoration(
                 labelStyle:
                     TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
@@ -190,7 +194,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
                 border: OutlineInputBorder(),
                 focusedBorder: OutlineInputBorder(
                     borderSide:
-                        BorderSide(color: Color(s_aquarium), width: 2.0))),
+                        BorderSide(color: Color(s_darkSalmon), width: 2.0))),
             onSaved: (value) async {
               _specificLocation = value!;
             },
@@ -206,7 +210,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
       ),
       PopupMenuButton<String>(
         icon: Icon(Icons.arrow_drop_down,
-            size: _dropDownIconSize, color: Color(s_raisinBlack)),
+            size: _dropDownIconSize, color: Color(s_darkSalmon)),
         onSelected: (String value) {
           _controllerRecentLocations.text = value;
         },
@@ -391,7 +395,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
         _cancelIconSize,
         _largeButtonCornerRadius,
         context,
-        Color(s_declineRed));
+        Color(s_darkSalmon));
   }
 
   Widget cancelText(String text) {
@@ -417,7 +421,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
     return FormattedText(
         text: title,
         size: _guideTextFontSize,
-        color: const Color(s_blackBlue),
+        color: Colors.white,
         font: s_font_BonaNova,
         weight: FontWeight.bold);
   }

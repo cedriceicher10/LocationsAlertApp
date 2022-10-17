@@ -6,6 +6,7 @@ import 'start_screen.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
 import 'go_back_button.dart';
+import 'background_theme.dart';
 
 // To get this to mirror SpecificScreen
 //   - Styling
@@ -26,6 +27,8 @@ class GenericScreen extends StatefulWidget {
 class _GenericScreenState extends State<GenericScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final DatabaseServices _dbServices = DatabaseServices();
+  final BackgroundTheme _background =
+      BackgroundTheme(Screen.GENERIC_ALERT_SCREEN);
   String _reminderBody = '';
   String _genericLocation = 'Grocery Store';
   final double topPadding = 80;
@@ -61,27 +64,29 @@ class _GenericScreenState extends State<GenericScreen> {
   }
 
   Widget genericScreenBody() {
-    return SizedBox(
-        height: 500,
-        width: 400,
-        child: Form(
-            key: formKey,
-            child: SingleChildScrollView(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                  SizedBox(height: topPadding),
-                  titleText('Remind me to...'),
-                  SizedBox(width: textWidth, child: reminderEntry()),
-                  SizedBox(height: buttonSpacing),
-                  titleText('At the generic location...'),
-                  SizedBox(width: textWidth, child: locationEntry()),
-                  SizedBox(height: buttonSpacing * 2),
-                  submitButton(buttonWidth, buttonHeight),
-                  SizedBox(height: buttonSpacing / 2),
-                  cancelButton(buttonWidth, buttonHeight)
-                ]))));
+    return Container(
+        decoration: _background.getBackground(),
+        child: SizedBox(
+            height: 500,
+            width: 400,
+            child: Form(
+                key: formKey,
+                child: SingleChildScrollView(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                      SizedBox(height: topPadding),
+                      titleText('Remind me to...'),
+                      SizedBox(width: textWidth, child: reminderEntry()),
+                      SizedBox(height: buttonSpacing),
+                      titleText('At the generic location...'),
+                      SizedBox(width: textWidth, child: locationEntry()),
+                      SizedBox(height: buttonSpacing * 2),
+                      submitButton(buttonWidth, buttonHeight),
+                      SizedBox(height: buttonSpacing / 2),
+                      cancelButton(buttonWidth, buttonHeight)
+                    ])))));
   }
 
   Widget reminderEntry() {

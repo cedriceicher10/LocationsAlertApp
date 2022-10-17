@@ -35,6 +35,9 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   String _reminderBody = '';
   String _location = '';
   bool _reverseGeolocateSuccess = false;
+  bool _isStart = true;
+  bool _locationTextMapPick = false;
+  bool _locationTextUserEntered = false;
 
   double _topPadding = 0;
   double _deleteButtonTopPadding = 0;
@@ -57,7 +60,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   double _largeButtonCornerRadius = 0;
   double _dropDownFontScale = 0;
   double _switchReminderTypeIconSize = 0;
-  double _switchReminderFontsize = 12;
+  double _switchReminderFontsize = 0;
   double _guideTextFontSize = 0;
   double _deleteAlertIconSize = 0;
   double _bottomPadding = 0;
@@ -166,19 +169,15 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   }
 
   Widget reminderEntry() {
-    TextEditingController controller = TextEditingController();
-    controller.text = widget.reminderTile.reminder;
-    controller.selection = TextSelection.fromPosition(TextPosition(
-        offset: controller.text.length)); // Puts cursor at end of field
     return TextFormField(
         autofocus: true,
-        controller: controller,
+        initialValue: widget.reminderTile.reminder,
         style: TextStyle(color: Colors.black, fontSize: _formFontSize),
         decoration: InputDecoration(
             labelStyle: TextStyle(
                 color: Color(s_aquarium), fontWeight: FontWeight.bold),
             hintText: widget.reminderTile.reminder,
-            hintStyle: TextStyle(color: Colors.black, fontSize: _formFontSize),
+            hintStyle: TextStyle(color: Colors.grey, fontSize: _formFontSize),
             errorStyle: TextStyle(
                 color: Color(s_declineRed),
                 fontWeight: FontWeight.bold,
@@ -215,25 +214,32 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                 });
               }));
     } else {
-      _controllerRecentLocations.selection = TextSelection.fromPosition(
-          TextPosition(
-              offset: _controllerRecentLocations
-                  .text.length)); // Puts cursor at end of field
+      if (_isStart) {
+        _controllerRecentLocations.selection = TextSelection.fromPosition(
+            TextPosition(
+                offset: _controllerRecentLocations
+                    .text.length)); // Puts cursor at end of field
+      }
       String hintTextForGeneric = '';
       TextStyle hintColor =
-          TextStyle(color: Colors.black, fontSize: _formFontSize);
+          TextStyle(color: Colors.grey, fontSize: _formFontSize);
       if (!_isGeneric) {
-        _controllerRecentLocations.text = widget.reminderTile.location;
-        hintTextForGeneric = widget.reminderTile.location;
-        if (__pickOnMapLocation.location != '') {
+        if (_locationTextUserEntered) {
+          // User entered text
+        } else if (_locationTextMapPick) {
           _controllerRecentLocations.text = __pickOnMapLocation.location;
-          _controllerRecentLocations.selection = TextSelection.fromPosition(
-              TextPosition(offset: _controllerRecentLocations.text.length));
+          _locationTextMapPick = false;
+        } else {
+          if (_isStart) {
+            _controllerRecentLocations.text = widget.reminderTile.location;
+            _isStart = false;
+          }
         }
+        hintTextForGeneric = widget.reminderTile.location;
       } else {
         _controllerRecentLocations.text = '';
         hintTextForGeneric = '42 Wallaby Way, Sydney, NSW';
-        hintColor = const TextStyle(color: Color(s_disabledGray));
+        hintColor = const TextStyle(color: Colors.grey);
       }
       return Row(children: <Widget>[
         Flexible(
@@ -271,6 +277,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
               size: _dropDownIconSize, color: Color(s_raisinBlack)),
           onSelected: (String value) {
             _controllerRecentLocations.text = value;
+            _locationTextUserEntered = true;
+            _locationTextMapPick = false;
           },
           itemBuilder: (BuildContext context) {
             return _recentLocations.map<PopupMenuItem<String>>((String value) {
@@ -321,6 +329,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     __pickOnMapLocation.location = pickOnMapLocation.location;
     __pickOnMapLocation.lat = pickOnMapLocation.lat;
     __pickOnMapLocation.lon = pickOnMapLocation.lon;
+    _locationTextMapPick = true;
+    _locationTextUserEntered = false;
   }
 
   Widget atMyLocationButton(double buttonWidth, double buttonHeight) {
@@ -359,6 +369,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                         ', ' +
                         placemarks[0].postalCode!;
                     _controllerRecentLocations.text = _location;
+                    _locationTextUserEntered = true;
+                    _locationTextMapPick = false;
                   }
                 }
               }

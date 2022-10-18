@@ -44,6 +44,8 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   final DatabaseServices _dbServices = DatabaseServices();
   final BackgroundTheme _background = BackgroundTheme(Screen.MY_ALERTS_SCREEN);
 
+  double _screenHeight = 0;
+  double _screenWidth = 0;
   double _buttonWidth = 0;
   double _buttonHeight = 0;
   double _buttonSpacing = 0;
@@ -89,17 +91,19 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     return Container(
         decoration: _background.getBackground(),
         child: SingleChildScrollView(
-            child: Column(children: [
-          listViewReminderBuilder(),
-          SizedBox(height: _buttonSpacing),
-          Container(
-              padding: EdgeInsets.fromLTRB(
-                  _explainerTextPadding, 0, _explainerTextPadding, 0),
-              child: explainerText()),
-          SizedBox(height: _bottomPadding),
-          //backButton(_buttonWidth, _buttonHeight),
-          //SizedBox(height: _bottomPadding)
-        ])));
+            child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: _screenHeight),
+                child: Column(children: [
+                  listViewReminderBuilder(),
+                  SizedBox(height: _buttonSpacing),
+                  Container(
+                      padding: EdgeInsets.fromLTRB(
+                          _explainerTextPadding, 0, _explainerTextPadding, 0),
+                      child: explainerText()),
+                  SizedBox(height: _bottomPadding),
+                  //backButton(_buttonWidth, _buttonHeight),
+                  //SizedBox(height: _bottomPadding)
+                ]))));
   }
 
   Widget listViewReminderBuilder() {
@@ -316,8 +320,8 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   }
 
   void generateLayout() {
-    double _screenWidth = MediaQuery.of(context).size.width;
-    double _screenHeight = MediaQuery.of(context).size.height;
+    _screenWidth = MediaQuery.of(context).size.width;
+    _screenHeight = MediaQuery.of(context).size.height;
 
     // Original ratios based on a Google Pixel 5 (392 x 781) screen
     // and a 56 height appBar

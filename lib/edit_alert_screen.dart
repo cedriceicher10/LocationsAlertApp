@@ -410,7 +410,11 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
               }
               // Pick on map screen
               Navigator.of(context)
-                  .push(createRoute(const PickOnMapScreen(), 'from_right'))
+                  .push(createRoute(
+                      PickOnMapScreen(
+                          startLatitude: widget.reminderTile.latitude,
+                          startLongitude: widget.reminderTile.longitude),
+                      'from_right'))
                   .then((value) => setState(() {
                         populateLocationFromPickOnMap(value);
                       }));

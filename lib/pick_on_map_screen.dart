@@ -13,7 +13,13 @@ class PickOnMapLocation {
 }
 
 class PickOnMapScreen extends StatefulWidget {
-  const PickOnMapScreen({Key? key}) : super(key: key);
+  double startLatitude;
+  double startLongitude;
+  PickOnMapScreen({
+    Key? key,
+    this.startLatitude = 0,
+    this.startLongitude = 0,
+  }) : super(key: key);
 
   @override
   State<PickOnMapScreen> createState() => _PickOnMapScreenState();
@@ -62,7 +68,6 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
   }
 
   void generateLayout() {
-    double _screenWidth = MediaQuery.of(context).size.width;
     double _screenHeight = MediaQuery.of(context).size.height;
 
     // Original ratios based on a Google Pixel 5 (392 x 781) screen
@@ -98,10 +103,19 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
   }
 
   Widget pickOnMapBody() {
+    double initLat = 0;
+    double initLon = 0;
+    if ((this.widget.startLatitude != 0) && (this.widget.startLongitude != 0)) {
+      initLat = this.widget.startLatitude;
+      initLon = this.widget.startLongitude;
+    } else {
+      // False Idol
+      initLat = 32.72078130242355;
+      initLon = -117.16897626202451;
+    }
     // Pick on the map
     return FlutterLocationPicker(
-        initPosition:
-            LatLong(32.72078130242355, -117.16897626202451), // False Idol
+        initPosition: LatLong(initLat, initLon),
         locationButtonsBackgroundColor: Color(s_darkSalmon),
         selectLocationButtonColor: Color(s_aquariumLighter),
         zoomButtonsBackgroundColor: Color(s_aquariumLighter),

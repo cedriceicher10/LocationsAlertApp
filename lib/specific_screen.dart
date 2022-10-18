@@ -366,7 +366,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           }
           // Pick on map screen
           Navigator.of(context)
-              .push(createRoute(const PickOnMapScreen(), 'from_right'))
+              .push(createRoute(PickOnMapScreen(), 'from_right'))
               .then((value) => setState(() {
                     populateLocationFromPickOnMap(value);
                   }));

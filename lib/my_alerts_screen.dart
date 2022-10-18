@@ -313,7 +313,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
       text:
           'These are your current active location alerts.\n Once an alert is marked as complete it will be removed.\n Tap an alert to edit it.',
       size: _explainerTextFontSize,
-      color: Color(s_blackBlue),
+      color: Colors.white,
       align: TextAlign.center,
       font: s_font_IBMPlexSans,
     );

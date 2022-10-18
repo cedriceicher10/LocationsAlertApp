@@ -30,6 +30,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
   String _specificLocation = '';
   bool _reverseGeolocateSuccess = false;
   bool _usingRecentLocation = false;
+  bool _locationTextMapPick = false;
 
   double _topPadding = 0;
   double _submitButtonTopPadding = 0;
@@ -170,10 +171,11 @@ class _SpecificScreenState extends State<SpecificScreen> {
   }
 
   Widget locationEntry() {
-    if (__pickOnMapLocation.location != '') {
+    if (_locationTextMapPick) {
       _controllerRecentLocations.text = __pickOnMapLocation.location;
       _controllerRecentLocations.selection = TextSelection.fromPosition(
           TextPosition(offset: _controllerRecentLocations.text.length));
+      _locationTextMapPick = false;
     } // Puts cursor at end of field
     return Row(children: <Widget>[
       Flexible(
@@ -288,6 +290,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
     __pickOnMapLocation.location = pickOnMapLocation.location;
     __pickOnMapLocation.lat = pickOnMapLocation.lat;
     __pickOnMapLocation.lon = pickOnMapLocation.lon;
+    _locationTextMapPick = true;
   }
 
   bool checkRecentLocationMap(String location) {

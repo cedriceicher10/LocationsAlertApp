@@ -5,6 +5,15 @@ import 'package:location_picker_flutter_map/location_picker_flutter_map.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'location_services.dart';
 
+// General knowledge
+// For the Specific Screen
+//   if (masterLocationToggle == true)  -> user's location
+//   if (masterLocationToggle == false) -> DEFAULT_LOCATION
+//
+// For the Edit Alert Screen
+//   if (masterLocationToggle == true)  -> previous alert location
+//   if (masterLocationToggle == false) -> previous alert location
+
 class PickOnMapLocation {
   String location;
   double lat;
@@ -31,6 +40,10 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
 
   double _titleTextFontSize = 0;
   double _initMapZoom = 0;
+
+  // False Idol
+  double DEFAULT_LOCATION_LAT = 32.72078130242355;
+  double DEFAULT_LOCATION_LON = -117.16897626202451;
 
   @override
   Widget build(BuildContext context) {
@@ -103,16 +116,19 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
   }
 
   Widget pickOnMapBody() {
+    // For the Edit Alert screen, show the previously chosen location (or if none, False Idol)
     double initLat = 0;
     double initLon = 0;
     if ((this.widget.startLatitude != 0) && (this.widget.startLongitude != 0)) {
       initLat = this.widget.startLatitude;
       initLon = this.widget.startLongitude;
+      _initUserLocation = false;
     } else {
       // False Idol
-      initLat = 32.72078130242355;
-      initLon = -117.16897626202451;
+      initLat = DEFAULT_LOCATION_LAT;
+      initLon = DEFAULT_LOCATION_LON;
     }
+
     // Pick on the map
     return FlutterLocationPicker(
         initPosition: LatLong(initLat, initLon),

@@ -358,24 +358,26 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                   (showLocationDisclosure)) {
                 Navigator.pop(context, true);
               } else {
-                if ((masterLocationToggle != null) &&
-                    (masterLocationToggle == false)) {
+                // Set master location toggle if not set yet
+                if (masterLocationToggle == null) {
+                  prefs.setBool('masterLocationToggle', false);
+                } else {
                   await _locationServices.getLocation();
-                  if (_locationServices.permitted) {
-                    prefs.setBool('masterLocationToggle', true);
-                    var placemarks = await placemarkFromCoordinates(
-                        _locationServices.userLat, _locationServices.userLon);
-                    _location = placemarks[0].street! +
-                        ', ' +
-                        placemarks[0].locality! +
-                        ', ' +
-                        placemarks[0].administrativeArea! +
-                        ', ' +
-                        placemarks[0].postalCode!;
-                    _controllerRecentLocations.text = _location;
-                    _locationTextUserEntered = true;
-                    _locationTextMapPick = false;
-                  }
+                }
+                if (_locationServices.permitted) {
+                  prefs.setBool('masterLocationToggle', true);
+                  var placemarks = await placemarkFromCoordinates(
+                      _locationServices.userLat, _locationServices.userLon);
+                  _location = placemarks[0].street! +
+                      ', ' +
+                      placemarks[0].locality! +
+                      ', ' +
+                      placemarks[0].administrativeArea! +
+                      ', ' +
+                      placemarks[0].postalCode!;
+                  _controllerRecentLocations.text = _location;
+                  _locationTextUserEntered = true;
+                  _locationTextMapPick = false;
                 }
               }
             },
@@ -411,6 +413,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
               // Pick on map screen
               Navigator.of(context)
                   .push(createRoute(
+                      // Do I want this to be the location that's always in the location field?
                       PickOnMapScreen(
                           startLatitude: widget.reminderTile.latitude,
                           startLongitude: widget.reminderTile.longitude),
@@ -484,15 +487,21 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
             if (formKey.currentState!.validate()) {
               formKey.currentState?.save();
               // Update in db
-              _dbServices.updateAlert(context, widget.reminderTile.id,
-                  _reminderBody, locationToUse, !_isGeneric);
+              _dbServices.updateSpecificAlert(
+                  context,
+                  widget.reminderTile.id,
+                  _reminderBody,
+                  locationToUse,
+                  _locationServices.alertLat,
+                  _locationServices.alertLon,
+                  !_isGeneric);
               // Save for previously chosen locations
               _rl.add(locationToUse);
             }
           } else {
             if (formKey.currentState!.validate()) {
               formKey.currentState?.save();
-              _dbServices.updateAlert(context, widget.reminderTile.id,
+              _dbServices.updateGenericAlert(context, widget.reminderTile.id,
                   _reminderBody, _location, !_isGeneric);
             }
           }

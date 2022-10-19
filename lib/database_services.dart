@@ -105,7 +105,39 @@ class DatabaseServices {
     });
   }
 
-  void updateAlert(BuildContext context, String id, String reminderBody,
+  void updateSpecificAlert(
+      BuildContext context,
+      String id,
+      String reminderBody,
+      String location,
+      double latitude,
+      double longitude,
+      bool isSpecific) async {
+    // Retrieve alert
+    await FirebaseFirestore.instance
+        .collection(COLLECTION)
+        .doc(id)
+        .get()
+        .catchError((error) {
+      _exception.popUp(context,
+          'Get from database: Action failed\n error string: ${error.toString()}\nerror raw: $error');
+      throw ('Error: $error');
+    });
+    // Update alert
+    await FirebaseFirestore.instance.collection(COLLECTION).doc(id).update({
+      'reminderBody': reminderBody,
+      'location': location,
+      'latitude': latitude,
+      'longitude': longitude,
+      'isSpecific': isSpecific,
+    }).catchError((error) {
+      _exception.popUp(context,
+          'Update in database: Action failed\n error string: ${error.toString()}\nerror raw: $error');
+      throw ('Error: $error');
+    });
+  }
+
+  void updateGenericAlert(BuildContext context, String id, String reminderBody,
       String location, bool isSpecific) async {
     // Retrieve alert
     await FirebaseFirestore.instance

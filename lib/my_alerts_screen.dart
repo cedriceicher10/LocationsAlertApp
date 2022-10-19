@@ -7,6 +7,7 @@ import 'formatted_text.dart';
 import 'styles.dart';
 import 'database_services.dart';
 import 'background_theme.dart';
+import 'go_back_button.dart';
 
 class ReminderTile {
   String id;
@@ -88,9 +89,9 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   }
 
   Widget myAlertsScreenBody() {
-    return Container(
-        decoration: _background.getBackground(),
-        child: SingleChildScrollView(
+    return SingleChildScrollView(
+        child: Container(
+            decoration: _background.getBackground(),
             child: ConstrainedBox(
                 constraints: BoxConstraints(minHeight: _screenHeight),
                 child: Column(children: [
@@ -101,8 +102,8 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
                           _explainerTextPadding, 0, _explainerTextPadding, 0),
                       child: explainerText()),
                   SizedBox(height: _bottomPadding),
-                  //backButton(_buttonWidth, _buttonHeight),
-                  //SizedBox(height: _bottomPadding)
+                  // backButton(_buttonWidth, _buttonHeight),
+                  // SizedBox(height: _bottomPadding)
                 ]))));
   }
 
@@ -255,17 +256,17 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   }
 
   // This was the old back button at the bottom of the list instead of the current FAB
-  //   Widget backButton(double buttonWidth, double buttonHeight) {
-  //   return GoBackButton().back(
-  //       'Back',
-  //       buttonWidth,
-  //       buttonHeight,
-  //       _backButtonFontSize,
-  //       _backButtonIconSize,
-  //       _backButtonCornerRadius,
-  //       context,
-  //       Color(s_darkSalmon));
-  // }
+  Widget backButton(double buttonWidth, double buttonHeight) {
+    return GoBackButton().back(
+        'Back',
+        buttonWidth,
+        buttonHeight,
+        _backButtonFontSize,
+        _backButtonIconSize,
+        _backButtonCornerRadius,
+        context,
+        Color(s_darkSalmon));
+  }
 
   Widget reminderCardTitleText(String text) {
     return FormattedText(

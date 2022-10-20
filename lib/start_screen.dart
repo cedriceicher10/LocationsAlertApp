@@ -83,9 +83,13 @@ class _StartScreenState extends State<StartScreen> {
   final LocationServices _locationServices = LocationServices();
   final BackgroundTheme _background = BackgroundTheme(Screen.START_SCREEN);
   bool _masterLocationToggle = false;
-  Color masterLocationColor = Colors.white;
-  double userBgLat = 0;
-  double userBgLon = 0;
+  bool _toggleJustDone = false;
+  bool _toggleBack = false;
+  Color _masterLocationColorOn = Color.fromARGB(255, 105, 235, 66);
+  Color _masterLocationColorOff = Colors.white;
+  Color _masterLocationColor = Colors.white;
+  double _userBgLat = 0;
+  double _userBgLon = 0;
 
   double _topPadding = 0;
   double _buttonWidth = 0;
@@ -155,29 +159,49 @@ class _StartScreenState extends State<StartScreen> {
     await generateUniqueUserId();
     // Tally the number of uncompleted alerts for the My Alerts button
     await setAlertCount();
-    // Check for location services and kickoff background location tracking
+    // Check status of location services and toggle
     await locationToggleCheck();
+    // Kickoff background location tracking
+    await kickoffBackgroundLocation();
     // Set up shared prefs for recently chosen locations
     await sharedPrefsSetup();
     return true;
   }
 
   Future<void> locationToggleCheck() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool? showLocationDisclosure = prefs.getBool('showLocationDisclosure');
-    bool? masterLocationToggle = prefs.getBool('masterLocationToggle');
-    if (masterLocationToggle == null) {
-      _masterLocationToggle = false;
-      prefs.setBool('masterLocationToggle', false);
+    // Check if the location services changed outside the toggle (turned off/on while closed, on another screen, etc)
+    // Update masterLocationToggle (screen var _masterLocationToggle, shared prefs var masterLocationToggle, and toggle appearance)
+    if (!_toggleJustDone) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      bool? showLocationDisclosure = prefs.getBool('showLocationDisclosure');
+      if ((showLocationDisclosure != null) &&
+          (showLocationDisclosure == false)) {
+        await _locationServices.getLocation();
+        if (_locationServices.permitted) {
+          _masterLocationToggle = true;
+          prefs.setBool('masterLocationToggle', true);
+          _masterLocationColor = _masterLocationColorOn;
+        } else {
+          _masterLocationToggle = false;
+          prefs.setBool('masterLocationToggle', false);
+          _masterLocationColor = _masterLocationColorOff;
+        }
+      }
     } else {
-      _masterLocationToggle = masterLocationToggle;
+      _toggleJustDone = false;
     }
-    if ((_masterLocationToggle) &&
-        ((showLocationDisclosure == false) &&
-            (showLocationDisclosure != null))) {
-      masterLocationColor = Color.fromARGB(255, 105, 235, 66);
-      await _locationServices.getLocation();
+    // Situation where user toggles on, then denies the location permissions
+    if (_toggleBack) {
+      _masterLocationToggle = false;
+      _toggleBack = false;
+    }
+  }
 
+  Future<void> kickoffBackgroundLocation() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? masterLocationToggle = prefs.getBool('masterLocationToggle');
+    // Only have masterLocationToggle determine if the location tracking is on
+    if ((masterLocationToggle == true) && (masterLocationToggle != null)) {
       // Background location service
       await BackgroundLocation.setAndroidNotification(
         title: 'Location Alerts',
@@ -187,8 +211,8 @@ class _StartScreenState extends State<StartScreen> {
       await BackgroundLocation.setAndroidConfiguration(1000);
       await BackgroundLocation.startLocationService(distanceFilter: 0);
       BackgroundLocation.getLocationUpdates((bgLocationData) {
-        userBgLat = bgLocationData.latitude!;
-        userBgLon = bgLocationData.longitude!;
+        _userBgLat = bgLocationData.latitude!;
+        _userBgLon = bgLocationData.longitude!;
         setState(() async {
           print('BACKGROUND LOCATION TRIGGERED ==============');
           print('Latitude : ${bgLocationData.latitude}');
@@ -210,25 +234,85 @@ class _StartScreenState extends State<StartScreen> {
             // For now only specific alerts
             if (alerts.docs[index]['isSpecific']) {
               _alertServices.alertDeterminationLogic(
-                  userBgLat, userBgLon, alerts.docs[index]);
+                  _userBgLat, _userBgLon, alerts.docs[index]);
             }
           }
         });
       });
-      if (_locationServices.permitted) {
-        // Location is turned on
-        print('LOCATION SERVICES: $_masterLocationToggle');
-      } else {
-        _masterLocationToggle = false;
-        prefs.setBool('masterLocationToggle', false);
-        masterLocationColor = Colors.white;
-      }
     } else {
       BackgroundLocation.stopLocationService();
-      // Location toggle is turned off
-      print('LOCATION SERVICES: $_masterLocationToggle');
+      print('BACKGROUND LOCATION SERVICES OFF');
     }
   }
+
+  // // OLD WAY: Part of overhaul to try to fix location/location toggle issues
+  // Future<void> oldWay() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   bool? showLocationDisclosure = prefs.getBool('showLocationDisclosure');
+  //   bool? masterLocationToggle = prefs.getBool('masterLocationToggle');
+  //   if (masterLocationToggle == null) {
+  //     _masterLocationToggle = false;
+  //     prefs.setBool('masterLocationToggle', false);
+  //   } else {
+  //     _masterLocationToggle = masterLocationToggle;
+  //   }
+  //   if ((_masterLocationToggle) &&
+  //       ((showLocationDisclosure == false) &&
+  //           (showLocationDisclosure != null))) {
+  //     _masterLocationColor = Color.fromARGB(255, 105, 235, 66);
+  //     await _locationServices.getLocation();
+
+  //     // Background location service
+  //     await BackgroundLocation.setAndroidNotification(
+  //       title: 'Location Alerts',
+  //       message: 'Background services currently in progress',
+  //       icon: '@mipmap/ic_launcher',
+  //     );
+  //     await BackgroundLocation.setAndroidConfiguration(1000);
+  //     await BackgroundLocation.startLocationService(distanceFilter: 0);
+  //     BackgroundLocation.getLocationUpdates((bgLocationData) {
+  //       _userBgLat = bgLocationData.latitude!;
+  //       _userBgLon = bgLocationData.longitude!;
+  //       setState(() async {
+  //         print('BACKGROUND LOCATION TRIGGERED ==============');
+  //         print('Latitude : ${bgLocationData.latitude}');
+  //         print('Longitude: ${bgLocationData.longitude}');
+  //         print('Accuracy : ${bgLocationData.accuracy}');
+  //         print('Altitude : ${bgLocationData.altitude}');
+  //         print('Bearing  : ${bgLocationData.bearing}');
+  //         print('Speed    : ${bgLocationData.speed}');
+  //         print(
+  //             'Time     : ${DateTime.fromMillisecondsSinceEpoch(bgLocationData.time!.toInt())}');
+
+  //         // NOTIFICATION KICKOFF LOGIC
+  //         // Retrieve alerts
+  //         QuerySnapshot<Map<String, dynamic>> alerts =
+  //             await _dbServices.getIsCompleteAlertsGetCall(context);
+
+  //         // Alert trigger
+  //         for (var index = 0; index < alerts.docs.length; ++index) {
+  //           // For now only specific alerts
+  //           if (alerts.docs[index]['isSpecific']) {
+  //             _alertServices.alertDeterminationLogic(
+  //                 _userBgLat, _userBgLon, alerts.docs[index]);
+  //           }
+  //         }
+  //       });
+  //     });
+  //     if (_locationServices.permitted) {
+  //       // Location is turned on
+  //       print('LOCATION SERVICES: $_masterLocationToggle');
+  //     } else {
+  //       _masterLocationToggle = false;
+  //       prefs.setBool('masterLocationToggle', false);
+  //       _masterLocationColor = Colors.white;
+  //     }
+  //   } else {
+  //     BackgroundLocation.stopLocationService();
+  //     // Location toggle is turned off
+  //     print('LOCATION SERVICES: $_masterLocationToggle');
+  //   }
+  // }
 
   Future<void> setAlertCount() async {
     ALERTS_NUM_GLOBAL = await _dbServices.getAlertCount(context);
@@ -429,7 +513,7 @@ class _StartScreenState extends State<StartScreen> {
       FormattedText(
           text: 'Allow My Location: ',
           size: _locationToggleFontSize,
-          color: masterLocationColor,
+          color: _masterLocationColor,
           font: s_font_IBMPlexSans,
           weight: FontWeight.bold,
           align: TextAlign.center),
@@ -443,23 +527,55 @@ class _StartScreenState extends State<StartScreen> {
             value: _masterLocationToggle,
             onChanged: (value) async {
               SharedPreferences prefs = await SharedPreferences.getInstance();
-              bool? showLocationDisclosure =
-                  prefs.getBool('showLocationDisclosure');
-              if ((showLocationDisclosure == false) &&
-                  (showLocationDisclosure != null)) {
-                setState(() {
-                  _masterLocationToggle = value;
-                  prefs.setBool('masterLocationToggle', value);
-                  if (_masterLocationToggle == false) {
-                    masterLocationColor = Colors.white;
-                  } else {
-                    masterLocationColor = Color.fromARGB(255, 105, 235, 66);
-                  }
-                  print('LOCATION TOGGLE: $_masterLocationToggle');
-                });
+              _masterLocationToggle = value;
+              if (_masterLocationToggle) {
+                bool? showLocationDisclosure =
+                    prefs.getBool('showLocationDisclosure');
+                if ((showLocationDisclosure == false) &&
+                    (showLocationDisclosure != null)) {
+                  await _locationServices.getLocation();
+                  setState(() {
+                    if (_locationServices.permitted) {
+                      _masterLocationColor = Color.fromARGB(255, 105, 235, 66);
+                      prefs.setBool(
+                          'masterLocationToggle', _masterLocationToggle);
+                    } else {
+                      _toggleBack = true;
+                      prefs.setBool('masterLocationToggle',
+                          false); // User backed out of location permissions
+                    }
+                  });
+                } else {
+                  showLocationDisclosureAlert(context, prefs);
+                }
               } else {
-                showLocationDisclosureAlert(context, prefs);
+                setState(() {
+                  _masterLocationColor = Colors.white;
+                  prefs.setBool('masterLocationToggle', _masterLocationToggle);
+                });
               }
+              _toggleJustDone = true;
+
+              // OLD WAY: Part of overhaul to try to fix location/location toggle issues
+              // SharedPreferences prefs = await SharedPreferences.getInstance();
+              // bool? showLocationDisclosure =
+              //     prefs.getBool('showLocationDisclosure');
+              // if ((showLocationDisclosure == false) &&
+              //     (showLocationDisclosure != null)) {
+              //   setState(() {
+              //     _masterLocationToggle = value;
+              //     prefs.setBool('masterLocationToggle', value);
+              //     if (_masterLocationToggle == false) {
+              //       _masterLocationColor = Colors.white;
+              //     } else {
+              //       _masterLocationColor = Color.fromARGB(255, 105, 235, 66);
+              //     }
+              //     _toggleJustDone = true;
+              //     print('LOCATION TOGGLE: $_masterLocationToggle');
+              //   });
+              // } else {
+              //   showLocationDisclosureAlert(context, prefs);
+              // }
             },
           )),
     ]);

@@ -88,24 +88,46 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     );
   }
 
+  // Help from https://stackoverflow.com/questions/74216763/how-to-make-a-background-gradient-fill-the-screen-in-a-singlechildscrollview-b
   Widget myAlertsScreenBody() {
-    return SingleChildScrollView(
-        child: Container(
-            decoration: _background.getBackground(),
-            child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: _screenHeight),
-                child: Column(children: [
-                  listViewReminderBuilder(),
-                  SizedBox(height: _buttonSpacing),
-                  Container(
-                      padding: EdgeInsets.fromLTRB(
-                          _explainerTextPadding, 0, _explainerTextPadding, 0),
-                      child: explainerText()),
-                  SizedBox(height: _bottomPadding),
-                  // backButton(_buttonWidth, _buttonHeight),
-                  // SizedBox(height: _bottomPadding)
-                ]))));
+    return Container(
+        width: double.infinity,
+        // here you can set height if you want.
+        // but since we use Column,by default it will expand the maximum height.
+        decoration: _background.getBackground(),
+        child: Column(children: [
+          // using Listview will make you widget not overflowing.
+          // wrap with expanded to make it fill available screen.
+          Expanded(
+            child: listViewReminderBuilder(),
+          ),
+          SizedBox(height: _buttonSpacing),
+          Container(
+              padding: EdgeInsets.fromLTRB(
+                  _explainerTextPadding, 0, _explainerTextPadding, 0),
+              child: explainerText()),
+          SizedBox(height: _bottomPadding),
+        ]));
   }
+
+  // Widget myAlertsScreenBody() {
+  //   return SingleChildScrollView(
+  //       child: Container(
+  //           decoration: _background.getBackground(),
+  //           child: ConstrainedBox(
+  //               constraints: BoxConstraints(minHeight: _screenHeight),
+  //               child: Column(children: [
+  //                 listViewReminderBuilder(),
+  //                 SizedBox(height: _buttonSpacing),
+  //                 Container(
+  //                     padding: EdgeInsets.fromLTRB(
+  //                         _explainerTextPadding, 0, _explainerTextPadding, 0),
+  //                     child: explainerText()),
+  //                 SizedBox(height: _bottomPadding),
+  //                 // backButton(_buttonWidth, _buttonHeight),
+  //                 // SizedBox(height: _bottomPadding)
+  //               ]))));
+  // }
 
   Widget listViewReminderBuilder() {
     return StreamBuilder(
@@ -154,8 +176,6 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
 
   Widget listViewReminders(List<ReminderTile> reminderObjects) {
     return ListView.builder(
-      physics:
-          NeverScrollableScrollPhysics(), // allows precedence to be taken by SingleChildScrollView()?
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
       padding: EdgeInsets.fromLTRB(

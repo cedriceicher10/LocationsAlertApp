@@ -13,5 +13,6 @@ void main() async {
   ]);
   await Firebase.initializeApp();
   NotificationServices().initNotifications();
+
   runApp(const App());
 }

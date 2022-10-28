@@ -66,6 +66,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   double _switchReminderFontsize = 0;
   double _guideTextFontSize = 0;
   double _deleteAlertIconSize = 0;
+  double _fabPadding = 0;
   double _bottomPadding = 0;
   double _formErrorFontSize = 0;
 
@@ -116,6 +117,9 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
             ),
             resizeToAvoidBottomInset: false,
             body: editAlertScreenBody(),
+            floatingActionButton: buttonsFAB(),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
           ),
         ));
   }
@@ -124,6 +128,17 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     _rl.retrieveRecentLocations();
     _recentLocations = _rl.recentLocations;
     _recentLocationsMap = _rl.recentLocationsMap;
+  }
+
+  Widget buttonsFAB() {
+    return Container(
+        height: _fabPadding,
+        width: _textWidth,
+        child: Column(children: [
+          cancelButtonFAB(_textWidth, _buttonHeight),
+          SizedBox(height: _buttonSpacing),
+          updateButtonFAB(_textWidth, _buttonHeight),
+        ]));
   }
 
   Widget editAlertScreenBody() {
@@ -163,11 +178,11 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                           ]),
                       deleteButton(_locationButtonWidth, _locationButtonHeight),
                       // switchReminderTypeButton(_locationButtonWidth, _locationButtonHeight),
-                      SizedBox(height: _deleteButtonTopPadding),
-                      cancelButton(_textWidth, _buttonHeight),
-                      SizedBox(height: _buttonSpacing),
-                      updateButton(_textWidth, _buttonHeight),
-                      SizedBox(height: _bottomPadding),
+                      // SizedBox(height: _deleteButtonTopPadding),
+                      // cancelButton(_textWidth, _buttonHeight),
+                      // SizedBox(height: _buttonSpacing),
+                      // updateButton(_textWidth, _buttonHeight),
+                      // SizedBox(height: _bottomPadding),
                     ]))));
   }
 
@@ -175,8 +190,10 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     return TextFormField(
         autofocus: true,
         initialValue: widget.reminderTile.reminder,
-        style: TextStyle(color: Colors.white, fontSize: _formFontSize),
+        style: TextStyle(color: Colors.black, fontSize: _formFontSize),
         decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
             labelStyle: TextStyle(
                 color: Color(s_aquarium), fontWeight: FontWeight.bold),
             hintText: widget.reminderTile.reminder,
@@ -186,6 +203,9 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                 fontWeight: FontWeight.bold,
                 fontSize: _formErrorFontSize),
             border: const OutlineInputBorder(),
+            enabledBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: Color(s_raisinBlack), width: 2.0)),
             focusedBorder: const OutlineInputBorder(
                 borderSide:
                     BorderSide(color: Color(s_darkSalmon), width: 2.0))),
@@ -250,8 +270,10 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
             child: TextFormField(
                 autofocus: true,
                 controller: _controllerRecentLocations,
-                style: TextStyle(color: Colors.white, fontSize: _formFontSize),
+                style: TextStyle(color: Colors.black, fontSize: _formFontSize),
                 decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
                     labelStyle: const TextStyle(
                         color: Color(s_aquarium), fontWeight: FontWeight.bold),
                     hintText: hintTextForGeneric,
@@ -261,6 +283,9 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                         fontWeight: FontWeight.bold,
                         fontSize: _formErrorFontSize),
                     border: const OutlineInputBorder(),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color(s_raisinBlack), width: 2.0)),
                     focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(
                             color: Color(s_darkSalmon), width: 2.0))),
@@ -470,84 +495,208 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
         ]));
   }
 
-  Widget updateButton(double buttonWidth, double buttonHeight) {
-    return ElevatedButton(
-        onPressed: () async {
-          formKey.currentState?.save();
-          if (!_isGeneric) {
-            _usingRecentLocation = checkRecentLocationMap(_location);
-            String locationToUse;
-            if (_usingRecentLocation) {
-              locationToUse = _recentLocationsMap[_location];
-            } else {
-              locationToUse = _location;
-            }
-            _reverseGeolocateSuccess = await _locationServices
-                .reverseGeolocateCheck(context, locationToUse);
-            if (formKey.currentState!.validate()) {
+  Widget updateButtonFAB(double buttonWidth, double buttonHeight) {
+    return Container(
+        width: buttonWidth,
+        height: buttonHeight,
+        child: FloatingActionButton.extended(
+            heroTag: "submit",
+            onPressed: () async {
               formKey.currentState?.save();
-              // Update in db
-              _dbServices.updateSpecificAlert(
-                  context,
-                  widget.reminderTile.id,
-                  _reminderBody,
-                  locationToUse,
-                  _locationServices.alertLat,
-                  _locationServices.alertLon,
-                  !_isGeneric);
-              // Save for previously chosen locations
-              _rl.add(locationToUse);
-            }
-          } else {
-            if (formKey.currentState!.validate()) {
-              formKey.currentState?.save();
-              _dbServices.updateGenericAlert(context, widget.reminderTile.id,
-                  _reminderBody, _location, !_isGeneric);
-            }
-          }
-          // Remove keyboard
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus) {
-            currentFocus.unfocus();
-          }
-          Navigator.pop(context, false);
-        },
-        style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(s_aquarium),
-            fixedSize: Size(buttonWidth, buttonHeight),
+              if (!_isGeneric) {
+                _usingRecentLocation = checkRecentLocationMap(_location);
+                String locationToUse;
+                if (_usingRecentLocation) {
+                  locationToUse = _recentLocationsMap[_location];
+                } else {
+                  locationToUse = _location;
+                }
+                _reverseGeolocateSuccess = await _locationServices
+                    .reverseGeolocateCheck(context, locationToUse);
+                if (formKey.currentState!.validate()) {
+                  formKey.currentState?.save();
+                  // Update in db
+                  _dbServices.updateSpecificAlert(
+                      context,
+                      widget.reminderTile.id,
+                      _reminderBody,
+                      locationToUse,
+                      _locationServices.alertLat,
+                      _locationServices.alertLon,
+                      !_isGeneric);
+                  // Save for previously chosen locations
+                  _rl.add(locationToUse);
+                  // Remove keyboard
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus) {
+                    currentFocus.unfocus();
+                  }
+                  Navigator.pop(context, false);
+                }
+              } else {
+                if (formKey.currentState!.validate()) {
+                  formKey.currentState?.save();
+                  _dbServices.updateGenericAlert(
+                      context,
+                      widget.reminderTile.id,
+                      _reminderBody,
+                      _location,
+                      !_isGeneric);
+                  // Remove keyboard
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus) {
+                    currentFocus.unfocus();
+                  }
+                  Navigator.pop(context, false);
+                }
+              }
+            },
+            backgroundColor: Color(s_aquarium),
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(_largeButtonCornerRadius))),
-        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Icon(
-            Icons.update,
-            color: Colors.white,
-            size: _updateButtonIconSize,
-          ),
-          SizedBox(
-            width: _iconGapWidth,
-          ),
-          FormattedText(
-            text: 'Update Alert',
-            size: _updateButtonFontSize,
-            color: Colors.white,
-            font: s_font_BonaNova,
-            weight: FontWeight.bold,
-          )
-        ]));
+                borderRadius: BorderRadius.all(
+                    Radius.circular(_largeButtonCornerRadius))),
+            label: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(
+                Icons.update,
+                color: Colors.white,
+                size: _updateButtonIconSize,
+              ),
+              SizedBox(
+                width: _iconGapWidth,
+              ),
+              FormattedText(
+                text: 'Update Alert',
+                size: _updateButtonFontSize,
+                color: Colors.white,
+                font: s_font_BonaNova,
+                weight: FontWeight.bold,
+              )
+            ])));
   }
 
-  Widget cancelButton(double buttonWidth, double buttonHeight) {
-    return GoBackButton().back(
-        'Cancel',
-        buttonWidth,
-        buttonHeight,
-        _updateButtonFontSize,
-        _cancelIconSize,
-        _largeButtonCornerRadius,
-        context,
-        Color(s_darkSalmon),
-        1); // return false
+  // Widget updateButton(double buttonWidth, double buttonHeight) {
+  //   return ElevatedButton(
+  //       onPressed: () async {
+  //         formKey.currentState?.save();
+  //         if (!_isGeneric) {
+  //           _usingRecentLocation = checkRecentLocationMap(_location);
+  //           String locationToUse;
+  //           if (_usingRecentLocation) {
+  //             locationToUse = _recentLocationsMap[_location];
+  //           } else {
+  //             locationToUse = _location;
+  //           }
+  //           _reverseGeolocateSuccess = await _locationServices
+  //               .reverseGeolocateCheck(context, locationToUse);
+  //           if (formKey.currentState!.validate()) {
+  //             formKey.currentState?.save();
+  //             // Update in db
+  //             _dbServices.updateSpecificAlert(
+  //                 context,
+  //                 widget.reminderTile.id,
+  //                 _reminderBody,
+  //                 locationToUse,
+  //                 _locationServices.alertLat,
+  //                 _locationServices.alertLon,
+  //                 !_isGeneric);
+  //             // Save for previously chosen locations
+  //             _rl.add(locationToUse);
+  //           }
+  //         } else {
+  //           if (formKey.currentState!.validate()) {
+  //             formKey.currentState?.save();
+  //             _dbServices.updateGenericAlert(context, widget.reminderTile.id,
+  //                 _reminderBody, _location, !_isGeneric);
+  //           }
+  //         }
+  //         // Remove keyboard
+  //         FocusScopeNode currentFocus = FocusScope.of(context);
+  //         if (!currentFocus.hasPrimaryFocus) {
+  //           currentFocus.unfocus();
+  //         }
+  //         Navigator.pop(context, false);
+  //       },
+  //       style: ElevatedButton.styleFrom(
+  //           backgroundColor: const Color(s_aquarium),
+  //           fixedSize: Size(buttonWidth, buttonHeight),
+  //           shape: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.circular(_largeButtonCornerRadius))),
+  //       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+  //         Icon(
+  //           Icons.update,
+  //           color: Colors.white,
+  //           size: _updateButtonIconSize,
+  //         ),
+  //         SizedBox(
+  //           width: _iconGapWidth,
+  //         ),
+  //         FormattedText(
+  //           text: 'Update Alert',
+  //           size: _updateButtonFontSize,
+  //           color: Colors.white,
+  //           font: s_font_BonaNova,
+  //           weight: FontWeight.bold,
+  //         )
+  //       ]));
+  // }
+
+  Widget cancelButtonFAB(double buttonWidth, double buttonHeight) {
+    return Container(
+        width: buttonWidth,
+        height: buttonHeight,
+        child: FloatingActionButton.extended(
+            heroTag: "cancel",
+            onPressed: () {
+              // Remove keyboard
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+              Navigator.pop(context, false);
+            },
+            backgroundColor: Color(s_darkSalmon),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                    Radius.circular(_largeButtonCornerRadius))),
+            label: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(
+                Icons.arrow_back_ios_rounded,
+                color: Colors.white,
+                size: _cancelIconSize,
+              ),
+              // Expanded(
+              //     child: SizedBox(
+              //   width: 1,
+              // )),
+              SizedBox(
+                width: 8,
+              ),
+              cancelButtonText('Cancel', _updateButtonFontSize)
+            ])));
   }
+
+  Widget cancelButtonText(String text, double fontSize) {
+    return FormattedText(
+      text: text,
+      size: fontSize,
+      color: Colors.white,
+      font: s_font_BonaNova,
+      weight: FontWeight.bold,
+    );
+  }
+
+  // Widget cancelButton(double buttonWidth, double buttonHeight) {
+  //   return GoBackButton().back(
+  //       'Cancel',
+  //       buttonWidth,
+  //       buttonHeight,
+  //       _updateButtonFontSize,
+  //       _cancelIconSize,
+  //       _largeButtonCornerRadius,
+  //       context,
+  //       Color(s_darkSalmon),
+  //       1); // return false
+  // }
 
   bool checkRecentLocationMap(String location) {
     if (_recentLocationsMap[location] == null) {
@@ -597,6 +746,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     _deleteButtonTopPadding = (125 / 781) * _screenHeight;
     _locationButtonHeight = (30 / 781) * _screenHeight;
     _bottomPadding = (20 / 781) * _screenHeight;
+    _fabPadding = (_buttonHeight * 2.75) + _buttonSpacing;
 
     // Width
     _textWidth = (325 / 392) * _screenWidth;

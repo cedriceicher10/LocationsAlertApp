@@ -53,6 +53,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
   double _smallButtonCornerRadius = 0;
   double _largeButtonCornerRadius = 0;
   double _dropDownFontScale = 0;
+  double _fabPadding = 0;
   double _bottomPadding = 0;
   double _formErrorFontSize = 0;
 
@@ -87,6 +88,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
             ),
             resizeToAvoidBottomInset: false,
             body: specificScreenBody(),
+            floatingActionButton: buttonsFAB(),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
           ),
         ));
   }
@@ -95,6 +99,17 @@ class _SpecificScreenState extends State<SpecificScreen> {
     _rl.retrieveRecentLocations();
     _recentLocations = _rl.recentLocations;
     _recentLocationsMap = _rl.recentLocationsMap;
+  }
+
+  Widget buttonsFAB() {
+    return Container(
+        height: _fabPadding,
+        width: _textWidth,
+        child: Column(children: [
+          cancelButtonFAB(_textWidth, _buttonHeight),
+          SizedBox(height: _buttonSpacing),
+          submitButtonFAB(_textWidth, _buttonHeight),
+        ]));
   }
 
   Widget specificScreenBody() {
@@ -132,19 +147,21 @@ class _SpecificScreenState extends State<SpecificScreen> {
                             pickOnMapButton(
                                 _locationButtonWidth, _locationButtonHeight),
                           ]),
-                      SizedBox(height: _submitButtonTopPadding),
-                      cancelButton(_textWidth, _buttonHeight),
-                      SizedBox(height: _buttonSpacing),
-                      submitButton(_textWidth, _buttonHeight),
-                      SizedBox(height: _bottomPadding),
+                      // SizedBox(height: _submitButtonTopPadding),
+                      // cancelButton(_textWidth, _buttonHeight),
+                      // SizedBox(height: _buttonSpacing),
+                      // submitButton(_textWidth, _buttonHeight),
+                      // SizedBox(height: _bottomPadding),
                     ]))));
   }
 
   Widget reminderEntry() {
     return TextFormField(
         autofocus: true,
-        style: TextStyle(color: Colors.white, fontSize: _formFontSize),
+        style: TextStyle(color: Colors.black, fontSize: _formFontSize),
         decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
             labelStyle: TextStyle(
                 color: Color(s_aquarium), fontWeight: FontWeight.bold),
             hintText: 'E.g. Pick up some limes',
@@ -155,6 +172,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
                 fontWeight: FontWeight.bold,
                 fontSize: _formErrorFontSize),
             border: OutlineInputBorder(),
+            enabledBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: Color(s_raisinBlack), width: 2.0)),
             focusedBorder: OutlineInputBorder(
                 borderSide:
                     BorderSide(color: Color(s_darkSalmon), width: 2.0))),
@@ -182,8 +202,10 @@ class _SpecificScreenState extends State<SpecificScreen> {
         child: TextFormField(
             controller: _controllerRecentLocations,
             autofocus: true,
-            style: TextStyle(color: Colors.white, fontSize: _formFontSize),
+            style: TextStyle(color: Colors.black, fontSize: _formFontSize),
             decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
                 labelStyle:
                     TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                 hintText: 'E.g. Sprouts, Redlands, CA',
@@ -194,6 +216,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
                     fontWeight: FontWeight.bold,
                     fontSize: _formErrorFontSize),
                 border: OutlineInputBorder(),
+                enabledBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color(s_raisinBlack), width: 2.0)),
                 focusedBorder: OutlineInputBorder(
                     borderSide:
                         BorderSide(color: Color(s_darkSalmon), width: 2.0))),
@@ -228,63 +253,124 @@ class _SpecificScreenState extends State<SpecificScreen> {
     ]);
   }
 
-  Widget submitButton(double buttonWidth, double buttonHeight) {
-    return ElevatedButton(
-        onPressed: () async {
-          formKey.currentState?.save();
-          _usingRecentLocation = checkRecentLocationMap(_specificLocation);
-          String locationToUse;
-          if (_usingRecentLocation) {
-            locationToUse = _recentLocationsMap[_specificLocation];
-          } else {
-            locationToUse = _specificLocation;
-          }
-          _reverseGeolocateSuccess = await _locationServices
-              .reverseGeolocateCheck(context, locationToUse);
-          if (formKey.currentState!.validate()) {
-            formKey.currentState?.save();
-            // Save for previously chosen locations
-            _rl.add(locationToUse);
-            // Put in Firestore cloud database
-            _dbServices.addToDatabase(
-                context,
-                _reminderBody,
-                true,
-                false,
-                locationToUse,
-                _locationServices.alertLat,
-                _locationServices.alertLon);
-            // Remove keyboard
-            FocusScopeNode currentFocus = FocusScope.of(context);
-            if (!currentFocus.hasPrimaryFocus) {
-              currentFocus.unfocus();
-            }
-            Navigator.pop(context);
-          }
-        },
-        style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(s_aquarium),
-            fixedSize: Size(buttonWidth, buttonHeight),
+  Widget submitButtonFAB(double buttonWidth, double buttonHeight) {
+    return Container(
+        width: buttonWidth,
+        height: buttonHeight,
+        child: FloatingActionButton.extended(
+            heroTag: "submit",
+            onPressed: () async {
+              formKey.currentState?.save();
+              _usingRecentLocation = checkRecentLocationMap(_specificLocation);
+              String locationToUse;
+              if (_usingRecentLocation) {
+                locationToUse = _recentLocationsMap[_specificLocation];
+              } else {
+                locationToUse = _specificLocation;
+              }
+              _reverseGeolocateSuccess = await _locationServices
+                  .reverseGeolocateCheck(context, locationToUse);
+              if (formKey.currentState!.validate()) {
+                formKey.currentState?.save();
+                // Save for previously chosen locations
+                _rl.add(locationToUse);
+                // Put in Firestore cloud database
+                _dbServices.addToDatabase(
+                    context,
+                    _reminderBody,
+                    true,
+                    false,
+                    locationToUse,
+                    _locationServices.alertLat,
+                    _locationServices.alertLon);
+                // Remove keyboard
+                FocusScopeNode currentFocus = FocusScope.of(context);
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
+                }
+                Navigator.pop(context);
+              }
+            },
+            backgroundColor: Color(s_aquarium),
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(_largeButtonCornerRadius))),
-        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Icon(
-            Icons.add,
-            color: Colors.white,
-            size: _submitButtonIconSize,
-          ),
-          SizedBox(
-            width: _iconGapWidth,
-          ),
-          FormattedText(
-            text: 'Create Alert',
-            size: _submitButtonFontSize,
-            color: Colors.white,
-            font: s_font_BonaNova,
-            weight: FontWeight.bold,
-          )
-        ]));
+                borderRadius: BorderRadius.all(
+                    Radius.circular(_largeButtonCornerRadius))),
+            label: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(
+                Icons.add,
+                color: Colors.white,
+                size: _submitButtonIconSize,
+              ),
+              SizedBox(
+                width: _iconGapWidth,
+              ),
+              FormattedText(
+                text: 'Create Alert',
+                size: _submitButtonFontSize,
+                color: Colors.white,
+                font: s_font_BonaNova,
+                weight: FontWeight.bold,
+              )
+            ])));
   }
+
+  // Widget submitButton(double buttonWidth, double buttonHeight) {
+  //   return ElevatedButton(
+  //       onPressed: () async {
+  //         formKey.currentState?.save();
+  //         _usingRecentLocation = checkRecentLocationMap(_specificLocation);
+  //         String locationToUse;
+  //         if (_usingRecentLocation) {
+  //           locationToUse = _recentLocationsMap[_specificLocation];
+  //         } else {
+  //           locationToUse = _specificLocation;
+  //         }
+  //         _reverseGeolocateSuccess = await _locationServices
+  //             .reverseGeolocateCheck(context, locationToUse);
+  //         if (formKey.currentState!.validate()) {
+  //           formKey.currentState?.save();
+  //           // Save for previously chosen locations
+  //           _rl.add(locationToUse);
+  //           // Put in Firestore cloud database
+  //           _dbServices.addToDatabase(
+  //               context,
+  //               _reminderBody,
+  //               true,
+  //               false,
+  //               locationToUse,
+  //               _locationServices.alertLat,
+  //               _locationServices.alertLon);
+  //           // Remove keyboard
+  //           FocusScopeNode currentFocus = FocusScope.of(context);
+  //           if (!currentFocus.hasPrimaryFocus) {
+  //             currentFocus.unfocus();
+  //           }
+  //           Navigator.pop(context);
+  //         }
+  //       },
+  //       style: ElevatedButton.styleFrom(
+  //           backgroundColor: const Color(s_aquarium),
+  //           fixedSize: Size(buttonWidth, buttonHeight),
+  //           shape: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.circular(_largeButtonCornerRadius))),
+  //       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+  //         Icon(
+  //           Icons.add,
+  //           color: Colors.white,
+  //           size: _submitButtonIconSize,
+  //         ),
+  //         SizedBox(
+  //           width: _iconGapWidth,
+  //         ),
+  //         FormattedText(
+  //           text: 'Create Alert',
+  //           size: _submitButtonFontSize,
+  //           color: Colors.white,
+  //           font: s_font_BonaNova,
+  //           weight: FontWeight.bold,
+  //         )
+  //       ]));
+  // }
 
   void populateLocationFromPickOnMap(PickOnMapLocation pickOnMapLocation) {
     __pickOnMapLocation.location = pickOnMapLocation.location;
@@ -389,17 +475,62 @@ class _SpecificScreenState extends State<SpecificScreen> {
         ]));
   }
 
-  Widget cancelButton(double buttonWidth, double buttonHeight) {
-    return GoBackButton().back(
-        'Cancel',
-        buttonWidth,
-        buttonHeight,
-        _submitButtonFontSize,
-        _cancelIconSize,
-        _largeButtonCornerRadius,
-        context,
-        Color(s_darkSalmon));
+  Widget cancelButtonFAB(double buttonWidth, double buttonHeight) {
+    return Container(
+        width: buttonWidth,
+        height: buttonHeight,
+        child: FloatingActionButton.extended(
+            heroTag: "cancel",
+            onPressed: () {
+              // Remove keyboard
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+              Navigator.pop(context);
+            },
+            backgroundColor: Color(s_darkSalmon),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                    Radius.circular(_largeButtonCornerRadius))),
+            label: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(
+                Icons.arrow_back_ios_rounded,
+                color: Colors.white,
+                size: _cancelIconSize,
+              ),
+              // Expanded(
+              //     child: SizedBox(
+              //   width: 1,
+              // )),
+              SizedBox(
+                width: 8,
+              ),
+              cancelButtonText('Cancel', _submitButtonFontSize)
+            ])));
   }
+
+  Widget cancelButtonText(String text, double fontSize) {
+    return FormattedText(
+      text: text,
+      size: fontSize,
+      color: Colors.white,
+      font: s_font_BonaNova,
+      weight: FontWeight.bold,
+    );
+  }
+
+  // Widget cancelButton(double buttonWidth, double buttonHeight) {
+  //   return GoBackButton().back(
+  //       'Cancel',
+  //       buttonWidth,
+  //       buttonHeight,
+  //       _submitButtonFontSize,
+  //       _cancelIconSize,
+  //       _largeButtonCornerRadius,
+  //       context,
+  //       Color(s_darkSalmon));
+  // }
 
   Widget cancelText(String text) {
     return FormattedText(
@@ -442,6 +573,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
     _submitButtonTopPadding = (175 / 781) * _screenHeight;
     _locationButtonHeight = (30 / 781) * _screenHeight;
     _bottomPadding = (20 / 781) * _screenHeight;
+    _fabPadding = (_buttonHeight * 2.75) + _buttonSpacing;
 
     // Width
     _textWidth = (325 / 392) * _screenWidth;

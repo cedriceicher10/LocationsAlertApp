@@ -17,32 +17,32 @@ class BackgroundTheme {
     switch (screen) {
       case Screen.START_SCREEN:
         {
-          topColor = Color(s_darkSalmon);
-          bottomColor = Color(s_aquarium);
+          topColor = Color(s_aquarium);
+          bottomColor = Color(s_lavenderWeb);
         }
         break;
       case Screen.SPECIFIC_ALERT_SCREEN:
         {
           topColor = Color(s_aquarium);
-          bottomColor = Color(s_darkSalmon);
+          bottomColor = Color(s_lavenderWeb);
         }
         break;
       case Screen.GENERIC_ALERT_SCREEN:
         {
           topColor = Color(s_aquarium);
-          bottomColor = Color(s_darkSalmon);
+          bottomColor = Color(s_lavenderWeb);
         }
         break;
       case Screen.MY_ALERTS_SCREEN:
         {
-          topColor = Color(s_darkSalmon);
-          bottomColor = Color(s_aquarium);
+          topColor = Color(s_aquarium);
+          bottomColor = Color(s_lavenderWeb);
         }
         break;
       case Screen.EDIT_ALERTS_SCREEN:
         {
           topColor = Color(s_aquarium);
-          bottomColor = Color(s_darkSalmon);
+          bottomColor = Color(s_lavenderWeb);
         }
         break;
     }
@@ -51,8 +51,8 @@ class BackgroundTheme {
   BoxDecoration getBackground() {
     return BoxDecoration(
         gradient: LinearGradient(
-      begin: Alignment.topRight,
-      end: Alignment.bottomLeft,
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
       colors: [
         topColor,
         bottomColor,

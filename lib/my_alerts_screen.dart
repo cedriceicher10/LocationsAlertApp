@@ -194,7 +194,8 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
         margin: EdgeInsets.fromLTRB(0, _cardGap, 0, _cardGap),
         //color: Color.fromARGB(255, 188, 227, 245),
         shape: RoundedRectangleBorder(
-            side: BorderSide(color: Color(s_aquarium), width: _cardBorderWidth),
+            side:
+                BorderSide(color: Color(s_darkSalmon), width: _cardBorderWidth),
             borderRadius: BorderRadius.circular(_cardCornerRadius)),
         child: ListTile(
             contentPadding: EdgeInsets.fromLTRB(
@@ -334,7 +335,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
       text:
           'These are your current active location alerts.\n Once an alert is marked as complete it will be removed.\n Tap an alert to edit it.',
       size: _explainerTextFontSize,
-      color: Colors.white,
+      color: Color(s_darkSalmon),
       align: TextAlign.center,
       font: s_font_IBMPlexSans,
     );

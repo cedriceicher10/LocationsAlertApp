@@ -21,11 +21,17 @@ const double s_fontSizeSmall = 16;
 const double s_fontSizeExtraSmall = 12;
 
 // Colors Used in App
-const int s_aquarium = 0xFF328396; // 0xFF328396 // 0xFF1F7A8C
+const int s_aquarium = 0xFF1F7A8C; // 0xFF328396
 const int s_aquariumLighter = 0xFF5A9BAB; // 0xFF5A9BAB
-const int s_darkSalmon = 0xFFDD9787; // 0xFFDD9787 // 0xFFBFDBF7
+const int s_darkSalmon = 0xFF022B3A; // 0xFFDD9787
 const int s_declineRed = 0xFFf2301b; // 0xFFf2301b
-const int s_raisinBlack = 0xFF022B3A; // 0xFF2A2D34
+const int s_raisinBlack = 0xFFBFDBF7; // 0xFF2A2D34
+const int s_beauBlue = 0xFFBFDBF7;
+const int s_lavenderWeb = 0xFFE1E5F2;
+const Color s_locationToggleColor = Color.fromARGB(255, 247, 248, 181);
+const Color s_myLocationColor = Color.fromARGB(255, 243, 245, 159);
+const Color s_pickOnMapColor = s_myLocationColor;
+const Color s_deleteButtonColor = Color.fromARGB(255, 248, 178, 178);
 
 // Others
 const int s_jungleGreen = 0xFF2EAD65;

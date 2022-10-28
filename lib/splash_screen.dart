@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:locationalertsapp/styles.dart';
 import 'package:page_transition/page_transition.dart';
 //import 'package:flutter_bloc/flutter_bloc.dart';
 import 'start_screen.dart';

@@ -425,20 +425,20 @@ class _SpecificScreenState extends State<SpecificScreen> {
           }
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: Color.fromARGB(255, 4, 123, 221),
+            backgroundColor: s_myLocationColor,
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
             Icons.my_location_sharp,
-            color: Colors.white,
+            color: Color(s_darkSalmon),
             size: _atMyLocationIconSize,
           ),
           SizedBox(
             width: _iconGapWidth,
           ),
-          cancelText('My Location')
+          smallButtonText('My Location')
         ]));
   }
 
@@ -458,20 +458,20 @@ class _SpecificScreenState extends State<SpecificScreen> {
                   }));
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: Color.fromARGB(255, 1, 117, 16),
+            backgroundColor: s_pickOnMapColor,
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
             Icons.add_location_alt_outlined,
-            color: Colors.white,
+            color: Color(s_darkSalmon),
             size: _pickOnMapIconSize,
           ),
           SizedBox(
             width: _iconGapWidth,
           ),
-          cancelText('Pick on Map')
+          smallButtonText('Pick on Map')
         ]));
   }
 
@@ -532,11 +532,11 @@ class _SpecificScreenState extends State<SpecificScreen> {
   //       Color(s_darkSalmon));
   // }
 
-  Widget cancelText(String text) {
+  Widget smallButtonText(String text) {
     return FormattedText(
       text: text,
       size: _locationButtonTextFontSize,
-      color: Colors.white,
+      color: Color(s_darkSalmon),
       font: s_font_BonaNova,
       weight: FontWeight.bold,
     );

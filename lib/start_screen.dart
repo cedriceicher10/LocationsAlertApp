@@ -95,7 +95,7 @@ class _StartScreenState extends State<StartScreen> {
   bool _masterLocationToggle = false;
   bool _toggleJustDone = false;
   bool _toggleBack = false;
-  Color _masterLocationColorOn = Color.fromARGB(255, 105, 235, 66);
+  Color _masterLocationColorOn = s_locationToggleColor;
   Color _masterLocationColorOff = Colors.white;
   Color _masterLocationColor = Colors.white;
 
@@ -500,7 +500,7 @@ class _StartScreenState extends State<StartScreen> {
                   SizedBox(height: _gapBeforeTitleIcon),
                   Icon(
                     Icons.add_location_alt_outlined,
-                    color: Color(s_blackBlue),
+                    color: Color(s_darkSalmon),
                     size: _titleIconSize,
                   ),
                   SizedBox(height: _gapAfterTitleIcon),
@@ -526,7 +526,7 @@ class _StartScreenState extends State<StartScreen> {
     return FormattedText(
         text: text,
         size: _explainerFontSize,
-        color: Colors.black,
+        color: Colors.white,
         font: s_font_BonaNova,
         weight: FontWeight.bold,
         align: TextAlign.center);
@@ -545,9 +545,9 @@ class _StartScreenState extends State<StartScreen> {
       Transform.scale(
           scale: _locationToggleScale,
           child: Switch(
-            inactiveThumbColor: Colors.white,
-            activeTrackColor: Colors.lightGreenAccent,
-            activeColor: Colors.green,
+            inactiveThumbColor: Color(s_beauBlue),
+            activeTrackColor: Color.fromARGB(255, 247, 248, 181),
+            activeColor: s_locationToggleColor,
             value: _masterLocationToggle,
             onChanged: (value) async {
               SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -560,7 +560,7 @@ class _StartScreenState extends State<StartScreen> {
                   await _locationServices.getLocation();
                   setState(() {
                     if (_locationServices.permitted) {
-                      _masterLocationColor = Color.fromARGB(255, 105, 235, 66);
+                      _masterLocationColor = s_locationToggleColor;
                       prefs.setBool(
                           'masterLocationToggle', _masterLocationToggle);
                     } else {
@@ -794,7 +794,7 @@ class _StartScreenState extends State<StartScreen> {
                 children: [
                   Icon(Icons.location_on,
                       size: _locationDisclosureIconSize,
-                      color: Color(s_darkSalmon)),
+                      color: s_myLocationColor),
                   TextButton(
                       style: TextButton.styleFrom(padding: EdgeInsets.zero),
                       child: locationDisclosureText('Location Disclosure'),

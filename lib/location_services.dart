@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'exception_services.dart';
 import 'package:geocoding/geocoding.dart' as geocoding;
+import 'package:permission_handler/permission_handler.dart' as ph;
 
 Location _location = Location();
 ExceptionServices _exception = ExceptionServices();
@@ -13,6 +14,14 @@ class LocationServices {
   double alertLon = 0;
   bool permitted =
       false; // Used for lookups to stop infinite "ask for location" loop
+
+  Future<bool> checkLocationEnabled() async {
+    if (await ph.Permission.location.serviceStatus.isEnabled) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   Future<void> getLocation() async {
     permitted = false;

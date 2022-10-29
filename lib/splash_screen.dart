@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:locationalertsapp/styles.dart';
 import 'package:page_transition/page_transition.dart';
+import 'intro_slides_screen.dart';
 //import 'package:flutter_bloc/flutter_bloc.dart';
 import 'start_screen.dart';
 
 class SplashScreen extends StatelessWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  SplashScreen({Key? key}) : super(key: key);
+
+  double _screenWidth = 0;
+  double _screenHeight = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +44,7 @@ class SplashScreen extends StatelessWidget {
       duration: 2500,
       splashTransition: SplashTransition.fadeTransition,
       pageTransitionType: PageTransitionType.fade,
-      nextScreen: const StartScreen(),
+      nextScreen: nextScreenDeterminer(),
       // with Bloc configuration
       // nextScreen: BlocProvider(
       //   create: (_) => WeatherCubit(),
@@ -49,12 +53,21 @@ class SplashScreen extends StatelessWidget {
     );
   }
 
+  Widget nextScreenDeterminer() {
+    // Make SplashScreen a futurebuilder that grabs shared prefs value for this
+    return IntroSlidesScreen(
+        screenWidth: _screenWidth, screenHeight: _screenHeight);
+
+    // const SplashScreen()
+  }
+
   double getScreenHeight(BuildContext context) {
     return MediaQuery.of(context).size.height;
   }
 
   double getImageWidth(BuildContext context) {
-    double _screenWidth = MediaQuery.of(context).size.width;
+    _screenWidth = MediaQuery.of(context).size.width;
+    _screenHeight = MediaQuery.of(context).size.height;
     double _imageWidth = (185 / 392) * _screenWidth;
     return _imageWidth;
   }

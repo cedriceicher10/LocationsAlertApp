@@ -303,7 +303,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     return FormattedText(
       text: text,
       size: _cardBodyFontSize,
-      color: const Color(s_darkSalmon),
+      color: const Color(s_aquarium),
       font: s_font_IBMPlexSans,
       decoration: TextDecoration.underline,
       weight: FontWeight.bold,

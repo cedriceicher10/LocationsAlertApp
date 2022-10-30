@@ -68,6 +68,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   double _cardPaddingRightLeft = 0;
   double _cardPaddingTopBottom = 0;
   double _bottomPadding = 0;
+  double _noAlertsYetText = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -135,8 +136,13 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
         builder: (BuildContext context,
             AsyncSnapshot<QuerySnapshot> snapshotReminders) {
           if (snapshotReminders.hasData) {
-            // Create list view
-            return listViewReminders(createReminderObjects(snapshotReminders));
+            if (snapshotReminders.data!.size > 0) {
+              // Create list view
+              return listViewReminders(
+                  createReminderObjects(snapshotReminders));
+            } else {
+              return Center(child: noAlertsYetText('No alerts created yet!'));
+            }
           } else {
             return const Center(
                 child: CircularProgressIndicator(
@@ -341,6 +347,16 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     );
   }
 
+  Widget noAlertsYetText(String text) {
+    return FormattedText(
+      text: text,
+      size: _noAlertsYetText,
+      color: Color(s_darkSalmon),
+      font: s_font_BonaNova,
+      weight: FontWeight.bold,
+    );
+  }
+
   void generateLayout() {
     _screenWidth = MediaQuery.of(context).size.width;
     _screenHeight = MediaQuery.of(context).size.height;
@@ -367,8 +383,9 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     _cardTitleFontSize = (20 / 60) * _buttonHeight;
     _cardBodyFontSize = (14 / 60) * _buttonHeight;
     _cardSubtitleFontSize = (12 / 60) * _buttonHeight;
-    _explainerTextFontSize = (12 / 781) * _screenHeight;
+    _explainerTextFontSize = (14 / 781) * _screenHeight;
     _backButtonFontSize = (20 / 60) * _buttonHeight;
+    _noAlertsYetText = (26 / 781) * _screenHeight;
 
     // Icons
     _cardIconSize = (24 / 60) * _buttonHeight;

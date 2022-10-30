@@ -84,7 +84,7 @@ class _StartScreenState extends State<StartScreen> {
   final AlertServices _alertServices = AlertServices();
   final LocationServices _locationServices = LocationServices();
   final BackgroundTheme _background = BackgroundTheme(Screen.START_SCREEN);
-  final LoggingServices _logger = LoggingServices();
+  //final LoggingServices _logger = LoggingServices();
   double _userBgLat = 0;
   double _userBgLon = 0;
 

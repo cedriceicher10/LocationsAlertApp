@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.17.6 <3.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -40,8 +40,8 @@ dependencies:
   background_location: ^0.8.1
   geocoding: 
   #flutter_local_notifications: 
-  awesome_notifications:
-  location_picker_flutter_map: 
+  awesome_notifications: 0.6.20
+  location_picker_flutter_map: 1.0.3
   path_provider: 
   permission_handler: 
   intro_slider: 

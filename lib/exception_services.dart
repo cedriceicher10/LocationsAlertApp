@@ -21,8 +21,7 @@ class ExceptionServices {
           actions: <Widget>[
             TextButton(
                 child: const Text("Close"),
-                style: TextButton.styleFrom(
-                    foregroundColor: Color(s_disabledGray)),
+                style: TextButton.styleFrom(primary: Color(s_disabledGray)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 }),

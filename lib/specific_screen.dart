@@ -425,7 +425,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           }
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: s_myLocationColor,
+            primary: s_myLocationColor,
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
@@ -458,7 +458,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
                   }));
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: s_pickOnMapColor,
+            primary: s_pickOnMapColor,
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),

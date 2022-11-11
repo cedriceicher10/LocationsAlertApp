@@ -334,7 +334,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
           });
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(s_blackBlue),
+            primary: const Color(s_blackBlue),
             fixedSize: Size(buttonWidth, buttonHeight)),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
@@ -407,7 +407,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
               }
             },
             style: ElevatedButton.styleFrom(
-                backgroundColor: s_myLocationColor,
+                primary: s_myLocationColor,
                 fixedSize: Size(buttonWidth, buttonHeight),
                 shape: RoundedRectangleBorder(
                     borderRadius:
@@ -448,7 +448,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                       }));
             },
             style: ElevatedButton.styleFrom(
-                backgroundColor: s_pickOnMapColor,
+                primary: s_pickOnMapColor,
                 fixedSize: Size(buttonWidth, buttonHeight),
                 shape: RoundedRectangleBorder(
                     borderRadius:
@@ -478,7 +478,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
           Navigator.pop(context, false);
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: s_deleteButtonColor,
+            primary: s_deleteButtonColor,
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),

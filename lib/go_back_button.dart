@@ -31,7 +31,7 @@ class GoBackButton {
           }
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: color,
+            primary: color,
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(cornerRadius))),

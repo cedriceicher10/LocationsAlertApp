@@ -146,7 +146,7 @@ class _GenericScreenState extends State<GenericScreen> {
           }
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(s_aquarium),
+            primary: const Color(s_aquarium),
             fixedSize: Size(buttonWidth, buttonHeight)),
         child:
             Row(mainAxisAlignment: MainAxisAlignment.center, children: const [

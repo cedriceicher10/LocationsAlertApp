@@ -428,7 +428,7 @@ class _StartScreenState extends State<StartScreen> {
       actions: <Widget>[
         TextButton(
             child: const Text("Decline (No location services)"),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            style: TextButton.styleFrom(primary: Colors.red),
             onPressed: () {
               Navigator.of(context).pop();
               prefs.setBool('showLocationDisclosure', true);
@@ -445,7 +445,7 @@ class _StartScreenState extends State<StartScreen> {
           child: const Text("Acknowledge",
               style: TextStyle(fontWeight: FontWeight.bold)),
           style: TextButton.styleFrom(
-              foregroundColor: Colors.white,
+              primary: Colors.white,
               backgroundColor: const Color.fromARGB(255, 18, 148, 23)),
           onPressed: () async {
             Navigator.of(context).pop();
@@ -474,8 +474,7 @@ class _StartScreenState extends State<StartScreen> {
         actions: <Widget>[
           TextButton(
               child: const Text("Close"),
-              style:
-                  TextButton.styleFrom(foregroundColor: Color(s_disabledGray)),
+              style: TextButton.styleFrom(primary: Color(s_disabledGray)),
               onPressed: () {
                 Navigator.of(context).pop();
               })
@@ -635,7 +634,7 @@ class _StartScreenState extends State<StartScreen> {
           )
         ]),
         style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(s_aquarium),
+            primary: const Color(s_aquarium),
             fixedSize: Size(_buttonWidth, _buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius:
@@ -683,7 +682,7 @@ class _StartScreenState extends State<StartScreen> {
           )
         ]),
         style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(s_aquarium),
+            primary: const Color(s_aquarium),
             fixedSize: Size(_buttonWidth, _buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius:
@@ -710,7 +709,7 @@ class _StartScreenState extends State<StartScreen> {
                   }));
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(s_darkSalmon),
+            primary: const Color(s_darkSalmon),
             fixedSize: Size(_buttonWidth, _buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius:

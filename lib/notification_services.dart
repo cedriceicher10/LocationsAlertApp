@@ -40,7 +40,8 @@ class NotificationServices {
       String docId = _activeNotificationsMap[action.id];
       if (action.buttonKeyPressed == 'Completed') {
         // Mark alert complete
-        _dbServices.completeAlert(docId);
+        _dbServices.completeRemindersAlert(docId);
+        _dbServices.updateUsersReminderComplete();
       } else if (action.buttonKeyPressed == 'Dismissed') {
         // Alert is dismissed, remains active and notification dissappears
       }

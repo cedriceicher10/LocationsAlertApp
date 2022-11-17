@@ -158,6 +158,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
   Widget reminderEntry() {
     return TextFormField(
         autofocus: true,
+        textCapitalization: TextCapitalization.sentences,
         style: TextStyle(color: Colors.black, fontSize: _formFontSize),
         decoration: InputDecoration(
             filled: true,
@@ -184,6 +185,8 @@ class _SpecificScreenState extends State<SpecificScreen> {
         validator: (value) {
           if (value!.isEmpty) {
             return 'Please enter a reminder';
+          } else if (value.length > 200) {
+            return 'Please shorten the reminder to less than 200 characters';
           } else {
             return null;
           }
@@ -201,6 +204,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
       Flexible(
         child: TextFormField(
             controller: _controllerRecentLocations,
+            textCapitalization: TextCapitalization.sentences,
             autofocus: true,
             style: TextStyle(color: Colors.black, fontSize: _formFontSize),
             decoration: InputDecoration(
@@ -228,6 +232,8 @@ class _SpecificScreenState extends State<SpecificScreen> {
             validator: (value) {
               if (value!.isEmpty) {
                 return 'Please enter a location';
+              } else if (value.length > 200) {
+                return 'Please shorten the reminder to less than 200 characters';
               } else if (!_reverseGeolocateSuccess) {
                 return 'Could not locate the location you entered. \nPlease be more specific.';
               } else {
@@ -268,14 +274,17 @@ class _SpecificScreenState extends State<SpecificScreen> {
               } else {
                 locationToUse = _specificLocation;
               }
+              // Ensure the place can be found and lat/lon added
               _reverseGeolocateSuccess = await _locationServices
                   .reverseGeolocateCheck(context, locationToUse);
-              if (formKey.currentState!.validate()) {
+              // Ensure user has not exceeded quota of 150 reminders
+              bool lessThanLimit = await _dbServices.checkRemindersNum(context);
+              if (formKey.currentState!.validate() && lessThanLimit) {
                 formKey.currentState?.save();
                 // Save for previously chosen locations
                 _rl.add(locationToUse);
                 // Put in Firestore cloud database
-                _dbServices.addToDatabase(
+                _dbServices.addToRemindersDatabase(
                     context,
                     _reminderBody,
                     true,
@@ -283,6 +292,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
                     locationToUse,
                     _locationServices.alertLat,
                     _locationServices.alertLon);
+                _dbServices.updateUsersReminderCreated(context);
                 // Remove keyboard
                 FocusScopeNode currentFocus = FocusScope.of(context);
                 if (!currentFocus.hasPrimaryFocus) {
@@ -425,7 +435,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           }
         },
         style: ElevatedButton.styleFrom(
-            primary: s_myLocationColor,
+            backgroundColor: s_myLocationColor,
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
@@ -458,7 +468,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
                   }));
         },
         style: ElevatedButton.styleFrom(
-            primary: s_pickOnMapColor,
+            backgroundColor: s_pickOnMapColor,
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),

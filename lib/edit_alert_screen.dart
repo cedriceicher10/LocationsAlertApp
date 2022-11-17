@@ -189,6 +189,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   Widget reminderEntry() {
     return TextFormField(
         autofocus: true,
+        textCapitalization: TextCapitalization.sentences,
         initialValue: widget.reminderTile.reminder,
         style: TextStyle(color: Colors.black, fontSize: _formFontSize),
         decoration: InputDecoration(
@@ -215,6 +216,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
         validator: (value) {
           if (value!.isEmpty) {
             return 'Please enter a reminder';
+          } else if (value.length > 200) {
+            return 'Please shorten the reminder to less than 200 characters';
           } else {
             return null;
           }
@@ -269,6 +272,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
         Flexible(
             child: TextFormField(
                 autofocus: true,
+                textCapitalization: TextCapitalization.sentences,
                 controller: _controllerRecentLocations,
                 style: TextStyle(color: Colors.black, fontSize: _formFontSize),
                 decoration: InputDecoration(
@@ -295,6 +299,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please enter a location';
+                  } else if (value.length > 200) {
+                    return 'Please shorten the reminder to less than 200 characters';
                   } else if (!_reverseGeolocateSuccess) {
                     return 'Could not locate the location you entered. \nPlease be more specific.';
                   } else {
@@ -334,7 +340,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
           });
         },
         style: ElevatedButton.styleFrom(
-            primary: const Color(s_blackBlue),
+            backgroundColor: const Color(s_blackBlue),
             fixedSize: Size(buttonWidth, buttonHeight)),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
@@ -407,7 +413,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
               }
             },
             style: ElevatedButton.styleFrom(
-                primary: s_myLocationColor,
+                backgroundColor: s_myLocationColor,
                 fixedSize: Size(buttonWidth, buttonHeight),
                 shape: RoundedRectangleBorder(
                     borderRadius:
@@ -448,7 +454,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                       }));
             },
             style: ElevatedButton.styleFrom(
-                primary: s_pickOnMapColor,
+                backgroundColor: s_pickOnMapColor,
                 fixedSize: Size(buttonWidth, buttonHeight),
                 shape: RoundedRectangleBorder(
                     borderRadius:
@@ -469,7 +475,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   Widget deleteButton(double buttonWidth, double buttonHeight) {
     return ElevatedButton(
         onPressed: () async {
-          _dbServices.deleteAlert(context, widget.reminderTile.id);
+          _dbServices.deleteRemindersAlert(context, widget.reminderTile.id);
+          _dbServices.updateUsersReminderDeleted(context);
           // Remove keyboard
           FocusScopeNode currentFocus = FocusScope.of(context);
           if (!currentFocus.hasPrimaryFocus) {
@@ -478,7 +485,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
           Navigator.pop(context, false);
         },
         style: ElevatedButton.styleFrom(
-            primary: s_deleteButtonColor,
+            backgroundColor: s_deleteButtonColor,
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
@@ -513,10 +520,13 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                 }
                 _reverseGeolocateSuccess = await _locationServices
                     .reverseGeolocateCheck(context, locationToUse);
-                if (formKey.currentState!.validate()) {
+                // Ensure user has not exceeded quota of 150 reminders
+                bool lessThanLimit =
+                    await _dbServices.checkRemindersNum(context);
+                if (formKey.currentState!.validate() && lessThanLimit) {
                   formKey.currentState?.save();
                   // Update in db
-                  _dbServices.updateSpecificAlert(
+                  _dbServices.updateRemindersSpecificAlert(
                       context,
                       widget.reminderTile.id,
                       _reminderBody,
@@ -524,6 +534,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                       _locationServices.alertLat,
                       _locationServices.alertLon,
                       !_isGeneric);
+                  _dbServices.updateUsersReminderUpdated(context);
                   // Save for previously chosen locations
                   _rl.add(locationToUse);
                   // Remove keyboard
@@ -534,14 +545,18 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                   Navigator.pop(context, false);
                 }
               } else {
-                if (formKey.currentState!.validate()) {
+                // Ensure user has not exceeded quota of 150 reminders
+                bool lessThanLimit =
+                    await _dbServices.checkRemindersNum(context);
+                if (formKey.currentState!.validate() && lessThanLimit) {
                   formKey.currentState?.save();
-                  _dbServices.updateGenericAlert(
+                  _dbServices.updateRemindersGenericAlert(
                       context,
                       widget.reminderTile.id,
                       _reminderBody,
                       _location,
                       !_isGeneric);
+                  _dbServices.updateUsersReminderUpdated(context);
                   // Remove keyboard
                   FocusScopeNode currentFocus = FocusScope.of(context);
                   if (!currentFocus.hasPrimaryFocus) {

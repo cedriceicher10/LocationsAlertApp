@@ -21,13 +21,15 @@ const double s_fontSizeSmall = 16;
 const double s_fontSizeExtraSmall = 12;
 
 // Colors Used in App
-const int s_aquarium = 0xFF1F7A8C; // 0xFF328396
+const int s_aquarium = 0xFF1F7A8C; // 0xFF328396 (orig), 0xFF1F7A8C(second)
 const int s_aquariumLighter = 0xFF5A9BAB; // 0xFF5A9BAB
-const int s_darkSalmon = 0xFF022B3A; // 0xFFDD9787
+const int s_darkSalmon = 0xFF022B3A; // 0xFFDD9787 (orig)
 const int s_declineRed = 0xFFf2301b; // 0xFFf2301b
 const int s_raisinBlack = 0xFFBFDBF7; // 0xFF2A2D34
 const int s_beauBlue = 0xFFBFDBF7;
 const int s_lavenderWeb = 0xFFE1E5F2;
+const int s_iconGreen = 0xFF2fa561;
+
 const Color s_locationToggleColor = Color.fromARGB(255, 239, 241, 79);
 const Color s_myLocationColor = Color.fromARGB(255, 243, 245, 159);
 const Color s_pickOnMapColor = s_myLocationColor;

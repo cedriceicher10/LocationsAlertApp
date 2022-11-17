@@ -91,7 +91,8 @@ class _StartScreenState extends State<StartScreen> {
   // Init
   bool __on_this_page__ = true;
   bool __uuid_complete__ = false;
-  bool __sp_recent_locations_complete = false;
+  bool __sp_recent_locations_complete__ = false;
+  bool __user_info_app_opens__ = false;
   bool _masterLocationToggle = false;
   bool _toggleJustDone = false;
   bool _toggleBack = false;
@@ -127,6 +128,10 @@ class _StartScreenState extends State<StartScreen> {
   double _locationToggleScale = 0;
   double _locationToggleGapWidth = 0;
   double _bottomPadding = 0;
+  double _settingsDrawerTitleFontSize = 0;
+  double _settingsDrawerItemFontSize = 0;
+  double _settingsDrawerHeaderHeight = 0;
+  double _settingsDrawerIconSize = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -146,6 +151,7 @@ class _StartScreenState extends State<StartScreen> {
             backgroundColor: const Color(s_blackBlue),
             centerTitle: true,
           ),
+          drawer: settingsDrawer(),
           body: FutureBuilder(
               future: initFunctions(),
               builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
@@ -169,10 +175,16 @@ class _StartScreenState extends State<StartScreen> {
         // Generate (hidden) unique user id for the user to be used to identify their reminders in the db
         await generateUniqueUserId();
       }
-      if (!__sp_recent_locations_complete) {
+      if (!__sp_recent_locations_complete__) {
         // Set up shared prefs for recently chosen locations
         await sharedPrefsSetup();
       }
+      if (!__user_info_app_opens__) {
+        // User app opens
+        await updateUserAppOpens();
+      }
+      // User last login
+      await updateUserLogin();
       // Tally the number of uncompleted alerts for the My Alerts button
       await setAlertCount();
       // Check status of location services and toggle
@@ -185,6 +197,15 @@ class _StartScreenState extends State<StartScreen> {
     //await oldWay();
 
     return true;
+  }
+
+  Future<void> updateUserAppOpens() async {
+    _dbServices.updateUsersAppOpens(context);
+    __user_info_app_opens__ = true;
+  }
+
+  Future<void> updateUserLogin() async {
+    _dbServices.updateUsersLastLogin(context);
   }
 
   Future<void> locationToggleCheck() async {
@@ -248,7 +269,7 @@ class _StartScreenState extends State<StartScreen> {
           // NOTIFICATION KICKOFF LOGIC
           // Retrieve alerts
           QuerySnapshot<Map<String, dynamic>> alerts =
-              await _dbServices.getIsCompleteAlertsGetCall(context);
+              await _dbServices.getRemindersIsCompleteAlertsGetCall(context);
 
           // Alert trigger
           for (var index = 0; index < alerts.docs.length; ++index) {
@@ -374,6 +395,8 @@ class _StartScreenState extends State<StartScreen> {
       // Assign to prefs so can be accessed in the app
       prefs.setString('uuid', uuid);
       UUID_GLOBAL = uuid;
+      // Add user to users table in db
+      _dbServices.addToUsersDatabase(context);
     } else {
       UUID_GLOBAL = uuidSP;
     }
@@ -388,7 +411,7 @@ class _StartScreenState extends State<StartScreen> {
       List<String> emptyList = [];
       prefs.setStringList('recentLocationsList', emptyList);
     }
-    __sp_recent_locations_complete = true;
+    __sp_recent_locations_complete__ = true;
   }
 
   showLocationDisclosureDetermination(BuildContext context) async {
@@ -814,6 +837,62 @@ class _StartScreenState extends State<StartScreen> {
         weight: FontWeight.bold);
   }
 
+  Widget settingsDrawer() {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          SizedBox(
+              height: _settingsDrawerHeaderHeight,
+              child: DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Color(s_darkSalmon),
+                ),
+                child: settingsDrawerTitle('Settings'),
+              )),
+          ListTile(
+            title: settingDrawerItem('Light Mode'),
+            onTap: () {},
+          ),
+          ListTile(
+            title: settingDrawerItem('Units'),
+            onTap: () {},
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget settingsDrawerTitle(String text) {
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.settings,
+            color: Colors.white,
+            size: _settingsDrawerIconSize,
+          ),
+          SizedBox(width: 10),
+          FormattedText(
+              text: text,
+              size: _settingsDrawerTitleFontSize,
+              color: Colors.white,
+              font: s_font_BonaNova,
+              align: TextAlign.center,
+              weight: FontWeight.bold)
+        ]);
+  }
+
+  Widget settingDrawerItem(String text) {
+    return FormattedText(
+        text: text,
+        size: _settingsDrawerItemFontSize,
+        color: Color(s_blackBlue),
+        font: s_font_IBMPlexSans,
+        weight: FontWeight.bold);
+  }
+
   void generateLayout() {
     double _screenWidth = MediaQuery.of(context).size.width;
     double _screenHeight = MediaQuery.of(context).size.height;
@@ -830,6 +909,7 @@ class _StartScreenState extends State<StartScreen> {
     _gapBeforeButtons = (5 / 781) * _screenHeight;
     _gapAfterButtons = (20 / 781) * _screenHeight;
     _bottomPadding = (20 / 781) * _screenHeight;
+    _settingsDrawerHeaderHeight = (80 / 781) * _screenHeight;
 
     // Width
     _buttonWidth = (325 / 392) * _screenWidth;
@@ -847,11 +927,14 @@ class _StartScreenState extends State<StartScreen> {
     _helpFontSize = (16 / 781) * _screenHeight;
     _signatureFontSize = (12 / 781) * _screenHeight;
     _locationToggleFontSize = (14 / 781) * _screenHeight;
+    _settingsDrawerTitleFontSize = (22 / 781) * _screenHeight;
+    _settingsDrawerItemFontSize = (16 / 781) * _screenHeight;
 
     // Icons
     _titleIconSize = (175 / 781) * _screenHeight;
     _specificLocationIconSize = (24 / 60) * _buttonHeight;
     _locationDisclosureIconSize = (12 / 30) * _locationDisclosureButtonHeight;
+    _settingsDrawerIconSize = (20 / 80) * _settingsDrawerHeaderHeight;
 
     // Styling
     _locationDisclosureButtonCornerRadius =

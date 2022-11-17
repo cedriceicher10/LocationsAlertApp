@@ -34,7 +34,7 @@ dependencies:
   cloud_firestore: 
   shared_preferences:
   animated_splash_screen: ^1.2.0
-  flutter_bloc: ^8.0.1
+  #flutter_bloc: ^8.0.1
   intl: 
   location: 
   background_location: ^0.8.1

@@ -1,13 +1,40 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:locationalertsapp/start_screen.dart';
 import 'package:locationalertsapp/exception_services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
 final COLLECTION_REMINDERS = 'reminders';
 final COLLECTION_USERS = 'users';
-
 final ALERT_LIMIT = 150;
+
+class userInfo {
+  Timestamp firstLogin;
+  Timestamp lastLogin;
+  int numAppOpens;
+  int remindersCompleted;
+  int remindersCreated;
+  int remindersUpdated;
+  int remindersDeleted;
+  String userId;
+  userInfo(
+      this.firstLogin,
+      this.lastLogin,
+      this.numAppOpens,
+      this.remindersCompleted,
+      this.remindersCreated,
+      this.remindersUpdated,
+      this.remindersDeleted,
+      this.userId);
+  userInfo.init()
+      : this.firstLogin = Timestamp.now(),
+        this.lastLogin = Timestamp.now(),
+        this.numAppOpens = 0,
+        this.remindersCompleted = 0,
+        this.remindersCreated = 0,
+        this.remindersDeleted = 0,
+        this.remindersUpdated = 0,
+        this.userId = '';
+}
 
 class DatabaseServices {
   CollectionReference reminders =
@@ -60,6 +87,40 @@ class DatabaseServices {
           'Add to users database: Action failed\n error string: ${error.toString()}\nerror raw: $error');
       throw ('Error: $error');
     });
+  }
+
+  Future<userInfo> getUsersSnapshot(BuildContext context) async {
+    // Retrieve alert
+    var query = await FirebaseFirestore.instance
+        .collection(COLLECTION_USERS)
+        .where("userId", isEqualTo: UUID_GLOBAL)
+        .get();
+    return userInfo(
+        query.docs[0]['firstLogin'],
+        query.docs[0]['lastLogin'],
+        query.docs[0]['numAppOpens'],
+        query.docs[0]['remindersCompleted'],
+        query.docs[0]['remindersCreated'],
+        query.docs[0]['remindersUpdated'],
+        query.docs[0]['remindersDeleted'],
+        query.docs[0]['userId']);
+  }
+
+  Future<bool> isUuidTaken(BuildContext context, String uuid) async {
+    // Ensure that uuid isn't already taken
+    var snapshot = await FirebaseFirestore.instance
+        .collection(COLLECTION_USERS)
+        .where('userId', isEqualTo: uuid)
+        .get()
+        .catchError((error) {
+      _exception.popUp(context,
+          'Get from users database: Action failed\n error string: ${error.toString()}\nerror raw: $error');
+      throw ('Error: $error');
+    });
+    if (snapshot.docs.length > 0) {
+      return true;
+    }
+    return false;
   }
 
   void updateUsersAppOpens(BuildContext context) async {
@@ -224,16 +285,6 @@ class DatabaseServices {
   }
 
   void deleteRemindersAlert(BuildContext context, String id) async {
-    // Retrieve alert
-    await FirebaseFirestore.instance
-        .collection(COLLECTION_REMINDERS)
-        .doc(id)
-        .get()
-        .catchError((error) {
-      _exception.popUp(context,
-          'Get from reminders database: Action failed\n error string: ${error.toString()}\nerror raw: $error');
-      throw ('Error: $error');
-    });
     // Delete alert
     await FirebaseFirestore.instance
         .collection(COLLECTION_REMINDERS)
@@ -254,16 +305,6 @@ class DatabaseServices {
       double latitude,
       double longitude,
       bool isSpecific) async {
-    // Retrieve alert
-    await FirebaseFirestore.instance
-        .collection(COLLECTION_REMINDERS)
-        .doc(id)
-        .get()
-        .catchError((error) {
-      _exception.popUp(context,
-          'Get from reminders database: Action failed\n error string: ${error.toString()}\nerror raw: $error');
-      throw ('Error: $error');
-    });
     // Update alert
     await FirebaseFirestore.instance
         .collection(COLLECTION_REMINDERS)
@@ -283,16 +324,6 @@ class DatabaseServices {
 
   void updateRemindersGenericAlert(BuildContext context, String id,
       String reminderBody, String location, bool isSpecific) async {
-    // Retrieve alert
-    await FirebaseFirestore.instance
-        .collection(COLLECTION_REMINDERS)
-        .doc(id)
-        .get()
-        .catchError((error) {
-      _exception.popUp(context,
-          'Get from reminders database: Action failed\n error string: ${error.toString()}\nerror raw: $error');
-      throw ('Error: $error');
-    });
     // Update alert
     await FirebaseFirestore.instance
         .collection(COLLECTION_REMINDERS)
@@ -309,12 +340,6 @@ class DatabaseServices {
   }
 
   void completeRemindersAlert(String id) async {
-    // Retrieve alert
-    await FirebaseFirestore.instance
-        .collection(COLLECTION_REMINDERS)
-        .doc(id)
-        .get()
-        .catchError((error) => throw ('Error: $error'));
     // Complete alert
     await FirebaseFirestore.instance
         .collection(COLLECTION_REMINDERS)

@@ -15,6 +15,7 @@ import 'styles.dart';
 import 'database_services.dart';
 import 'alerts_services.dart';
 import 'background_theme.dart';
+import 'side_drawer.dart';
 import 'logging_services.dart';
 
 String UUID_GLOBAL = '';
@@ -128,10 +129,6 @@ class _StartScreenState extends State<StartScreen> {
   double _locationToggleScale = 0;
   double _locationToggleGapWidth = 0;
   double _bottomPadding = 0;
-  double _settingsDrawerTitleFontSize = 0;
-  double _settingsDrawerItemFontSize = 0;
-  double _settingsDrawerHeaderHeight = 0;
-  double _settingsDrawerIconSize = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +148,7 @@ class _StartScreenState extends State<StartScreen> {
             backgroundColor: const Color(s_blackBlue),
             centerTitle: true,
           ),
-          drawer: settingsDrawer(),
+          drawer: SideDrawer(),
           body: FutureBuilder(
               future: initFunctions(),
               builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
@@ -369,28 +366,12 @@ class _StartScreenState extends State<StartScreen> {
       // Ex: 0613108162
       String uuid = '';
       var rng = Random();
-      bool isNotUnique = true;
-      while (isNotUnique) {
+      bool isTaken = true;
+      while (isTaken) {
         for (var i = 0; i < 10; i++) {
           uuid += rng.nextInt(9).toString();
         }
-        // Ensure that uuid isn't already taken
-        var snapshot = await FirebaseFirestore.instance
-            .collection('reminders')
-            .where('userId', isEqualTo: uuid)
-            .get()
-            .catchError((error) {
-          _exception.popUp(context,
-              'Get from database: Action failed\n error string: ${error.toString()}\nerror raw: $error');
-          throw ('Error: $error');
-        });
-        bool alreadyTaken = false;
-        snapshot.docs.forEach((result) {
-          alreadyTaken = true;
-        });
-        if (alreadyTaken == false) {
-          isNotUnique = false;
-        }
+        isTaken = await _dbServices.isUuidTaken(context, uuid);
       }
       // Assign to prefs so can be accessed in the app
       prefs.setString('uuid', uuid);
@@ -837,62 +818,6 @@ class _StartScreenState extends State<StartScreen> {
         weight: FontWeight.bold);
   }
 
-  Widget settingsDrawer() {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          SizedBox(
-              height: _settingsDrawerHeaderHeight,
-              child: DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Color(s_darkSalmon),
-                ),
-                child: settingsDrawerTitle('Settings'),
-              )),
-          ListTile(
-            title: settingDrawerItem('Light Mode'),
-            onTap: () {},
-          ),
-          ListTile(
-            title: settingDrawerItem('Units'),
-            onTap: () {},
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget settingsDrawerTitle(String text) {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.settings,
-            color: Colors.white,
-            size: _settingsDrawerIconSize,
-          ),
-          SizedBox(width: 10),
-          FormattedText(
-              text: text,
-              size: _settingsDrawerTitleFontSize,
-              color: Colors.white,
-              font: s_font_BonaNova,
-              align: TextAlign.center,
-              weight: FontWeight.bold)
-        ]);
-  }
-
-  Widget settingDrawerItem(String text) {
-    return FormattedText(
-        text: text,
-        size: _settingsDrawerItemFontSize,
-        color: Color(s_blackBlue),
-        font: s_font_IBMPlexSans,
-        weight: FontWeight.bold);
-  }
-
   void generateLayout() {
     double _screenWidth = MediaQuery.of(context).size.width;
     double _screenHeight = MediaQuery.of(context).size.height;
@@ -909,7 +834,6 @@ class _StartScreenState extends State<StartScreen> {
     _gapBeforeButtons = (5 / 781) * _screenHeight;
     _gapAfterButtons = (20 / 781) * _screenHeight;
     _bottomPadding = (20 / 781) * _screenHeight;
-    _settingsDrawerHeaderHeight = (80 / 781) * _screenHeight;
 
     // Width
     _buttonWidth = (325 / 392) * _screenWidth;
@@ -927,14 +851,11 @@ class _StartScreenState extends State<StartScreen> {
     _helpFontSize = (16 / 781) * _screenHeight;
     _signatureFontSize = (12 / 781) * _screenHeight;
     _locationToggleFontSize = (14 / 781) * _screenHeight;
-    _settingsDrawerTitleFontSize = (22 / 781) * _screenHeight;
-    _settingsDrawerItemFontSize = (16 / 781) * _screenHeight;
 
     // Icons
     _titleIconSize = (175 / 781) * _screenHeight;
     _specificLocationIconSize = (24 / 60) * _buttonHeight;
     _locationDisclosureIconSize = (12 / 30) * _locationDisclosureButtonHeight;
-    _settingsDrawerIconSize = (20 / 80) * _settingsDrawerHeaderHeight;
 
     // Styling
     _locationDisclosureButtonCornerRadius =

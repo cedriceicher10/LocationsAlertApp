@@ -381,6 +381,10 @@ class _StartScreenState extends State<StartScreen> {
     } else {
       UUID_GLOBAL = uuidSP;
     }
+    // Grandfather in pre-users table users
+    if (!(await _dbServices.isUuidTaken(context, UUID_GLOBAL))) {
+      _dbServices.addToUsersDatabase(context);
+    }
     __uuid_complete__ = true;
   }
 

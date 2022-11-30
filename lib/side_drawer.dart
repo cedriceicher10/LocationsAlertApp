@@ -54,24 +54,26 @@ class SideDrawer extends StatelessWidget {
               )),
           listTileDate(_userInfo.firstLogin),
           listTileDate(_userInfo.lastLogin),
+          listTileNoAction('Alerts Created: ${_userInfo.remindersCreated}'),
+          listTileNoAction('Alerts Completed: ${_userInfo.remindersCompleted}'),
           listTileNoAction(
-              'Reminders Completed: ${_userInfo.remindersCompleted}'),
-          listTileNoAction('Reminders Created: ${_userInfo.remindersCreated}'),
-          listTileNoAction('Reminders Updated: ${_userInfo.remindersUpdated}'),
-          listTileNoAction('Reminders Deleted: ${_userInfo.remindersDeleted}'),
+              'Alerts Completion: ${alertCompletion(_userInfo.remindersCompleted, _userInfo.remindersCreated)}%'),
           ListTile(
             dense: true,
-            title: settingDrawerItem('Light Mode'),
-            onTap: () {},
-          ),
-          ListTile(
-            dense: true,
-            title: settingDrawerItem('Units'),
+            title: settingDrawerItem('Dark Mode'),
             onTap: () {},
           ),
         ],
       ),
     );
+  }
+
+  String alertCompletion(int completed, int created) {
+    if (completed > created) {
+      return '-';
+    } else {
+      return ((created / completed) * 100).toString();
+    }
   }
 
   Widget listTileDate(Timestamp timestamp) {

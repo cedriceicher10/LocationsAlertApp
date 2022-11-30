@@ -432,7 +432,7 @@ class _StartScreenState extends State<StartScreen> {
       actions: <Widget>[
         TextButton(
             child: const Text("Decline (No location services)"),
-            style: TextButton.styleFrom(primary: Colors.red),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
             onPressed: () {
               Navigator.of(context).pop();
               prefs.setBool('showLocationDisclosure', true);
@@ -449,8 +449,8 @@ class _StartScreenState extends State<StartScreen> {
           child: const Text("Acknowledge",
               style: TextStyle(fontWeight: FontWeight.bold)),
           style: TextButton.styleFrom(
-              primary: Colors.white,
-              backgroundColor: const Color.fromARGB(255, 18, 148, 23)),
+              backgroundColor: const Color.fromARGB(255, 18, 148, 23),
+              foregroundColor: Colors.white),
           onPressed: () async {
             Navigator.of(context).pop();
             prefs.setBool('showLocationDisclosure', false);
@@ -478,7 +478,8 @@ class _StartScreenState extends State<StartScreen> {
         actions: <Widget>[
           TextButton(
               child: const Text("Close"),
-              style: TextButton.styleFrom(primary: Color(s_disabledGray)),
+              style:
+                  TextButton.styleFrom(backgroundColor: Color(s_disabledGray)),
               onPressed: () {
                 Navigator.of(context).pop();
               })
@@ -638,7 +639,7 @@ class _StartScreenState extends State<StartScreen> {
           )
         ]),
         style: ElevatedButton.styleFrom(
-            primary: const Color(s_aquarium),
+            backgroundColor: const Color(s_aquarium),
             fixedSize: Size(_buttonWidth, _buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius:
@@ -686,7 +687,7 @@ class _StartScreenState extends State<StartScreen> {
           )
         ]),
         style: ElevatedButton.styleFrom(
-            primary: const Color(s_aquarium),
+            backgroundColor: const Color(s_aquarium),
             fixedSize: Size(_buttonWidth, _buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius:
@@ -713,7 +714,7 @@ class _StartScreenState extends State<StartScreen> {
                   }));
         },
         style: ElevatedButton.styleFrom(
-            primary: const Color(s_darkSalmon),
+            backgroundColor: const Color(s_darkSalmon),
             fixedSize: Size(_buttonWidth, _buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius:

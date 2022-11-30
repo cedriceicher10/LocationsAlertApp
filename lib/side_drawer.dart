@@ -19,6 +19,11 @@ class SideDrawer extends StatelessWidget {
   double _spacerHeight = 0;
   double _sideDrawerUserNoFontSize = 0;
   double _spacerBottomHeight = 0;
+  double _dataDisclosureButtonHeight = 0;
+  double _dataDisclosureIconSize = 0;
+  double _dataIconSpacer = 0;
+  double _adDisclosureIconSize = 0;
+  double _adIconSpacer = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +32,7 @@ class SideDrawer extends StatelessWidget {
         future: initFunctions(context),
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.hasData) {
-            return sideDrawer();
+            return sideDrawer(context);
           } else {
             return const Center(
                 child: CircularProgressIndicator(
@@ -42,7 +47,7 @@ class SideDrawer extends StatelessWidget {
     return true;
   }
 
-  Widget sideDrawer() {
+  Widget sideDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -61,13 +66,23 @@ class SideDrawer extends StatelessWidget {
           listTileNoAction('Alerts Completed: ${_userInfo.remindersCompleted}'),
           listTileNoAction(
               'Alerts Completion: ${alertCompletion(_userInfo.remindersCompleted, _userInfo.remindersCreated)}%'),
+          ListTile(
+            dense: true,
+            title: dataDisclosure(context),
+            onTap: () {},
+          ),
+          ListTile(
+            dense: true,
+            title: adDisclosure(context),
+            onTap: () {},
+          ),
           // ListTile(
           //   dense: true,
           //   title: settingDrawerItem('Dark Mode'),
           //   onTap: () {},
           // ),
           SizedBox(height: _spacerHeight),
-          Divider(height: 2, thickness: 0.5, color: Colors.grey),
+          Divider(height: 0, thickness: 1, color: Colors.grey),
           SizedBox(height: _spacerBottomHeight),
           ListTile(
             dense: true,
@@ -77,6 +92,48 @@ class SideDrawer extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget dataDisclosure(BuildContext context) {
+    return Row(
+        //mainAxisAlignment: MainAxisAlignment.center,
+        //crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(Icons.dashboard_outlined,
+              size: _dataDisclosureIconSize, color: Color(s_blackBlue)),
+          SizedBox(width: _dataIconSpacer),
+          dataDisclosureText('Data Disclosure')
+        ]);
+  }
+
+  Widget dataDisclosureText(String text) {
+    return FormattedText(
+        text: text,
+        size: _sideDrawerItemFontSize,
+        color: Color(s_declineRed),
+        font: s_font_IBMPlexSans,
+        weight: FontWeight.bold);
+  }
+
+  Widget adDisclosure(BuildContext context) {
+    return Row(
+        //mainAxisAlignment: MainAxisAlignment.center,
+        //crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(Icons.attach_money_outlined,
+              size: _adDisclosureIconSize, color: Color(s_blackBlue)),
+          SizedBox(width: _adIconSpacer),
+          adDisclosureText('Ads Disclosure')
+        ]);
+  }
+
+  Widget adDisclosureText(String text) {
+    return FormattedText(
+        text: text,
+        size: _sideDrawerItemFontSize,
+        color: Color(s_declineRed),
+        font: s_font_IBMPlexSans,
+        weight: FontWeight.bold);
   }
 
   String alertCompletion(int completed, int created) {
@@ -163,8 +220,13 @@ class SideDrawer extends StatelessWidget {
 
     // Height
     _sideDrawerHeaderHeight = (80 / 781) * _screenHeight;
-    _spacerHeight = (375 / 781) * _screenHeight;
+    _spacerHeight = (300 / 781) * _screenHeight;
     _spacerBottomHeight = (50 / 781) * _screenHeight;
+    _dataDisclosureButtonHeight = (30 / 781) * _screenHeight;
+
+    // Width
+    _dataIconSpacer = 4;
+    _adIconSpacer = 4;
 
     // Font
     _sideDrawerTitleFontSize = (15 / 781) * _screenHeight;
@@ -173,5 +235,7 @@ class SideDrawer extends StatelessWidget {
 
     // Icons
     _sideDrawerIconSize = (20 / 80) * _sideDrawerHeaderHeight;
+    _dataDisclosureIconSize = (14 / 80) * _sideDrawerHeaderHeight;
+    _adDisclosureIconSize = (14 / 80) * _sideDrawerHeaderHeight;
   }
 }

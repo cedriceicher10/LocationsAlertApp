@@ -16,6 +16,9 @@ class SideDrawer extends StatelessWidget {
   double _sideDrawerTitleFontSize = 0;
   double _sideDrawerItemFontSize = 0;
   double _sideDrawerIconSize = 0;
+  double _spacerHeight = 0;
+  double _sideDrawerUserNoFontSize = 0;
+  double _spacerBottomHeight = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +53,7 @@ class SideDrawer extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Color(s_darkSalmon),
                 ),
-                child: sideDrawerTitle('User: #$UUID_GLOBAL'),
+                child: sideDrawerTitle('User Id: $UUID_GLOBAL'),
               )),
           listTileDate(_userInfo.firstLogin),
           listTileDate(_userInfo.lastLogin),
@@ -58,11 +61,19 @@ class SideDrawer extends StatelessWidget {
           listTileNoAction('Alerts Completed: ${_userInfo.remindersCompleted}'),
           listTileNoAction(
               'Alerts Completion: ${alertCompletion(_userInfo.remindersCompleted, _userInfo.remindersCreated)}%'),
+          // ListTile(
+          //   dense: true,
+          //   title: settingDrawerItem('Dark Mode'),
+          //   onTap: () {},
+          // ),
+          SizedBox(height: _spacerHeight),
+          Divider(height: 2, thickness: 0.5, color: Colors.grey),
+          SizedBox(height: _spacerBottomHeight),
           ListTile(
             dense: true,
-            title: settingDrawerItem('Dark Mode'),
+            title: userNoText(_userInfo.userNo),
             onTap: () {},
-          ),
+          )
         ],
       ),
     );
@@ -71,9 +82,23 @@ class SideDrawer extends StatelessWidget {
   String alertCompletion(int completed, int created) {
     if (completed > created) {
       return '-';
+    } else if ((completed == 0) && (created == 0)) {
+      return '-';
     } else {
       return ((created / completed) * 100).toString();
     }
+  }
+
+  Widget userNoText(int userNo) {
+    int zeros = 6 - userNo.toString().length;
+    String userNoString = ('0' * zeros) + userNo.toString();
+    return FormattedText(
+        text: 'User No: #$userNoString',
+        size: _sideDrawerUserNoFontSize,
+        color: Color(s_aquarium),
+        font: s_font_IBMPlexSans,
+        align: TextAlign.center,
+        weight: FontWeight.bold);
   }
 
   Widget listTileDate(Timestamp timestamp) {
@@ -138,10 +163,13 @@ class SideDrawer extends StatelessWidget {
 
     // Height
     _sideDrawerHeaderHeight = (80 / 781) * _screenHeight;
+    _spacerHeight = (375 / 781) * _screenHeight;
+    _spacerBottomHeight = (50 / 781) * _screenHeight;
 
     // Font
-    _sideDrawerTitleFontSize = (16 / 781) * _screenHeight;
+    _sideDrawerTitleFontSize = (15 / 781) * _screenHeight;
     _sideDrawerItemFontSize = (12 / 781) * _screenHeight;
+    _sideDrawerUserNoFontSize = (16 / 781) * _screenHeight;
 
     // Icons
     _sideDrawerIconSize = (20 / 80) * _sideDrawerHeaderHeight;

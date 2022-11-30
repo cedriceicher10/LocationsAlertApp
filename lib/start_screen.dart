@@ -176,18 +176,18 @@ class _StartScreenState extends State<StartScreen> {
         // Set up shared prefs for recently chosen locations
         await sharedPrefsSetup();
       }
-      if (!__user_info_app_opens__) {
-        // User app opens
-        await updateUserAppOpens();
-      }
-      // User last login
-      await updateUserLogin();
       // Tally the number of uncompleted alerts for the My Alerts button
       await setAlertCount();
       // Check status of location services and toggle
       await locationToggleCheck();
       // Kickoff background location tracking
       await kickoffBackgroundLocation();
+      if (!__user_info_app_opens__) {
+        // User app opens
+        await updateUserAppOpens();
+      }
+      // User last login
+      await updateUserLogin();
     }
 
     // OLD WAY: Part of overhaul to try to fix location/location toggle issues
@@ -380,10 +380,6 @@ class _StartScreenState extends State<StartScreen> {
       _dbServices.addToUsersDatabase(context);
     } else {
       UUID_GLOBAL = uuidSP;
-    }
-    // Grandfather in pre-users table users
-    if (!(await _dbServices.isUuidTaken(context, UUID_GLOBAL))) {
-      _dbServices.addToUsersDatabase(context);
     }
     __uuid_complete__ = true;
   }

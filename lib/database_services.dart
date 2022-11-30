@@ -16,6 +16,7 @@ class userInfo {
   int remindersUpdated;
   int remindersDeleted;
   String userId;
+  int userNo;
   userInfo(
       this.firstLogin,
       this.lastLogin,
@@ -24,7 +25,8 @@ class userInfo {
       this.remindersCreated,
       this.remindersUpdated,
       this.remindersDeleted,
-      this.userId);
+      this.userId,
+      this.userNo);
   userInfo.init()
       : this.firstLogin = Timestamp.now(),
         this.lastLogin = Timestamp.now(),
@@ -33,7 +35,8 @@ class userInfo {
         this.remindersCreated = 0,
         this.remindersDeleted = 0,
         this.remindersUpdated = 0,
-        this.userId = '';
+        this.userId = '',
+        this.userNo = -1;
 }
 
 class DatabaseServices {
@@ -72,6 +75,16 @@ class DatabaseServices {
   }
 
   void addToUsersDatabase(BuildContext context) async {
+    // Collect latest (highest) userNo to assign new userNo
+    var query =
+        await FirebaseFirestore.instance.collection(COLLECTION_USERS).get();
+    int highestUserNo = -1;
+    for (int index = 0; index < query.docs.length; index++) {
+      if (query.docs[index]['userNo'] > highestUserNo) {
+        highestUserNo = query.docs[index]['userNo'];
+      }
+    }
+
     // Put in Firestore cloud database
     users.add({
       'firstLogin': Timestamp.now(),
@@ -82,6 +95,7 @@ class DatabaseServices {
       'remindersUpdated': 0,
       'remindersDeleted': 0,
       'userId': UUID_GLOBAL,
+      'userNo': highestUserNo + 1
     }).catchError((error) {
       _exception.popUp(context,
           'Add to users database: Action failed\n error string: ${error.toString()}\nerror raw: $error');
@@ -103,7 +117,8 @@ class DatabaseServices {
         query.docs[0]['remindersCreated'],
         query.docs[0]['remindersUpdated'],
         query.docs[0]['remindersDeleted'],
-        query.docs[0]['userId']);
+        query.docs[0]['userId'],
+        query.docs[0]['userNo']);
   }
 
   Future<bool> isUuidTaken(BuildContext context, String uuid) async {

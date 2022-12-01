@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore_platform_interface/src/timestamp.dart';
 import 'package:locationalertsapp/start_screen.dart';
+import 'intro_slides_screen.dart';
 import 'database_services.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
@@ -12,6 +13,8 @@ class SideDrawer extends StatelessWidget {
   final DatabaseServices _dbServices = DatabaseServices();
   userInfo _userInfo = userInfo.init();
 
+  double _screenWidth = 0;
+  double _screenHeight = 0;
   double _sideDrawerHeaderHeight = 0;
   double _sideDrawerTitleFontSize = 0;
   double _sideDrawerItemFontSize = 0;
@@ -19,11 +22,13 @@ class SideDrawer extends StatelessWidget {
   double _spacerHeight = 0;
   double _sideDrawerUserNoFontSize = 0;
   double _spacerBottomHeight = 0;
-  double _dataDisclosureButtonHeight = 0;
   double _dataDisclosureIconSize = 0;
   double _dataIconSpacer = 0;
   double _adDisclosureIconSize = 0;
   double _adIconSpacer = 0;
+  double _howToUseIconSize = 0;
+  double _howToUseIconSpacer = 0;
+  double _alertPaddingRight = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -69,12 +74,29 @@ class SideDrawer extends StatelessWidget {
           ListTile(
             dense: true,
             title: dataDisclosure(context),
-            onTap: () {},
+            onTap: () {
+              showDataDisclosure(context);
+            },
           ),
           ListTile(
             dense: true,
             title: adDisclosure(context),
-            onTap: () {},
+            onTap: () {
+              showAdDisclosure(context);
+            },
+          ),
+          ListTile(
+            dense: true,
+            title: howToUse(context),
+            onTap: () {
+              Navigator.of(context).pop();
+              Navigator.pushReplacement(
+                  context,
+                  new MaterialPageRoute(
+                      builder: (BuildContext context) => new IntroSlidesScreen(
+                          screenWidth: _screenWidth,
+                          screenHeight: _screenHeight)));
+            },
           ),
           // ListTile(
           //   dense: true,
@@ -94,6 +116,86 @@ class SideDrawer extends StatelessWidget {
     );
   }
 
+  dynamic showDataDisclosure(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return showDataDisclosureAlert(context);
+      },
+    );
+  }
+
+  dynamic showAdDisclosure(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return showAdDisclosureAlert(context);
+      },
+    );
+  }
+
+  AlertDialog showDataDisclosureAlert(BuildContext context) {
+    return AlertDialog(
+      title: const Text(
+        "Data Disclosure",
+        style: TextStyle(
+            color: Colors.transparent,
+            fontWeight: FontWeight.bold,
+            shadows: [Shadow(offset: Offset(0, -3), color: Colors.black)],
+            decoration: TextDecoration.underline,
+            decorationColor: Colors.black,
+            decorationThickness: 1),
+      ),
+      content: const Text(
+          "This app uses an encrypted cloud-based database (Google Firebase Cloud Firestore) to store your alerts and usage information. All data is strictly ANONYMOUS. No location or user data is tracked AT ANY TIME. \n\nA full user data dump may be requested at any time by contacting the app's maker in the Google Play store."),
+      actions: <Widget>[
+        Padding(
+            padding: EdgeInsets.fromLTRB(0, 0, _alertPaddingRight, 0),
+            child: TextButton(
+              child: const Text("Close",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              style: TextButton.styleFrom(
+                  backgroundColor: Color(s_aquarium),
+                  foregroundColor: Colors.white),
+              onPressed: () async {
+                Navigator.of(context).pop();
+              },
+            ))
+      ],
+    );
+  }
+
+  AlertDialog showAdDisclosureAlert(BuildContext context) {
+    return AlertDialog(
+      title: const Text(
+        "Ad Disclosure",
+        style: TextStyle(
+            color: Colors.transparent,
+            fontWeight: FontWeight.bold,
+            shadows: [Shadow(offset: Offset(0, -3), color: Colors.black)],
+            decoration: TextDecoration.underline,
+            decorationColor: Colors.black,
+            decorationThickness: 1),
+      ),
+      content: const Text(
+          "This app uses Google Admob to serve interstitial ads between defined events in the app's use. These ads help fund the app's continued development and deployment."),
+      actions: <Widget>[
+        Padding(
+            padding: EdgeInsets.fromLTRB(0, 0, _alertPaddingRight, 0),
+            child: TextButton(
+              child: const Text("Close",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              style: TextButton.styleFrom(
+                  backgroundColor: Color(s_aquarium),
+                  foregroundColor: Colors.white),
+              onPressed: () async {
+                Navigator.of(context).pop();
+              },
+            ))
+      ],
+    );
+  }
+
   Widget dataDisclosure(BuildContext context) {
     return Row(
         //mainAxisAlignment: MainAxisAlignment.center,
@@ -110,7 +212,7 @@ class SideDrawer extends StatelessWidget {
     return FormattedText(
         text: text,
         size: _sideDrawerItemFontSize,
-        color: Color(s_declineRed),
+        color: Color(s_aquarium),
         font: s_font_IBMPlexSans,
         weight: FontWeight.bold);
   }
@@ -131,7 +233,28 @@ class SideDrawer extends StatelessWidget {
     return FormattedText(
         text: text,
         size: _sideDrawerItemFontSize,
-        color: Color(s_declineRed),
+        color: Color(s_aquarium),
+        font: s_font_IBMPlexSans,
+        weight: FontWeight.bold);
+  }
+
+  Widget howToUse(BuildContext context) {
+    return Row(
+        //mainAxisAlignment: MainAxisAlignment.center,
+        //crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(Icons.question_mark,
+              size: _howToUseIconSize, color: Color(s_blackBlue)),
+          SizedBox(width: _howToUseIconSpacer),
+          howToUseText('How to Use This App')
+        ]);
+  }
+
+  Widget howToUseText(String text) {
+    return FormattedText(
+        text: text,
+        size: _sideDrawerItemFontSize,
+        color: Color(s_aquarium),
         font: s_font_IBMPlexSans,
         weight: FontWeight.bold);
   }
@@ -212,21 +335,22 @@ class SideDrawer extends StatelessWidget {
   }
 
   void generateLayout(BuildContext context) {
-    double _screenWidth = MediaQuery.of(context).size.width;
-    double _screenHeight = MediaQuery.of(context).size.height;
+    _screenWidth = MediaQuery.of(context).size.width;
+    _screenHeight = MediaQuery.of(context).size.height;
 
     // Original ratios based on a Google Pixel 5 (392 x 781) screen
     // and a 56 height appBar
 
     // Height
     _sideDrawerHeaderHeight = (80 / 781) * _screenHeight;
-    _spacerHeight = (300 / 781) * _screenHeight;
+    _spacerHeight = (200 / 781) * _screenHeight;
     _spacerBottomHeight = (50 / 781) * _screenHeight;
-    _dataDisclosureButtonHeight = (30 / 781) * _screenHeight;
 
     // Width
     _dataIconSpacer = 4;
     _adIconSpacer = 4;
+    _howToUseIconSpacer = 4;
+    _alertPaddingRight = (10 / 392) * _screenWidth;
 
     // Font
     _sideDrawerTitleFontSize = (15 / 781) * _screenHeight;
@@ -237,5 +361,6 @@ class SideDrawer extends StatelessWidget {
     _sideDrawerIconSize = (20 / 80) * _sideDrawerHeaderHeight;
     _dataDisclosureIconSize = (14 / 80) * _sideDrawerHeaderHeight;
     _adDisclosureIconSize = (14 / 80) * _sideDrawerHeaderHeight;
+    _howToUseIconSize = (14 / 80) * _sideDrawerHeaderHeight;
   }
 }

@@ -129,6 +129,7 @@ class _StartScreenState extends State<StartScreen> {
   double _locationToggleScale = 0;
   double _locationToggleGapWidth = 0;
   double _bottomPadding = 0;
+  double _alertPaddingRight = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -445,17 +446,19 @@ class _StartScreenState extends State<StartScreen> {
                     });
               });
             }),
-        TextButton(
-          child: const Text("Acknowledge",
-              style: TextStyle(fontWeight: FontWeight.bold)),
-          style: TextButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 18, 148, 23),
-              foregroundColor: Colors.white),
-          onPressed: () async {
-            Navigator.of(context).pop();
-            prefs.setBool('showLocationDisclosure', false);
-          },
-        )
+        Padding(
+            padding: EdgeInsets.fromLTRB(0, 0, _alertPaddingRight, 0),
+            child: TextButton(
+              child: const Text("Acknowledge",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              style: TextButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 18, 148, 23),
+                  foregroundColor: Colors.white),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                prefs.setBool('showLocationDisclosure', false);
+              },
+            ))
       ],
     );
   }
@@ -843,6 +846,7 @@ class _StartScreenState extends State<StartScreen> {
     _explainerTextPadding = (20 / 392) * _screenWidth;
     _locationDisclosureButtonWidth = (125 / 392) * _screenWidth;
     _locationToggleGapWidth = (10 / 392) * _screenWidth;
+    _alertPaddingRight = (10 / 392) * _screenWidth;
 
     // Font
     _submitButtonFontSize = (20 / 60) * _buttonHeight;

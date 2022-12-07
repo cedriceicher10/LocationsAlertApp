@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore_platform_interface/src/timestamp.dart';
 import 'package:locationalertsapp/start_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'intro_slides_screen.dart';
 import 'database_services.dart';
 import 'formatted_text.dart';
@@ -98,11 +99,21 @@ class SideDrawer extends StatelessWidget {
                           screenHeight: _screenHeight)));
             },
           ),
-          // ListTile(
-          //   dense: true,
-          //   title: settingDrawerItem('Dark Mode'),
-          //   onTap: () {},
-          // ),
+          ListTile(
+            dense: true,
+            title: sendFeedback(context),
+            onTap: () async {
+              String email = 'cedriceicher10@gmail.com';
+              String subject = 'Feedback for Location Alerts';
+              if (await launch('mailto:$email?subject=$subject')) {
+                //email app opened
+                print('OPENED');
+              } else {
+                //email app is not opened
+                print('FAILED');
+              }
+            },
+          ),
           SizedBox(height: _spacerHeight),
           Divider(height: 0, thickness: 1, color: Colors.grey),
           SizedBox(height: _spacerBottomHeight),
@@ -251,6 +262,27 @@ class SideDrawer extends StatelessWidget {
   }
 
   Widget howToUseText(String text) {
+    return FormattedText(
+        text: text,
+        size: _sideDrawerItemFontSize,
+        color: Color(s_aquarium),
+        font: s_font_IBMPlexSans,
+        weight: FontWeight.bold);
+  }
+
+  Widget sendFeedback(BuildContext context) {
+    return Row(
+        //mainAxisAlignment: MainAxisAlignment.center,
+        //crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(Icons.email_outlined,
+              size: _dataDisclosureIconSize, color: Color(s_blackBlue)),
+          SizedBox(width: _dataIconSpacer),
+          sendFeedbackText('Send Feedback')
+        ]);
+  }
+
+  Widget sendFeedbackText(String text) {
     return FormattedText(
         text: text,
         size: _sideDrawerItemFontSize,

@@ -114,6 +114,13 @@ class SideDrawer extends StatelessWidget {
               }
             },
           ),
+          ListTile(
+            dense: true,
+            title: privacyPolicy(context),
+            onTap: () {
+              // URL to privacy policy
+            },
+          ),
           SizedBox(height: _spacerHeight),
           Divider(height: 0, thickness: 1, color: Colors.grey),
           SizedBox(height: _spacerBottomHeight),
@@ -291,11 +298,25 @@ class SideDrawer extends StatelessWidget {
         weight: FontWeight.bold);
   }
 
+  Widget privacyPolicy(BuildContext context) {
+    return Row(
+        //mainAxisAlignment: MainAxisAlignment.center,
+        //crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(Icons.privacy_tip_outlined,
+              size: _adDisclosureIconSize, color: Color(s_blackBlue)),
+          SizedBox(width: _adIconSpacer),
+          adDisclosureText('Privacy Policy')
+        ]);
+  }
+
   String alertCompletion(int completed, int created) {
     if (completed > created) {
       return '-';
     } else if ((completed == 0) && (created == 0)) {
       return '-';
+    } else if (completed < created) {
+      return '0';
     } else {
       return ((created / completed) * 100).toString();
     }

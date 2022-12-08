@@ -218,7 +218,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
                   'Date Created: ${reminderTile.dateTimeCreated}')
             ]),
             trailing: Icon(
-              Icons.arrow_forward_ios_rounded,
+              Icons.edit,
               color: Color(s_darkSalmon),
               size: _cardIconSize,
             ),
@@ -388,7 +388,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     _noAlertsYetText = (26 / 781) * _screenHeight;
 
     // Icons
-    _cardIconSize = (24 / 60) * _buttonHeight;
+    _cardIconSize = (30 / 60) * _buttonHeight;
     _backButtonIconSize = (24 / 60) * _buttonHeight;
 
     // Styling

@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore_platform_interface/src/timestamp.dart';
 import 'package:locationalertsapp/start_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'exception_services.dart';
 import 'intro_slides_screen.dart';
 import 'database_services.dart';
 import 'formatted_text.dart';
@@ -13,6 +14,9 @@ class SideDrawer extends StatelessWidget {
   // Services
   final DatabaseServices _dbServices = DatabaseServices();
   userInfo _userInfo = userInfo.init();
+
+  // Exceptions
+  ExceptionServices _exception = ExceptionServices();
 
   double _screenWidth = 0;
   double _screenHeight = 0;
@@ -105,12 +109,10 @@ class SideDrawer extends StatelessWidget {
             onTap: () async {
               String email = 'cedriceicher10@gmail.com';
               String subject = 'Feedback for Location Alerts';
-              if (await launch('mailto:$email?subject=$subject')) {
-                //email app opened
-                print('OPENED');
-              } else {
-                //email app is not opened
-                print('FAILED');
+              if (!(await launch('mailto:$email?subject=$subject'))) {
+                _exception.popUp(
+                    context, 'Launch email: Could not launch $email');
+                throw 'Could not launch $email';
               }
             },
           ),
@@ -119,6 +121,13 @@ class SideDrawer extends StatelessWidget {
             title: privacyPolicy(context),
             onTap: () {
               // URL to privacy policy
+            },
+          ),
+          ListTile(
+            dense: true,
+            title: about(context),
+            onTap: () {
+              showAboutMe(context);
             },
           ),
           SizedBox(height: _spacerHeight),
@@ -148,6 +157,15 @@ class SideDrawer extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return showAdDisclosureAlert(context);
+      },
+    );
+  }
+
+  dynamic showAboutMe(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return showAboutMeAlert(context);
       },
     );
   }
@@ -214,6 +232,50 @@ class SideDrawer extends StatelessWidget {
     );
   }
 
+  AlertDialog showAboutMeAlert(BuildContext context) {
+    return AlertDialog(
+      title: const Text(
+        "About",
+        style: TextStyle(
+            color: Colors.transparent,
+            fontWeight: FontWeight.bold,
+            shadows: [Shadow(offset: Offset(0, -3), color: Colors.black)],
+            decoration: TextDecoration.underline,
+            decorationColor: Colors.black,
+            decorationThickness: 1),
+      ),
+      content: Text(
+          "Hello! My name is Cedric Eicher and I am the creator of this app. I love mobile development and this is one of my projects.\n\nIf you are enjoying this app, please consider leaving a review and feedback. Additionally, check out other CE Ventures apps like Simple Weather in the Google Play store."),
+      actions: <Widget>[
+        TextButton(
+            child: const Text("Visit my LinkedIn Page"),
+            style: TextButton.styleFrom(
+                backgroundColor: Color(s_linkedin),
+                foregroundColor: Colors.white),
+            onPressed: () async {
+              Navigator.of(context).pop();
+              String url = 'https://www.linkedin.com/in/cedriceicher/';
+              if (!(await launch(url))) {
+                _exception.popUp(context, 'Launch URL: Could not launch $url');
+                throw 'Could not launch $url';
+              }
+            }),
+        Padding(
+            padding: EdgeInsets.fromLTRB(0, 0, _alertPaddingRight, 0),
+            child: TextButton(
+              child: const Text("Close",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              style: TextButton.styleFrom(
+                  backgroundColor: Color(s_aquarium),
+                  foregroundColor: Colors.white),
+              onPressed: () async {
+                Navigator.of(context).pop();
+              },
+            ))
+      ],
+    );
+  }
+
   Widget dataDisclosure(BuildContext context) {
     return Row(
         //mainAxisAlignment: MainAxisAlignment.center,
@@ -222,17 +284,8 @@ class SideDrawer extends StatelessWidget {
           Icon(Icons.dashboard_outlined,
               size: _dataDisclosureIconSize, color: Color(s_blackBlue)),
           SizedBox(width: _dataIconSpacer),
-          dataDisclosureText('Data Disclosure')
+          listText('Data Disclosure')
         ]);
-  }
-
-  Widget dataDisclosureText(String text) {
-    return FormattedText(
-        text: text,
-        size: _sideDrawerItemFontSize,
-        color: Color(s_aquarium),
-        font: s_font_IBMPlexSans,
-        weight: FontWeight.bold);
   }
 
   Widget adDisclosure(BuildContext context) {
@@ -243,17 +296,8 @@ class SideDrawer extends StatelessWidget {
           Icon(Icons.attach_money_outlined,
               size: _adDisclosureIconSize, color: Color(s_blackBlue)),
           SizedBox(width: _adIconSpacer),
-          adDisclosureText('Ads Disclosure')
+          listText('Ads Disclosure')
         ]);
-  }
-
-  Widget adDisclosureText(String text) {
-    return FormattedText(
-        text: text,
-        size: _sideDrawerItemFontSize,
-        color: Color(s_aquarium),
-        font: s_font_IBMPlexSans,
-        weight: FontWeight.bold);
   }
 
   Widget howToUse(BuildContext context) {
@@ -264,17 +308,8 @@ class SideDrawer extends StatelessWidget {
           Icon(Icons.question_mark,
               size: _howToUseIconSize, color: Color(s_blackBlue)),
           SizedBox(width: _howToUseIconSpacer),
-          howToUseText('How to Use This App')
+          listText('How to Use This App')
         ]);
-  }
-
-  Widget howToUseText(String text) {
-    return FormattedText(
-        text: text,
-        size: _sideDrawerItemFontSize,
-        color: Color(s_aquarium),
-        font: s_font_IBMPlexSans,
-        weight: FontWeight.bold);
   }
 
   Widget sendFeedback(BuildContext context) {
@@ -285,17 +320,8 @@ class SideDrawer extends StatelessWidget {
           Icon(Icons.email_outlined,
               size: _dataDisclosureIconSize, color: Color(s_blackBlue)),
           SizedBox(width: _dataIconSpacer),
-          sendFeedbackText('Send Feedback')
+          listText('Send Feedback')
         ]);
-  }
-
-  Widget sendFeedbackText(String text) {
-    return FormattedText(
-        text: text,
-        size: _sideDrawerItemFontSize,
-        color: Color(s_aquarium),
-        font: s_font_IBMPlexSans,
-        weight: FontWeight.bold);
   }
 
   Widget privacyPolicy(BuildContext context) {
@@ -306,8 +332,29 @@ class SideDrawer extends StatelessWidget {
           Icon(Icons.privacy_tip_outlined,
               size: _adDisclosureIconSize, color: Color(s_blackBlue)),
           SizedBox(width: _adIconSpacer),
-          adDisclosureText('Privacy Policy')
+          listText('Privacy Policy')
         ]);
+  }
+
+  Widget about(BuildContext context) {
+    return Row(
+        //mainAxisAlignment: MainAxisAlignment.center,
+        //crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(Icons.info_outline,
+              size: _adDisclosureIconSize, color: Color(s_blackBlue)),
+          SizedBox(width: _adIconSpacer),
+          listText('About')
+        ]);
+  }
+
+  Widget listText(String text) {
+    return FormattedText(
+        text: text,
+        size: _sideDrawerItemFontSize,
+        color: Color(s_aquarium),
+        font: s_font_IBMPlexSans,
+        weight: FontWeight.bold);
   }
 
   String alertCompletion(int completed, int created) {

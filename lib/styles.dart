@@ -29,6 +29,7 @@ const int s_raisinBlack = 0xFFBFDBF7; // 0xFF2A2D34
 const int s_beauBlue = 0xFFBFDBF7;
 const int s_lavenderWeb = 0xFFE1E5F2;
 const int s_iconGreen = 0xFF2fa561;
+const int s_linkedin = 0xFF0077B5;
 
 const Color s_locationToggleColor = Color.fromARGB(255, 239, 241, 79);
 const Color s_myLocationColor = Color.fromARGB(255, 243, 245, 159);

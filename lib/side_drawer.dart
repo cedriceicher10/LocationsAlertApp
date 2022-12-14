@@ -24,9 +24,6 @@ class SideDrawer extends StatelessWidget {
   double _sideDrawerTitleFontSize = 0;
   double _sideDrawerItemFontSize = 0;
   double _sideDrawerIconSize = 0;
-  double _spacerHeight = 0;
-  double _sideDrawerUserNoFontSize = 0;
-  double _spacerBottomHeight = 0;
   double _dataDisclosureIconSize = 0;
   double _dataIconSpacer = 0;
   double _adDisclosureIconSize = 0;
@@ -34,6 +31,11 @@ class SideDrawer extends StatelessWidget {
   double _howToUseIconSize = 0;
   double _howToUseIconSpacer = 0;
   double _alertPaddingRight = 0;
+  double _sideDrawerDividerFontSize = 0;
+  double _sideDrawerDividerTextPaddingLeft = 0;
+  double _sideDrawerDividerTextPaddingTop = 0;
+  double _sideDrawerDividerTextPaddingBottom = 0;
+  double _sideDrawerDividerBottomPadding = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -70,12 +72,27 @@ class SideDrawer extends StatelessWidget {
                 ),
                 child: sideDrawerTitle('User Id: $UUID_GLOBAL'),
               )),
-          listTileDate(_userInfo.firstLogin),
-          listTileDate(_userInfo.lastLogin),
-          listTileNoAction('Alerts Created: ${_userInfo.remindersCreated}'),
-          listTileNoAction('Alerts Completed: ${_userInfo.remindersCompleted}'),
-          listTileNoAction(
-              'Alerts Completion: ${alertCompletion(_userInfo.remindersCompleted, _userInfo.remindersCreated)}%'),
+          Padding(
+              padding: EdgeInsets.fromLTRB(
+                  _sideDrawerDividerTextPaddingLeft,
+                  _sideDrawerDividerTextPaddingTop,
+                  0,
+                  _sideDrawerDividerTextPaddingBottom),
+              child: dividerText('User')),
+          ListTile(
+            dense: true,
+            title: userNo(_userInfo.userNo),
+            onTap: () {},
+          ),
+          SizedBox(height: _sideDrawerDividerBottomPadding),
+          Divider(),
+          Padding(
+              padding: EdgeInsets.fromLTRB(
+                  _sideDrawerDividerTextPaddingLeft,
+                  _sideDrawerDividerTextPaddingTop,
+                  0,
+                  _sideDrawerDividerTextPaddingBottom),
+              child: dividerText('Disclosure')),
           ListTile(
             dense: true,
             title: dataDisclosure(context),
@@ -90,6 +107,15 @@ class SideDrawer extends StatelessWidget {
               showAdDisclosure(context);
             },
           ),
+          SizedBox(height: _sideDrawerDividerBottomPadding),
+          Divider(),
+          Padding(
+              padding: EdgeInsets.fromLTRB(
+                  _sideDrawerDividerTextPaddingLeft,
+                  _sideDrawerDividerTextPaddingTop,
+                  0,
+                  _sideDrawerDividerTextPaddingBottom),
+              child: dividerText('App')),
           ListTile(
             dense: true,
             title: howToUse(context),
@@ -130,14 +156,22 @@ class SideDrawer extends StatelessWidget {
               showAboutMe(context);
             },
           ),
-          SizedBox(height: _spacerHeight),
-          Divider(height: 0, thickness: 1, color: Colors.grey),
-          SizedBox(height: _spacerBottomHeight),
-          ListTile(
-            dense: true,
-            title: userNoText(_userInfo.userNo),
-            onTap: () {},
-          )
+          SizedBox(height: _sideDrawerDividerBottomPadding),
+          Divider(),
+          Padding(
+              padding: EdgeInsets.fromLTRB(
+                  _sideDrawerDividerTextPaddingLeft,
+                  _sideDrawerDividerTextPaddingTop,
+                  0,
+                  _sideDrawerDividerTextPaddingBottom),
+              child: dividerText('Statistics')),
+          listTileDate(_userInfo.firstLogin),
+          listTileDate(_userInfo.lastLogin),
+          listTileNoAction('Alerts Created: ${_userInfo.remindersCreated}'),
+          listTileNoAction('Alerts Completed: ${_userInfo.remindersCompleted}'),
+          listTileNoAction(
+              'Alerts Completion: ${alertCompletion(_userInfo.remindersCompleted, _userInfo.remindersCreated)}%'),
+          SizedBox(height: _sideDrawerDividerBottomPadding),
         ],
       ),
     );
@@ -348,11 +382,33 @@ class SideDrawer extends StatelessWidget {
         ]);
   }
 
+  Widget userNo(int userNo) {
+    String userNoString = userNoText(userNo);
+    return Row(
+        //mainAxisAlignment: MainAxisAlignment.center,
+        //crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(Icons.person,
+              size: _adDisclosureIconSize, color: Color(s_blackBlue)),
+          SizedBox(width: _adIconSpacer),
+          listText('User #: $userNoString')
+        ]);
+  }
+
   Widget listText(String text) {
     return FormattedText(
         text: text,
         size: _sideDrawerItemFontSize,
         color: Color(s_aquarium),
+        font: s_font_IBMPlexSans,
+        weight: FontWeight.bold);
+  }
+
+  Widget dividerText(String text) {
+    return FormattedText(
+        text: text,
+        size: _sideDrawerDividerFontSize,
+        color: Color.fromARGB(255, 117, 114, 114),
         font: s_font_IBMPlexSans,
         weight: FontWeight.bold);
   }
@@ -369,16 +425,10 @@ class SideDrawer extends StatelessWidget {
     }
   }
 
-  Widget userNoText(int userNo) {
+  String userNoText(int userNo) {
     int zeros = 6 - userNo.toString().length;
     String userNoString = ('0' * zeros) + userNo.toString();
-    return FormattedText(
-        text: 'User No: #$userNoString',
-        size: _sideDrawerUserNoFontSize,
-        color: Color(s_aquarium),
-        font: s_font_IBMPlexSans,
-        align: TextAlign.center,
-        weight: FontWeight.bold);
+    return userNoString;
   }
 
   Widget listTileDate(Timestamp timestamp) {
@@ -423,7 +473,7 @@ class SideDrawer extends StatelessWidget {
     return FormattedText(
         text: text,
         size: _sideDrawerItemFontSize,
-        color: Color(s_blackBlue),
+        color: Color(s_aquarium),
         font: s_font_IBMPlexSans,
         weight: FontWeight.bold);
   }
@@ -443,19 +493,21 @@ class SideDrawer extends StatelessWidget {
 
     // Height
     _sideDrawerHeaderHeight = (80 / 781) * _screenHeight;
-    _spacerHeight = (200 / 781) * _screenHeight;
-    _spacerBottomHeight = (50 / 781) * _screenHeight;
+    _sideDrawerDividerTextPaddingTop = (10 / 781) * _screenHeight;
+    _sideDrawerDividerTextPaddingBottom = (10 / 781) * _screenHeight;
+    _sideDrawerDividerBottomPadding = (2 / 781) * _screenHeight;
 
     // Width
     _dataIconSpacer = 4;
     _adIconSpacer = 4;
     _howToUseIconSpacer = 4;
     _alertPaddingRight = (10 / 392) * _screenWidth;
+    _sideDrawerDividerTextPaddingLeft = 6;
 
     // Font
     _sideDrawerTitleFontSize = (15 / 781) * _screenHeight;
     _sideDrawerItemFontSize = (12 / 781) * _screenHeight;
-    _sideDrawerUserNoFontSize = (16 / 781) * _screenHeight;
+    _sideDrawerDividerFontSize = (12 / 781) * _screenHeight;
 
     // Icons
     _sideDrawerIconSize = (20 / 80) * _sideDrawerHeaderHeight;

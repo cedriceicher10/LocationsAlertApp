@@ -10,10 +10,11 @@ import 'formatted_text.dart';
 import 'styles.dart';
 
 class SideDrawer extends StatelessWidget {
-  SideDrawer({super.key});
+  SideDrawer({Key? key}) : super(key: key);
+
   // Services
   final DatabaseServices _dbServices = DatabaseServices();
-  userInfo _userInfo = userInfo.init();
+  userInfo userSideDrawerInfo = userInfo.init();
 
   // Exceptions
   ExceptionServices _exception = ExceptionServices();
@@ -40,22 +41,27 @@ class SideDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     generateLayout(context);
-    return FutureBuilder(
-        future: initFunctions(context),
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-          if (snapshot.hasData) {
-            return sideDrawer(context);
-          } else {
-            return const Center(
-                child: CircularProgressIndicator(
-              color: Color(s_darkSalmon),
-            ));
-          }
-        });
+    if (USER_INFO_SIDE_DRAWER_GLOBAL.userNo == -1) {
+      return FutureBuilder(
+          future: initFunctions(context),
+          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+            if (snapshot.hasData) {
+              return sideDrawer(context);
+            } else {
+              return const Center(
+                  child: CircularProgressIndicator(
+                color: Color(s_darkSalmon),
+              ));
+            }
+          });
+    } else {
+      userSideDrawerInfo = USER_INFO_SIDE_DRAWER_GLOBAL;
+      return sideDrawer(context);
+    }
   }
 
   Future<bool> initFunctions(BuildContext context) async {
-    _userInfo = await _dbServices.getUsersSnapshot(context);
+    userSideDrawerInfo = await _dbServices.getUsersSnapshot(context);
     return true;
   }
 
@@ -81,7 +87,7 @@ class SideDrawer extends StatelessWidget {
               child: dividerText('User')),
           ListTile(
             dense: true,
-            title: userNo(_userInfo.userNo),
+            title: userNo(userSideDrawerInfo.userNo),
             onTap: () {},
           ),
           SizedBox(height: _sideDrawerDividerBottomPadding),
@@ -165,12 +171,14 @@ class SideDrawer extends StatelessWidget {
                   0,
                   _sideDrawerDividerTextPaddingBottom),
               child: dividerText('Statistics')),
-          listTileDate(_userInfo.firstLogin),
-          listTileDate(_userInfo.lastLogin),
-          listTileNoAction('Alerts Created: ${_userInfo.remindersCreated}'),
-          listTileNoAction('Alerts Completed: ${_userInfo.remindersCompleted}'),
+          listTileDate('First Login:', userSideDrawerInfo.firstLogin),
+          listTileDate('Last Login:', userSideDrawerInfo.lastLogin),
           listTileNoAction(
-              'Alerts Completion: ${alertCompletion(_userInfo.remindersCompleted, _userInfo.remindersCreated)}%'),
+              'Alerts Created: ${userSideDrawerInfo.remindersCreated}'),
+          listTileNoAction(
+              'Alerts Completed: ${userSideDrawerInfo.remindersCompleted}'),
+          listTileNoAction(
+              'Alerts Completion: ${alertCompletion(userSideDrawerInfo.remindersCompleted, userSideDrawerInfo.remindersCreated)}%'),
           SizedBox(height: _sideDrawerDividerBottomPadding),
         ],
       ),
@@ -431,11 +439,10 @@ class SideDrawer extends StatelessWidget {
     return userNoString;
   }
 
-  Widget listTileDate(Timestamp timestamp) {
+  Widget listTileDate(String text, Timestamp timestamp) {
     return ListTile(
       dense: true,
-      title: settingDrawerItem(
-          'First Login: ${convertToDateTimeFormat(timestamp)}'),
+      title: settingDrawerItem('$text ${convertToDateTimeFormat(timestamp)}'),
       onTap: () {},
     );
   }

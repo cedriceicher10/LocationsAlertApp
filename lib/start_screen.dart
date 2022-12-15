@@ -28,6 +28,8 @@ List<String> GENERAL_LOCATIONS_GLOBAL = [
   'Restaurant'
 ];
 
+userInfo USER_INFO_SIDE_DRAWER_GLOBAL = userInfo.init();
+
 List<DropdownMenuItem<String>> generalLocations() {
   List<DropdownMenuItem<String>> listGenericLocations = [];
   for (int index = 0; index < GENERAL_LOCATIONS_GLOBAL.length; ++index) {
@@ -186,15 +188,21 @@ class _StartScreenState extends State<StartScreen> {
       if (!__user_info_app_opens__) {
         // User app opens
         await updateUserAppOpens();
+        // User last login
+        await updateUserLogin();
       }
-      // User last login
-      await updateUserLogin();
+      // Grab the information for the side drawer
+      getSideDrawerUserInfo();
     }
 
     // OLD WAY: Part of overhaul to try to fix location/location toggle issues
     //await oldWay();
 
     return true;
+  }
+
+  Future<void> getSideDrawerUserInfo() async {
+    USER_INFO_SIDE_DRAWER_GLOBAL = await _dbServices.getUsersSnapshot(context);
   }
 
   Future<void> updateUserAppOpens() async {

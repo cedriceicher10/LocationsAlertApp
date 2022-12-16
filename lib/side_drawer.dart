@@ -429,7 +429,7 @@ class SideDrawer extends StatelessWidget {
     } else if (completed > created) {
       return '-';
     } else {
-      return ((completed / created) * 100).toString();
+      return ((completed / created) * 100).toStringAsFixed(2);
     }
   }
 

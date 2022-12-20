@@ -66,123 +66,144 @@ class SideDrawer extends StatelessWidget {
   }
 
   Widget sideDrawer(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          SizedBox(
-              height: _sideDrawerHeaderHeight,
-              child: DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Color(s_darkSalmon),
-                ),
-                child: sideDrawerTitle('User Id: $UUID_GLOBAL'),
-              )),
-          Padding(
-              padding: EdgeInsets.fromLTRB(
-                  _sideDrawerDividerTextPaddingLeft,
-                  _sideDrawerDividerTextPaddingTop,
-                  0,
-                  _sideDrawerDividerTextPaddingBottom),
-              child: dividerText('User')),
-          ListTile(
-            dense: true,
-            title: userNo(userSideDrawerInfo.userNo),
-            onTap: () {},
+    return Container(
+        width: _screenWidth / 2,
+        child: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              SizedBox(
+                  height: _sideDrawerHeaderHeight,
+                  child: DrawerHeader(
+                    decoration: BoxDecoration(
+                      color: Color(s_darkSalmon),
+                    ),
+                    child: sideDrawerTitle('Location Alerts'),
+                  )),
+              Padding(
+                  padding: EdgeInsets.fromLTRB(
+                      _sideDrawerDividerTextPaddingLeft,
+                      _sideDrawerDividerTextPaddingTop,
+                      0,
+                      _sideDrawerDividerTextPaddingBottom),
+                  child: dividerText('Disclosure')),
+              ListTile(
+                dense: true,
+                title: dataDisclosure(context),
+                onTap: () {
+                  showDataDisclosure(context);
+                },
+              ),
+              ListTile(
+                dense: true,
+                title: adDisclosure(context),
+                onTap: () {
+                  showAdDisclosure(context);
+                },
+              ),
+              SizedBox(height: _sideDrawerDividerBottomPadding),
+              Divider(),
+              Padding(
+                  padding: EdgeInsets.fromLTRB(
+                      _sideDrawerDividerTextPaddingLeft,
+                      _sideDrawerDividerTextPaddingTop,
+                      0,
+                      _sideDrawerDividerTextPaddingBottom),
+                  child: dividerText('App')),
+              ListTile(
+                dense: true,
+                title: howToUse(context),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.pushReplacement(
+                      context,
+                      new MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              new IntroSlidesScreen(
+                                  screenWidth: _screenWidth,
+                                  screenHeight: _screenHeight)));
+                },
+              ),
+              ListTile(
+                dense: true,
+                title: privacyPolicy(context),
+                onTap: () {
+                  // URL to privacy policy
+                },
+              ),
+              ListTile(
+                dense: true,
+                title: about(context),
+                onTap: () {
+                  showAboutMe(context);
+                },
+              ),
+              SizedBox(height: _sideDrawerDividerBottomPadding),
+              Divider(),
+              Padding(
+                  padding: EdgeInsets.fromLTRB(
+                      _sideDrawerDividerTextPaddingLeft,
+                      _sideDrawerDividerTextPaddingTop,
+                      0,
+                      _sideDrawerDividerTextPaddingBottom),
+                  child: dividerText('Communicate')),
+              ListTile(
+                dense: true,
+                title: sendFeedback(context),
+                onTap: () async {
+                  String email = 'cedriceicher10@gmail.com';
+                  String subject = 'Feedback for Location Alerts';
+                  if (!(await launch('mailto:$email?subject=$subject'))) {
+                    _exception.popUp(
+                        context, 'Launch email: Could not launch $email');
+                    throw 'Could not launch $email';
+                  }
+                },
+              ),
+              ListTile(
+                dense: true,
+                title: requestUserData(context),
+                onTap: () async {
+                  String email = 'cedriceicher10@gmail.com';
+                  String subject = 'Request User Data for UUID #$UUID_GLOBAL';
+                  if (!(await launch('mailto:$email?subject=$subject'))) {
+                    _exception.popUp(
+                        context, 'Launch email: Could not launch $email');
+                    throw 'Could not launch $email';
+                  }
+                },
+              ),
+              SizedBox(height: _sideDrawerDividerBottomPadding),
+              Divider(),
+              Padding(
+                  padding: EdgeInsets.fromLTRB(
+                      _sideDrawerDividerTextPaddingLeft,
+                      _sideDrawerDividerTextPaddingTop,
+                      0,
+                      _sideDrawerDividerTextPaddingBottom),
+                  child: dividerText('User Statistics')),
+              listTileDate('First Login:', userSideDrawerInfo.firstLogin),
+              listTileDate('Last Login:', userSideDrawerInfo.lastLogin),
+              listTileNoAction(
+                  'Alerts Created: ${userSideDrawerInfo.remindersCreated}'),
+              listTileNoAction(
+                  'Alerts Completed: ${userSideDrawerInfo.remindersCompleted}'),
+              listTileNoAction(
+                  'Alerts Completion: ${alertCompletion(userSideDrawerInfo.remindersCompleted, userSideDrawerInfo.remindersCreated)}%'),
+              ListTile(
+                dense: true,
+                title: userNo(userSideDrawerInfo.userNo),
+                onTap: () {},
+              ),
+              ListTile(
+                dense: true,
+                title: uuidNo(),
+                onTap: () {},
+              ),
+              SizedBox(height: _sideDrawerDividerBottomPadding),
+            ],
           ),
-          SizedBox(height: _sideDrawerDividerBottomPadding),
-          Divider(),
-          Padding(
-              padding: EdgeInsets.fromLTRB(
-                  _sideDrawerDividerTextPaddingLeft,
-                  _sideDrawerDividerTextPaddingTop,
-                  0,
-                  _sideDrawerDividerTextPaddingBottom),
-              child: dividerText('Disclosure')),
-          ListTile(
-            dense: true,
-            title: dataDisclosure(context),
-            onTap: () {
-              showDataDisclosure(context);
-            },
-          ),
-          ListTile(
-            dense: true,
-            title: adDisclosure(context),
-            onTap: () {
-              showAdDisclosure(context);
-            },
-          ),
-          SizedBox(height: _sideDrawerDividerBottomPadding),
-          Divider(),
-          Padding(
-              padding: EdgeInsets.fromLTRB(
-                  _sideDrawerDividerTextPaddingLeft,
-                  _sideDrawerDividerTextPaddingTop,
-                  0,
-                  _sideDrawerDividerTextPaddingBottom),
-              child: dividerText('App')),
-          ListTile(
-            dense: true,
-            title: howToUse(context),
-            onTap: () {
-              Navigator.of(context).pop();
-              Navigator.pushReplacement(
-                  context,
-                  new MaterialPageRoute(
-                      builder: (BuildContext context) => new IntroSlidesScreen(
-                          screenWidth: _screenWidth,
-                          screenHeight: _screenHeight)));
-            },
-          ),
-          ListTile(
-            dense: true,
-            title: sendFeedback(context),
-            onTap: () async {
-              String email = 'cedriceicher10@gmail.com';
-              String subject = 'Feedback for Location Alerts';
-              if (!(await launch('mailto:$email?subject=$subject'))) {
-                _exception.popUp(
-                    context, 'Launch email: Could not launch $email');
-                throw 'Could not launch $email';
-              }
-            },
-          ),
-          ListTile(
-            dense: true,
-            title: privacyPolicy(context),
-            onTap: () {
-              // URL to privacy policy
-            },
-          ),
-          ListTile(
-            dense: true,
-            title: about(context),
-            onTap: () {
-              showAboutMe(context);
-            },
-          ),
-          SizedBox(height: _sideDrawerDividerBottomPadding),
-          Divider(),
-          Padding(
-              padding: EdgeInsets.fromLTRB(
-                  _sideDrawerDividerTextPaddingLeft,
-                  _sideDrawerDividerTextPaddingTop,
-                  0,
-                  _sideDrawerDividerTextPaddingBottom),
-              child: dividerText('Statistics')),
-          listTileDate('First Login:', userSideDrawerInfo.firstLogin),
-          listTileDate('Last Login:', userSideDrawerInfo.lastLogin),
-          listTileNoAction(
-              'Alerts Created: ${userSideDrawerInfo.remindersCreated}'),
-          listTileNoAction(
-              'Alerts Completed: ${userSideDrawerInfo.remindersCompleted}'),
-          listTileNoAction(
-              'Alerts Completion: ${alertCompletion(userSideDrawerInfo.remindersCompleted, userSideDrawerInfo.remindersCreated)}%'),
-          SizedBox(height: _sideDrawerDividerBottomPadding),
-        ],
-      ),
-    );
+        ));
   }
 
   dynamic showDataDisclosure(BuildContext context) {
@@ -366,6 +387,18 @@ class SideDrawer extends StatelessWidget {
         ]);
   }
 
+  Widget requestUserData(BuildContext context) {
+    return Row(
+        //mainAxisAlignment: MainAxisAlignment.center,
+        //crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(Icons.perm_device_information_rounded,
+              size: _dataDisclosureIconSize, color: Color(s_blackBlue)),
+          SizedBox(width: _dataIconSpacer),
+          listText('Request User Data')
+        ]);
+  }
+
   Widget privacyPolicy(BuildContext context) {
     return Row(
         //mainAxisAlignment: MainAxisAlignment.center,
@@ -396,10 +429,22 @@ class SideDrawer extends StatelessWidget {
         //mainAxisAlignment: MainAxisAlignment.center,
         //crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Icon(Icons.numbers_rounded,
+              size: _adDisclosureIconSize, color: Color(s_blackBlue)),
+          SizedBox(width: _adIconSpacer),
+          listText('User: $userNoString')
+        ]);
+  }
+
+  Widget uuidNo() {
+    return Row(
+        //mainAxisAlignment: MainAxisAlignment.center,
+        //crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
           Icon(Icons.person,
               size: _adDisclosureIconSize, color: Color(s_blackBlue)),
           SizedBox(width: _adIconSpacer),
-          listText('User #: $userNoString')
+          listText('UUID: $UUID_GLOBAL')
         ]);
   }
 
@@ -461,7 +506,7 @@ class SideDrawer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(
-            Icons.person,
+            Icons.location_pin,
             color: Colors.white,
             size: _sideDrawerIconSize,
           ),

@@ -557,14 +557,14 @@ class SideDrawer extends StatelessWidget {
     _sideDrawerDividerTextPaddingLeft = 6;
 
     // Font
-    _sideDrawerTitleFontSize = (15 / 781) * _screenHeight;
-    _sideDrawerItemFontSize = (12 / 781) * _screenHeight;
-    _sideDrawerDividerFontSize = (12 / 781) * _screenHeight;
+    _sideDrawerTitleFontSize = (18 / 392) * _screenWidth;
+    _sideDrawerItemFontSize = (14 / 392) * _screenWidth;
+    _sideDrawerDividerFontSize = (14 / 392) * _screenWidth;
 
     // Icons
     _sideDrawerIconSize = (20 / 80) * _sideDrawerHeaderHeight;
-    _dataDisclosureIconSize = (14 / 80) * _sideDrawerHeaderHeight;
-    _adDisclosureIconSize = (14 / 80) * _sideDrawerHeaderHeight;
-    _howToUseIconSize = (14 / 80) * _sideDrawerHeaderHeight;
+    _dataDisclosureIconSize = (16 / 80) * _sideDrawerHeaderHeight;
+    _adDisclosureIconSize = (16 / 80) * _sideDrawerHeaderHeight;
+    _howToUseIconSize = (16 / 80) * _sideDrawerHeaderHeight;
   }
 }

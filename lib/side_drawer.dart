@@ -67,7 +67,7 @@ class SideDrawer extends StatelessWidget {
 
   Widget sideDrawer(BuildContext context) {
     return Container(
-        width: _screenWidth / 2,
+        width: _screenWidth * 0.65,
         child: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,

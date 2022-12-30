@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:locationalertsapp/map_screen.dart';
+import 'package:locationalertsapp/my_alerts_screen.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
 
@@ -16,6 +17,10 @@ Widget fabBar(
     double iconSpacing,
     double iconWidth,
     double iconSize) {
+  IconData iconSelection = Icons.map;
+  if (fabSelection == FAB.LIST) {
+    iconSelection = Icons.list;
+  }
   return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
     Container(
       height: buttonHeight,
@@ -50,23 +55,36 @@ Widget fabBar(
         height: buttonHeight,
         width: iconWidth,
         child: FloatingActionButton.extended(
-            heroTag: 'FAB_map',
+            heroTag: 'FAB_switch',
             onPressed: () {
-              // Navigate to my maps screen
-              Navigator.pushReplacement(
-                context,
-                PageRouteBuilder(
-                  pageBuilder: (context, animation1, animation2) => MapScreen(),
-                  transitionDuration: Duration.zero,
-                  reverseTransitionDuration: Duration.zero,
-                ),
-              );
+              if (fabSelection == FAB.MAP) {
+                // Navigate to my other screen
+                Navigator.pushReplacement(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation1, animation2) =>
+                        MapScreen(),
+                    transitionDuration: Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
+                  ),
+                );
+              } else {
+                Navigator.pushReplacement(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation1, animation2) =>
+                        MyAlertsScreen(),
+                    transitionDuration: Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
+                  ),
+                );
+              }
             },
             backgroundColor: Color(s_aquarium),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(cornerRadius))),
             label: Icon(
-              Icons.map,
+              iconSelection,
               color: Colors.white,
               size: iconSize,
             )))

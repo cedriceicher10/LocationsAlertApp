@@ -69,6 +69,10 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   double _cardPaddingTopBottom = 0;
   double _bottomPadding = 0;
   double _noAlertsYetText = 0;
+  double _fabSpacing = 0;
+  double _fabMapWidth = 0;
+  double _buttonWidthMaster = 0;
+  double _mapButtonIconSize = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +87,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
         ),
         resizeToAvoidBottomInset: false,
         body: myAlertsScreenBody(),
-        floatingActionButton: backButtonFAB(),
+        floatingActionButton: fabBar(),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
@@ -238,11 +242,13 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     }
   }
 
-  Widget backButtonFAB() {
-    return Container(
+  Widget fabBar() {
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Container(
         height: _buttonHeight,
         width: _buttonWidth,
         child: FloatingActionButton.extended(
+            heroTag: 'FAB_back',
             onPressed: () {
               // Remove keyboard
               FocusScopeNode currentFocus = FocusScope.of(context);
@@ -261,15 +267,29 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
                 color: Colors.white,
                 size: _backButtonIconSize,
               ),
-              // Expanded(
-              //     child: SizedBox(
-              //   width: 1,
-              // )),
               SizedBox(
                 width: 8,
               ),
               buttonText('Back', _backButtonFontSize)
-            ])));
+            ])),
+      ),
+      SizedBox(width: _fabSpacing),
+      Container(
+          height: _buttonHeight,
+          width: _fabMapWidth,
+          child: FloatingActionButton.extended(
+              heroTag: 'FAB_map',
+              onPressed: () {},
+              backgroundColor: Color(s_aquarium),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(_backButtonCornerRadius))),
+              label: Icon(
+                Icons.map,
+                color: Colors.white,
+                size: _mapButtonIconSize,
+              )))
+    ]);
   }
 
   Widget buttonText(String text, double fontSize) {
@@ -372,7 +392,10 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     _bottomPadding = (90 / 781) * _screenHeight;
 
     // Width
-    _buttonWidth = (325 / 392) * _screenWidth;
+    _buttonWidthMaster = (325 / 392) * _screenWidth;
+    _fabSpacing = (5 / 392) * _screenWidth;
+    _buttonWidth = (_buttonWidthMaster - _fabSpacing) * 0.80;
+    _fabMapWidth = (_buttonWidthMaster - _fabSpacing) * 0.20;
     _buttonSpacing = (10 / 392) * _screenWidth;
     _explainerTextPadding = (12 / 392) * _screenWidth;
     _listViewPaddingSides = (12 / 392) * _screenWidth;
@@ -390,6 +413,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     // Icons
     _cardIconSize = (30 / 60) * _buttonHeight;
     _backButtonIconSize = (24 / 60) * _buttonHeight;
+    _mapButtonIconSize = (30 / 60) * _buttonHeight;
 
     // Styling
     _cardBorderWidth = (3 / 60) * _buttonHeight;

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:locationalertsapp/map_screen.dart';
 import 'edit_alert_screen.dart';
 import 'start_screen.dart';
 import 'formatted_text.dart';
@@ -279,7 +280,18 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
           width: _fabMapWidth,
           child: FloatingActionButton.extended(
               heroTag: 'FAB_map',
-              onPressed: () {},
+              onPressed: () {
+                // Navigate to my maps screen
+                Navigator.pushReplacement(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation1, animation2) =>
+                        MapScreen(),
+                    transitionDuration: Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
+                  ),
+                );
+              },
               backgroundColor: Color(s_aquarium),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(

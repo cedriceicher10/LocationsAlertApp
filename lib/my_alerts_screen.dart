@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:locationalertsapp/map_screen.dart';
+import 'package:locationalertsapp/fab_bar.dart';
 import 'edit_alert_screen.dart';
 import 'start_screen.dart';
 import 'formatted_text.dart';
@@ -9,6 +9,7 @@ import 'styles.dart';
 import 'database_services.dart';
 import 'background_theme.dart';
 import 'go_back_button.dart';
+import 'fab_bar.dart';
 
 class ReminderTile {
   String id;
@@ -88,7 +89,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
         ),
         resizeToAvoidBottomInset: false,
         body: myAlertsScreenBody(),
-        floatingActionButton: fabBar(),
+        floatingActionButton: fabRow(),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
@@ -243,75 +244,18 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     }
   }
 
-  Widget fabBar() {
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Container(
-        height: _buttonHeight,
-        width: _buttonWidth,
-        child: FloatingActionButton.extended(
-            heroTag: 'FAB_back',
-            onPressed: () {
-              // Remove keyboard
-              FocusScopeNode currentFocus = FocusScope.of(context);
-              if (!currentFocus.hasPrimaryFocus) {
-                currentFocus.unfocus();
-              }
-              Navigator.pop(context);
-            },
-            backgroundColor: Color(s_darkSalmon),
-            shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.all(Radius.circular(_backButtonCornerRadius))),
-            label: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Icon(
-                Icons.arrow_back_ios_rounded,
-                color: Colors.white,
-                size: _backButtonIconSize,
-              ),
-              SizedBox(
-                width: 8,
-              ),
-              buttonText('Back', _backButtonFontSize)
-            ])),
-      ),
-      SizedBox(width: _fabSpacing),
-      Container(
-          height: _buttonHeight,
-          width: _fabMapWidth,
-          child: FloatingActionButton.extended(
-              heroTag: 'FAB_map',
-              onPressed: () {
-                // Navigate to my maps screen
-                Navigator.pushReplacement(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation1, animation2) =>
-                        MapScreen(),
-                    transitionDuration: Duration.zero,
-                    reverseTransitionDuration: Duration.zero,
-                  ),
-                );
-              },
-              backgroundColor: Color(s_aquarium),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                      Radius.circular(_backButtonCornerRadius))),
-              label: Icon(
-                Icons.map,
-                color: Colors.white,
-                size: _mapButtonIconSize,
-              )))
-    ]);
-  }
-
-  Widget buttonText(String text, double fontSize) {
-    return FormattedText(
-      text: text,
-      size: fontSize,
-      color: Colors.white,
-      font: s_font_BonaNova,
-      weight: FontWeight.bold,
-    );
+  Widget fabRow() {
+    return fabBar(
+        context,
+        FAB.MAP,
+        _buttonHeight,
+        _buttonWidth,
+        _backButtonFontSize,
+        _backButtonIconSize,
+        _backButtonCornerRadius,
+        _fabSpacing,
+        _fabMapWidth,
+        _mapButtonIconSize);
   }
 
   // This was the old back button at the bottom of the list instead of the current FAB

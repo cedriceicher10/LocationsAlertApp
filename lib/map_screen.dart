@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map/plugin_api.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:latlong2/spline.dart';
 import 'formatted_text.dart';
 import 'database_services.dart';
 import 'background_theme.dart';
@@ -16,6 +20,10 @@ class _MapScreenState extends State<MapScreen> {
   final DatabaseServices _dbServices = DatabaseServices();
   final BackgroundTheme _background = BackgroundTheme(Screen.MY_ALERTS_SCREEN);
 
+  // False Idol
+  double DEFAULT_LOCATION_LAT = 32.72078130242355;
+  double DEFAULT_LOCATION_LON = -117.16897626202451;
+
   double _screenHeight = 0;
   double _screenWidth = 0;
   double _buttonWidth = 0;
@@ -29,6 +37,8 @@ class _MapScreenState extends State<MapScreen> {
   double _buttonWidthMaster = 0;
   double _mapButtonIconSize = 0;
 
+  late FlutterMap map;
+
   @override
   Widget build(BuildContext context) {
     generateLayout();
@@ -41,18 +51,44 @@ class _MapScreenState extends State<MapScreen> {
           centerTitle: true,
         ),
         resizeToAvoidBottomInset: false,
-        body: mapBody(),
+        body: FutureBuilder(
+            future: fetchMaps(),
+            builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+              if (snapshot.hasData) {
+                return mapBody();
+              } else {
+                return const Center(
+                    child: CircularProgressIndicator(
+                  color: Color(s_darkSalmon),
+                ));
+              }
+            }),
         floatingActionButton: fab(),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }
 
+  Future<bool> fetchMaps() async {
+    map = await FlutterMap(
+        //mapController: ...,
+        options: MapOptions(
+            center: LatLng(DEFAULT_LOCATION_LAT, DEFAULT_LOCATION_LON),
+            zoom: 13),
+        layers: [
+          TileLayerOptions(
+            minZoom: 1,
+            maxZoom: 18,
+            backgroundColor: Colors.white,
+            urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            subdomains: ['a', 'b', 'c'],
+          ),
+        ]);
+    return true;
+  }
+
   Widget mapBody() {
-    return Center(
-        child: Container(
-            decoration: _background.getBackground(),
-            child: Text('This is the Map Screen.')));
+    return map;
   }
 
   Widget fab() {

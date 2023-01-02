@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:latlong2/spline.dart';
 import 'formatted_text.dart';
+import 'location_services.dart';
 import 'database_services.dart';
 import 'background_theme.dart';
 import 'styles.dart';
@@ -19,6 +21,8 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   final DatabaseServices _dbServices = DatabaseServices();
   final BackgroundTheme _background = BackgroundTheme(Screen.MY_ALERTS_SCREEN);
+  final LocationServices _locationServices = LocationServices();
+  bool _initUserLocation = false;
 
   // False Idol
   double DEFAULT_LOCATION_LAT = 32.72078130242355;
@@ -70,11 +74,19 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<bool> fetchMaps() async {
+    double startLat = 0;
+    double startLon = 0;
+    bool initUserLocation = await locationOnCheck();
+    if (initUserLocation) {
+      startLat = _locationServices.userLat;
+      startLon = _locationServices.userLon;
+    } else {
+      startLat = DEFAULT_LOCATION_LAT;
+      startLon = DEFAULT_LOCATION_LON;
+    }
     map = await FlutterMap(
         //mapController: ...,
-        options: MapOptions(
-            center: LatLng(DEFAULT_LOCATION_LAT, DEFAULT_LOCATION_LON),
-            zoom: 13),
+        options: MapOptions(center: LatLng(startLat, startLon), zoom: 18),
         layers: [
           TileLayerOptions(
             minZoom: 1,
@@ -85,6 +97,21 @@ class _MapScreenState extends State<MapScreen> {
           ),
         ]);
     return true;
+  }
+
+  Future<bool> locationOnCheck() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? showLocationDisclosure = prefs.getBool('showLocationDisclosure');
+    bool? masterLocationToggle = prefs.getBool('masterLocationToggle');
+    if (((showLocationDisclosure == false) &&
+            (showLocationDisclosure != null)) &&
+        ((masterLocationToggle == true) && (masterLocationToggle != null))) {
+      await _locationServices.getLocation();
+      if (_locationServices.permitted) {
+        return true;
+      }
+    }
+    return false;
   }
 
   Widget mapBody() {

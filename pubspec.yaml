@@ -46,6 +46,7 @@ dependencies:
   permission_handler: 
   intro_slider: 
   flutter_map:
+  flutter_map_marker_cluster: 
   latlong2: 
 
   # The following adds the Cupertino Icons font to your application.

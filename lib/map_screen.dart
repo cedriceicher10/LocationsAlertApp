@@ -2,14 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:latlong2/spline.dart';
+import 'package:intl/intl.dart';
 import 'formatted_text.dart';
 import 'location_services.dart';
 import 'database_services.dart';
 import 'background_theme.dart';
 import 'styles.dart';
 import 'fab_bar.dart';
+
+class AlertObject {
+  String id;
+  String dateTimeCreated;
+  String dateTimeCompleted;
+  bool isCompleted;
+  bool isSpecific;
+  String location;
+  double latitude;
+  double longitude;
+  String reminder;
+  String userId;
+  AlertObject(
+      {required this.id,
+      required this.dateTimeCreated,
+      required this.dateTimeCompleted,
+      required this.isCompleted,
+      required this.isSpecific,
+      required this.location,
+      required this.latitude,
+      required this.longitude,
+      required this.reminder,
+      required this.userId});
+}
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -22,7 +49,12 @@ class _MapScreenState extends State<MapScreen> {
   final DatabaseServices _dbServices = DatabaseServices();
   final BackgroundTheme _background = BackgroundTheme(Screen.MY_ALERTS_SCREEN);
   final LocationServices _locationServices = LocationServices();
-  bool _initUserLocation = false;
+  List<AlertObject> _alertObjs = [];
+  List<LatLng> _alertLatLngList = [];
+  //MapController _mapController = MapController();
+
+  double _startLat = 0;
+  double _startLon = 0;
 
   // False Idol
   double DEFAULT_LOCATION_LAT = 32.72078130242355;
@@ -40,6 +72,7 @@ class _MapScreenState extends State<MapScreen> {
   double _fabMapWidth = 0;
   double _buttonWidthMaster = 0;
   double _mapButtonIconSize = 0;
+  double _noAlertsYetText = 0;
 
   late FlutterMap map;
 
@@ -47,7 +80,7 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     generateLayout();
     return MaterialApp(
-      title: 'My Alerts Screen',
+      title: 'Map Screen',
       home: Scaffold(
         appBar: AppBar(
           title: myAlertsScreenTitle('My Alerts'),
@@ -56,10 +89,10 @@ class _MapScreenState extends State<MapScreen> {
         ),
         resizeToAvoidBottomInset: false,
         body: FutureBuilder(
-            future: fetchMaps(),
+            future: fetchStartingLatLon(),
             builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
               if (snapshot.hasData) {
-                return mapBody();
+                return buildMap();
               } else {
                 return const Center(
                     child: CircularProgressIndicator(
@@ -73,20 +106,87 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  Future<bool> fetchMaps() async {
-    double startLat = 0;
-    double startLon = 0;
+  Future<bool> fetchStartingLatLon() async {
+    // Determine if location is on, to center on user
     bool initUserLocation = await locationOnCheck();
     if (initUserLocation) {
-      startLat = _locationServices.userLat;
-      startLon = _locationServices.userLon;
+      _startLat = _locationServices.userLat;
+      _startLon = _locationServices.userLon;
     } else {
-      startLat = DEFAULT_LOCATION_LAT;
-      startLon = DEFAULT_LOCATION_LON;
+      _startLat = DEFAULT_LOCATION_LAT;
+      _startLon = DEFAULT_LOCATION_LON;
     }
-    map = await FlutterMap(
-        //mapController: ...,
-        options: MapOptions(center: LatLng(startLat, startLon), zoom: 18),
+    return true;
+  }
+
+  Widget buildMap() {
+    return StreamBuilder(
+        stream: retrieveReminders(),
+        builder: (BuildContext context,
+            AsyncSnapshot<QuerySnapshot> snapshotReminders) {
+          if (snapshotReminders.hasData) {
+            if (snapshotReminders.data!.size > 0) {
+              // Extract the lat lon values
+              convertAlertsToMarkers(snapshotReminders);
+              // Fetch the map
+              return buildMapWithMarkers();
+            } else {
+              return Center(child: noAlertsYetText('No alerts created yet!'));
+            }
+          } else {
+            return const Center(
+                child: CircularProgressIndicator(
+              color: Color(s_blackBlue),
+            ));
+          }
+        });
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> retrieveReminders() {
+    return _dbServices.getRemindersIncompleteAlertsSnapshotCall();
+  }
+
+  void convertAlertsToMarkers(AsyncSnapshot<QuerySnapshot> snapshotReminders) {
+    for (var index = 0; index < snapshotReminders.data!.docs.length; ++index) {
+      // Convert to lightweight alert objects
+      AlertObject alertObj = AlertObject(
+          id: snapshotReminders.data!.docs[index].id,
+          dateTimeCompleted: DateFormat.yMMMMd('en_US').add_jm().format(
+              snapshotReminders.data!.docs[index]['dateTimeCompleted']
+                  .toDate()),
+          dateTimeCreated: DateFormat.yMMMMd('en_US').add_jm().format(
+              snapshotReminders.data!.docs[index]['dateTimeCreated'].toDate()),
+          isCompleted: snapshotReminders.data!.docs[index]['isCompleted'],
+          isSpecific: snapshotReminders.data!.docs[index]['isSpecific'],
+          location: snapshotReminders.data!.docs[index]['location'],
+          latitude: snapshotReminders.data!.docs[index]['latitude'],
+          longitude: snapshotReminders.data!.docs[index]['longitude'],
+          reminder: snapshotReminders.data!.docs[index]['reminderBody'],
+          userId: snapshotReminders.data!.docs[index]['userId']);
+      _alertObjs.add(alertObj);
+      // Extract the lat lon values for markers
+      _alertLatLngList.add(LatLng(alertObj.latitude, alertObj.longitude));
+    }
+  }
+
+  Widget buildMapWithMarkers() {
+    // Turn the latlon pairs into map markers
+    List<Marker> _alertMarkers = _alertLatLngList
+        .map((point) => Marker(
+              point: point,
+              width: 60,
+              height: 60,
+              builder: (context) => Icon(
+                Icons.location_on_outlined,
+                size: 60,
+                color: Color(s_aquariumLighter),
+              ),
+            ))
+        .toList();
+    // Build the map
+    return FlutterMap(
+        //mapController: _mapController,
+        options: MapOptions(center: LatLng(_startLat, _startLon), zoom: 18),
         layers: [
           TileLayerOptions(
             minZoom: 1,
@@ -95,8 +195,10 @@ class _MapScreenState extends State<MapScreen> {
             urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             subdomains: ['a', 'b', 'c'],
           ),
+          MarkerLayerOptions(
+            markers: _alertMarkers,
+          )
         ]);
-    return true;
   }
 
   Future<bool> locationOnCheck() async {
@@ -112,10 +214,6 @@ class _MapScreenState extends State<MapScreen> {
       }
     }
     return false;
-  }
-
-  Widget mapBody() {
-    return map;
   }
 
   Widget fab() {
@@ -151,6 +249,16 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
+  Widget noAlertsYetText(String text) {
+    return FormattedText(
+      text: text,
+      size: _noAlertsYetText,
+      color: Color(s_darkSalmon),
+      font: s_font_BonaNova,
+      weight: FontWeight.bold,
+    );
+  }
+
   void generateLayout() {
     _screenWidth = MediaQuery.of(context).size.width;
     _screenHeight = MediaQuery.of(context).size.height;
@@ -170,6 +278,7 @@ class _MapScreenState extends State<MapScreen> {
     // Font
     _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height;
     _backButtonFontSize = (20 / 60) * _buttonHeight;
+    _noAlertsYetText = (26 / 781) * _screenHeight;
 
     // Icons
     _backButtonIconSize = (24 / 60) * _buttonHeight;

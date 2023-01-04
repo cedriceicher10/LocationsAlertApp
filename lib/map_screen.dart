@@ -51,10 +51,11 @@ class _MapScreenState extends State<MapScreen> {
   final LocationServices _locationServices = LocationServices();
   List<AlertObject> _alertObjs = [];
   List<LatLng> _alertLatLngList = [];
-  //MapController _mapController = MapController();
+  MapController _mapController = MapController();
 
   double _startLat = 0;
   double _startLon = 0;
+  bool _userPin = false;
 
   // False Idol
   double DEFAULT_LOCATION_LAT = 32.72078130242355;
@@ -73,8 +74,6 @@ class _MapScreenState extends State<MapScreen> {
   double _buttonWidthMaster = 0;
   double _mapButtonIconSize = 0;
   double _noAlertsYetText = 0;
-
-  late FlutterMap map;
 
   @override
   Widget build(BuildContext context) {
@@ -112,9 +111,12 @@ class _MapScreenState extends State<MapScreen> {
     if (initUserLocation) {
       _startLat = _locationServices.userLat;
       _startLon = _locationServices.userLon;
+      _alertLatLngList.add(LatLng(_startLat, _startLon));
+      _userPin = true;
     } else {
       _startLat = DEFAULT_LOCATION_LAT;
       _startLon = DEFAULT_LOCATION_LON;
+      _userPin = false;
     }
     return true;
   }
@@ -171,34 +173,67 @@ class _MapScreenState extends State<MapScreen> {
 
   Widget buildMapWithMarkers() {
     // Turn the latlon pairs into map markers
-    List<Marker> _alertMarkers = _alertLatLngList
-        .map((point) => Marker(
-              point: point,
-              width: 60,
-              height: 60,
-              builder: (context) => Icon(
-                Icons.location_on_outlined,
-                size: 60,
-                color: Color(s_aquariumLighter),
-              ),
-            ))
-        .toList();
+    List<Marker> _alertMarkers = [];
+    for (int i = 0; i < _alertLatLngList.length; ++i) {
+      // Color pinColor = Color(s_aquariumLighter);
+      // IconData icon = Icons.location_on_sharp;
+      // if (i == 0) {
+      //   if (_userPin) {
+      //     pinColor = Color(s_declineRed);
+      //   }
+      // }
+      Marker marker = Marker(
+          point: _alertLatLngList[i],
+          width: 50,
+          height: 50,
+          builder: (context) => Icon(
+                Icons.location_on_sharp,
+                size: (i == 0) ? 50 : 60,
+                color:
+                    (i == 0) ? Color(s_declineRed) : Color(s_aquariumLighter),
+              ));
+      _alertMarkers.add(marker);
+    }
     // Build the map
     return FlutterMap(
-        //mapController: _mapController,
-        options: MapOptions(center: LatLng(_startLat, _startLon), zoom: 18),
-        layers: [
-          TileLayerOptions(
-            minZoom: 1,
-            maxZoom: 18,
-            backgroundColor: Colors.white,
-            urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            subdomains: ['a', 'b', 'c'],
-          ),
-          MarkerLayerOptions(
-            markers: _alertMarkers,
-          )
-        ]);
+      mapController: _mapController,
+      options: MapOptions(center: LatLng(_startLat, _startLon), zoom: 16),
+      layers: [
+        TileLayerOptions(
+          minZoom: 1,
+          maxZoom: 18,
+          backgroundColor: Colors.white,
+          urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          subdomains: ['a', 'b', 'c'],
+        ),
+        MarkerLayerOptions(
+          markers: _alertMarkers,
+        ),
+      ],
+      nonRotatedChildren: [
+        (_userPin)
+            ? Positioned(
+                right: 5,
+                bottom: 115,
+                child: FloatingActionButton(
+                  backgroundColor: Color(s_declineRed),
+                  onPressed: () {
+                    // Go to the user's location
+                    setState(() {
+                      if (_userPin) {
+                        _mapController.move(_alertLatLngList[0], 16);
+                      }
+                    });
+                  },
+                  child: const Icon(
+                    Icons.my_location,
+                    color: Colors.white,
+                  ),
+                ),
+              )
+            : Container(),
+      ],
+    );
   }
 
   Future<bool> locationOnCheck() async {

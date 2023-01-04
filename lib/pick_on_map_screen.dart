@@ -39,7 +39,6 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
   bool _initUserLocation = false;
 
   double _titleTextFontSize = 0;
-  double _initMapZoom = 0;
 
   // False Idol
   double DEFAULT_LOCATION_LAT = 32.72078130242355;
@@ -80,23 +79,6 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
         ));
   }
 
-  void generateLayout() {
-    double _screenHeight = MediaQuery.of(context).size.height;
-
-    // Original ratios based on a Google Pixel 5 (392 x 781) screen
-    // and a 56 height appBar
-
-    // Height
-
-    // Width
-
-    // Font
-    _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height;
-
-    // Styling
-    _initMapZoom = (15 / _screenHeight) * _screenHeight;
-  }
-
   Future<bool> locationOnCheck() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool? showLocationDisclosure = prefs.getBool('showLocationDisclosure');
@@ -132,13 +114,13 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
     // Pick on the map
     return FlutterLocationPicker(
         initPosition: LatLong(initLat, initLon),
-        locationButtonsBackgroundColor: Color(s_darkSalmon),
+        locationButtonsBackgroundColor: Color(s_declineRed),
         selectLocationButtonColor: Color(s_aquariumLighter),
         zoomButtonsBackgroundColor: Color(s_aquariumLighter),
         markerIconColor: Color(s_declineRed),
         markerIcon: Icons.location_on_sharp,
         selectLocationButtonText: 'Set Alert Location',
-        initZoom: _initMapZoom,
+        initZoom: 15,
         trackMyPosition: _initUserLocation,
         onPicked: (pickedData) {
           // Debug
@@ -160,5 +142,19 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
       color: Colors.white,
       font: s_font_BerkshireSwash,
     );
+  }
+
+  void generateLayout() {
+    double _screenHeight = MediaQuery.of(context).size.height;
+
+    // Original ratios based on a Google Pixel 5 (392 x 781) screen
+    // and a 56 height appBar
+
+    // Height
+
+    // Width
+
+    // Font
+    _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height;
   }
 }

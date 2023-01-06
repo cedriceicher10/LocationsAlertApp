@@ -52,7 +52,10 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   List<AlertObject> _alertObjs = [];
   List<LatLng> _alertLatLngList = [];
   MapController _mapController = MapController();
-  PopupController _popupLayerController = PopupController();
+  //PopupController _popupLayerController = PopupController();
+
+  double _locationOnZoom = 14;
+  double _locationOffZoom = 4;
 
   double _startLat = 0;
   double _startLon = 0;
@@ -239,13 +242,13 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       mapController: _mapController,
       options: MapOptions(
         center: LatLng(_startLat, _startLon),
-        zoom: 16,
+        zoom: (_userPin) ? _locationOnZoom : _locationOffZoom,
         //onTap: (_, __) => _popupLayerController.hideAllPopups(),
       ),
       layers: [
         TileLayerOptions(
           minZoom: 1,
-          maxZoom: 18,
+          maxZoom: 20,
           backgroundColor: Colors.white,
           urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
           subdomains: ['a', 'b', 'c'],
@@ -275,8 +278,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                         _animatedMapMove(
                             LatLng(_alertLatLngList[0].latitude,
                                 _alertLatLngList[0].longitude),
-                            16);
-                        //_mapController.move(_alertLatLngList[0], 16);
+                            _locationOnZoom);
+                        //_mapController.move(_alertLatLngList[0], _locationOnZoom);
                       }
                     });
                   },

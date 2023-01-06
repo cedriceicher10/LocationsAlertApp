@@ -897,7 +897,7 @@ class _StartScreenState extends State<StartScreen> {
 
     // Font
     _submitButtonFontSize = (20 / 60) * _buttonHeight;
-    _locationDisclosureFontSize = (9.6 / 30) * _locationDisclosureButtonHeight;
+    _locationDisclosureFontSize = (11 / 30) * _locationDisclosureButtonHeight;
     _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height;
     _explainerFontSize = (26 / 781) * _screenHeight;
     _helpFontSize = (16 / 781) * _screenHeight;

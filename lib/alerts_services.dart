@@ -38,8 +38,8 @@ class AlertServices {
     double greatCircleDistanceMiles = greatCircleDistanceMeters / 1609; // mi
     //double greatCircleDistanceYards = greatCircleDistanceMiles * 1760; // yd
 
-    print(
-        'ALERT DET: ${greatCircleDistanceMiles.toStringAsFixed(2)} vs ${TRIGGER_DISTANCE} mi');
+    // print(
+    //     'ALERT DET: ${greatCircleDistanceMiles.toStringAsFixed(2)} vs ${TRIGGER_DISTANCE} mi');
 
     if (greatCircleDistanceMiles <= TRIGGER_DISTANCE) {
       return true;
@@ -58,25 +58,25 @@ class AlertServices {
   // */
   void alertDeterminationLogic(double userBgLat, double userBgLon, var alert) {
     if (checkNewAlert(alert['dateTimeCreated'])) {
-      print('ALERT DET: NEW - ${alert['reminderBody']}');
+      // print('ALERT DET: NEW - ${alert['reminderBody']}');
       addToDoNotAlertList(alert.id, alert['latitude'], alert['longitude']);
     } else {
       if (!checkDoNotAlertList(alert.id)) {
-        print('ALERT DET: NOT IN DoNotAlert - ${alert['reminderBody']}');
+        // print('ALERT DET: NOT IN DoNotAlert - ${alert['reminderBody']}');
         if (checkAlertDistance(
             userBgLat, userBgLon, alert['latitude'], alert['longitude'])) {
-          print('ALERT DET: WITHIN DISTANCE - ${alert['reminderBody']}');
+          // print('ALERT DET: WITHIN DISTANCE - ${alert['reminderBody']}');
           NotificationServices().showNotification(
               alert.id, alert['reminderBody'], alert['location']);
           addToDoNotAlertList(alert.id, alert['latitude'], alert['longitude']);
         } else {
-          print('ALERT DET: NOT WITHIN DISTANCE - ${alert['reminderBody']}');
+          // print('ALERT DET: NOT WITHIN DISTANCE - ${alert['reminderBody']}');
         }
       } else {
-        print('ALERT DET: IN DoNotAlert - ${alert['reminderBody']}');
+        // print('ALERT DET: IN DoNotAlert - ${alert['reminderBody']}');
       }
     }
-    print('=======================================================');
+    // print('=======================================================');
     purgeDoNotAlertList(userBgLat, userBgLon);
   }
 

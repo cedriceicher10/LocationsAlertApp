@@ -262,15 +262,15 @@ class _StartScreenState extends State<StartScreen> {
         _userBgLat = bgLocationData.latitude!;
         _userBgLon = bgLocationData.longitude!;
         setState(() async {
-          print('BACKGROUND LOCATION TRIGGERED ==============');
-          print('Latitude : ${bgLocationData.latitude}');
-          print('Longitude: ${bgLocationData.longitude}');
-          print('Accuracy : ${bgLocationData.accuracy}');
-          print('Altitude : ${bgLocationData.altitude}');
-          print('Bearing  : ${bgLocationData.bearing}');
-          print('Speed    : ${bgLocationData.speed}');
-          print(
-              'Time     : ${DateTime.fromMillisecondsSinceEpoch(bgLocationData.time!.toInt())}');
+          // print('BACKGROUND LOCATION TRIGGERED ==============');
+          // print('Latitude : ${bgLocationData.latitude}');
+          // print('Longitude: ${bgLocationData.longitude}');
+          // print('Accuracy : ${bgLocationData.accuracy}');
+          // print('Altitude : ${bgLocationData.altitude}');
+          // print('Bearing  : ${bgLocationData.bearing}');
+          // print('Speed    : ${bgLocationData.speed}');
+          // print(
+          //     'Time     : ${DateTime.fromMillisecondsSinceEpoch(bgLocationData.time!.toInt())}');
 
           // NOTIFICATION KICKOFF LOGIC
           // Retrieve alerts
@@ -530,7 +530,15 @@ class _StartScreenState extends State<StartScreen> {
                   myAlertsButton(
                       context, 'View my Alerts ($ALERTS_NUM_GLOBAL)'),
                   SizedBox(height: _gapAfterButtons),
-                  locationDisclosureButton(context),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        locationDisclosureButton(context),
+                        SizedBox(width: 5),
+                        buyMeACoffee(context),
+                      ]),
+                  //locationDisclosureButton(context),
                   SizedBox(height: _buttonSpacing),
                   signatureText(),
                   SizedBox(height: _bottomPadding),
@@ -821,11 +829,42 @@ class _StartScreenState extends State<StartScreen> {
                 ])));
   }
 
+  Widget buyMeACoffee(BuildContext context) {
+    return SizedBox(
+        height: _locationDisclosureButtonHeight,
+        width: _locationDisclosureButtonWidth,
+        child: ClipRRect(
+            borderRadius:
+                BorderRadius.circular(_locationDisclosureButtonCornerRadius),
+            child: InkWell(
+                onTap: () async {
+                  var url = "https://www.buymeacoffee.com/";
+                  if (!await launch(url)) {
+                    _exception.popUp(
+                        context, 'Launch URL: Could not launch $url');
+                    throw 'Could not launch $url';
+                  }
+                },
+                child: Image(
+                    fit: BoxFit.fitWidth,
+                    image: AssetImage(
+                        'assets/images/buy_me_a_coffee_button.png')))));
+  }
+
   Widget locationDisclosureText(String text) {
     return FormattedText(
         text: text,
         size: _locationDisclosureFontSize,
         color: Colors.white,
+        font: s_font_IBMPlexSans,
+        weight: FontWeight.bold);
+  }
+
+  Widget buyMeACoffeeText(String text) {
+    return FormattedText(
+        text: text,
+        size: _locationDisclosureFontSize,
+        color: Colors.black,
         font: s_font_IBMPlexSans,
         weight: FontWeight.bold);
   }

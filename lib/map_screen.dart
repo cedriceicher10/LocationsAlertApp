@@ -45,17 +45,19 @@ class MapScreen extends StatefulWidget {
   State<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   final DatabaseServices _dbServices = DatabaseServices();
   final BackgroundTheme _background = BackgroundTheme(Screen.MY_ALERTS_SCREEN);
   final LocationServices _locationServices = LocationServices();
   List<AlertObject> _alertObjs = [];
   List<LatLng> _alertLatLngList = [];
   MapController _mapController = MapController();
+  PopupController _popupLayerController = PopupController();
 
   double _startLat = 0;
   double _startLon = 0;
   bool _userPin = false;
+  bool _alreadyUpdated = false;
 
   // False Idol
   double DEFAULT_LOCATION_LAT = 32.72078130242355;
@@ -105,19 +107,63 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
+  // ****** From pick_on_map_screen.dart > location_picker.dart
+  /// Create a animation controller, add a listener to the controller, and
+  /// then forward the controller with the new location
+  ///
+  /// Args:
+  ///   destLocation (LatLng): The LatLng of the destination location.
+  ///   destZoom (double): The zoom level you want to animate to.
+  void _animatedMapMove(LatLng destLocation, double destZoom) {
+    // Create some tweens. These serve to split up the transition from one location to another.
+    // In our case, we want to split the transition be<tween> our current map center and the destination.
+    final latTween = Tween<double>(
+        begin: _mapController.center.latitude, end: destLocation.latitude);
+    final lngTween = Tween<double>(
+        begin: _mapController.center.longitude, end: destLocation.longitude);
+    final zoomTween = Tween<double>(begin: _mapController.zoom, end: destZoom);
+
+    // Create a animation controller that has a duration and a TickerProvider.
+    final controller = AnimationController(
+        duration: Duration(milliseconds: 2000), vsync: this);
+    // The animation determines what path the animation will take. You can try different Curves values, although I found
+    // fastOutSlowIn to be my favorite.
+    final Animation<double> animation =
+        CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
+
+    controller.addListener(() {
+      _mapController.move(
+          LatLng(latTween.evaluate(animation), lngTween.evaluate(animation)),
+          zoomTween.evaluate(animation));
+    });
+
+    animation.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        controller.dispose();
+      } else if (status == AnimationStatus.dismissed) {
+        controller.dispose();
+      }
+    });
+
+    controller.forward();
+  }
+
   Future<bool> fetchStartingLatLon() async {
-    // Determine if location is on, to center on user
-    bool initUserLocation = await locationOnCheck();
-    if (initUserLocation) {
-      _startLat = _locationServices.userLat;
-      _startLon = _locationServices.userLon;
-      _alertLatLngList.add(LatLng(_startLat, _startLon));
-      _userPin = true;
-    } else {
-      _startLat = DEFAULT_LOCATION_LAT;
-      _startLon = DEFAULT_LOCATION_LON;
-      _userPin = false;
+    if (!_alreadyUpdated) {
+      // Determine if location is on, to center on user
+      bool initUserLocation = await locationOnCheck();
+      if (initUserLocation) {
+        _startLat = _locationServices.userLat;
+        _startLon = _locationServices.userLon;
+        _alertLatLngList.add(LatLng(_startLat, _startLon));
+        _userPin = true;
+      } else {
+        _startLat = DEFAULT_LOCATION_LAT;
+        _startLon = DEFAULT_LOCATION_LON;
+        _userPin = false;
+      }
     }
+    _alreadyUpdated = true;
     return true;
   }
 
@@ -174,30 +220,28 @@ class _MapScreenState extends State<MapScreen> {
   Widget buildMapWithMarkers() {
     // Turn the latlon pairs into map markers
     List<Marker> _alertMarkers = [];
-    for (int i = 0; i < _alertLatLngList.length; ++i) {
-      // Color pinColor = Color(s_aquariumLighter);
-      // IconData icon = Icons.location_on_sharp;
-      // if (i == 0) {
-      //   if (_userPin) {
-      //     pinColor = Color(s_declineRed);
-      //   }
-      // }
+    for (int index = 0; index < _alertLatLngList.length; ++index) {
       Marker marker = Marker(
-          point: _alertLatLngList[i],
+          point: _alertLatLngList[index],
           width: 50,
           height: 50,
           builder: (context) => Icon(
                 Icons.location_on_sharp,
-                size: (i == 0) ? 50 : 60,
-                color:
-                    (i == 0) ? Color(s_declineRed) : Color(s_aquariumLighter),
+                size: (index == 0 && (_userPin)) ? 50 : 60,
+                color: (index == 0 && (_userPin))
+                    ? Color(s_declineRed)
+                    : Color(s_aquariumLighter),
               ));
       _alertMarkers.add(marker);
     }
     // Build the map
     return FlutterMap(
       mapController: _mapController,
-      options: MapOptions(center: LatLng(_startLat, _startLon), zoom: 16),
+      options: MapOptions(
+        center: LatLng(_startLat, _startLon),
+        zoom: 16,
+        //onTap: (_, __) => _popupLayerController.hideAllPopups(),
+      ),
       layers: [
         TileLayerOptions(
           minZoom: 1,
@@ -209,6 +253,13 @@ class _MapScreenState extends State<MapScreen> {
         MarkerLayerOptions(
           markers: _alertMarkers,
         ),
+        // PopupMarkerLayerOptions(
+        //   markers: _alertMarkers,
+        //   popupController: _popupLayerController,
+        //   popupBuilder: (_, Marker marker) {
+        //     return Card(child: Text('Hello There'));
+        //   },
+        // ),
       ],
       nonRotatedChildren: [
         (_userPin)
@@ -221,7 +272,11 @@ class _MapScreenState extends State<MapScreen> {
                     // Go to the user's location
                     setState(() {
                       if (_userPin) {
-                        _mapController.move(_alertLatLngList[0], 16);
+                        _animatedMapMove(
+                            LatLng(_alertLatLngList[0].latitude,
+                                _alertLatLngList[0].longitude),
+                            16);
+                        //_mapController.move(_alertLatLngList[0], 16);
                       }
                     });
                   },

@@ -67,7 +67,7 @@ class SideDrawer extends StatelessWidget {
 
   Widget sideDrawer(BuildContext context) {
     return Container(
-        width: _screenWidth * 0.65,
+        width: _screenWidth * 0.70,
         child: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
@@ -152,7 +152,8 @@ class SideDrawer extends StatelessWidget {
                 title: sendFeedback(context),
                 onTap: () async {
                   String email = 'cedriceicher10@gmail.com';
-                  String subject = 'Feedback for Location Alerts';
+                  String subject =
+                      'Feedback for Location Alerts (UUID #$UUID_GLOBAL)';
                   if (!(await launch('mailto:$email?subject=$subject'))) {
                     _exception.popUp(
                         context, 'Launch email: Could not launch $email');
@@ -547,7 +548,7 @@ class SideDrawer extends StatelessWidget {
     _sideDrawerHeaderHeight = (80 / 781) * _screenHeight;
     _sideDrawerDividerTextPaddingTop = (10 / 781) * _screenHeight;
     _sideDrawerDividerTextPaddingBottom = (10 / 781) * _screenHeight;
-    _sideDrawerDividerBottomPadding = (2 / 781) * _screenHeight;
+    _sideDrawerDividerBottomPadding = (0 / 781) * _screenHeight;
 
     // Width
     _dataIconSpacer = 4;

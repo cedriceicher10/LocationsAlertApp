@@ -11,7 +11,7 @@ import 'background_theme.dart';
 import 'go_back_button.dart';
 import 'fab_bar.dart';
 
-class ReminderTile {
+class AlertObject {
   String id;
   String dateTimeCreated;
   String dateTimeCompleted;
@@ -22,7 +22,7 @@ class ReminderTile {
   double longitude;
   String reminder;
   String userId;
-  ReminderTile(
+  AlertObject(
       {required this.id,
       required this.dateTimeCreated,
       required this.dateTimeCompleted,
@@ -162,12 +162,12 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     return _dbServices.getRemindersIncompleteAlertsSnapshotCall();
   }
 
-  List<ReminderTile> createReminderObjects(
+  List<AlertObject> createReminderObjects(
       AsyncSnapshot<QuerySnapshot> snapshotReminders) {
-    List<ReminderTile> reminderObjects = [];
+    List<AlertObject> reminderObjects = [];
     for (var index = 0; index < snapshotReminders.data!.docs.length; ++index) {
       // Convert to lightweight reminder tile objects
-      ReminderTile reminderTile = ReminderTile(
+      AlertObject alertObj = AlertObject(
           id: snapshotReminders.data!.docs[index].id,
           dateTimeCompleted: DateFormat.yMMMMd('en_US').add_jm().format(
               snapshotReminders.data!.docs[index]['dateTimeCompleted']
@@ -181,12 +181,12 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
           longitude: snapshotReminders.data!.docs[index]['longitude'],
           reminder: snapshotReminders.data!.docs[index]['reminderBody'],
           userId: snapshotReminders.data!.docs[index]['userId']);
-      reminderObjects.add(reminderTile);
+      reminderObjects.add(alertObj);
     }
     return reminderObjects;
   }
 
-  Widget listViewReminders(List<ReminderTile> reminderObjects) {
+  Widget listViewReminders(List<AlertObject> reminderObjects) {
     return ListView.builder(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
@@ -200,7 +200,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     );
   }
 
-  Card reminderCard(ReminderTile reminderTile) {
+  Card reminderCard(AlertObject AlertObject) {
     return Card(
         elevation: 2,
         margin: EdgeInsets.fromLTRB(0, _cardGap, 0, _cardGap),
@@ -216,12 +216,12 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
                 _cardPaddingTopBottom,
                 _cardPaddingRightLeft),
             isThreeLine: true,
-            title: reminderCardTitleText(reminderTile.reminder),
+            title: reminderCardTitleText(AlertObject.reminder),
             subtitle:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              reminderCardLocationText('at: ${reminderTile.location}'),
+              reminderCardLocationText('at: ${AlertObject.location}'),
               reminderCardDateText(
-                  'Date Created: ${reminderTile.dateTimeCreated}')
+                  'Date Created: ${AlertObject.dateTimeCreated}')
             ]),
             trailing: Icon(
               Icons.edit,
@@ -230,8 +230,8 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
             ),
             onTap: () {
               Navigator.of(context)
-                  .push(createRoute(EditAlertScreen(reminderTile: reminderTile),
-                      'from_right'))
+                  .push(createRoute(
+                      EditAlertScreen(alert: AlertObject), 'from_right'))
                   .then((value) => setState(() {
                         checkIfInstaPop(value);
                       }));
@@ -350,8 +350,8 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     // Width
     _buttonWidthMaster = (325 / 392) * _screenWidth;
     _fabSpacing = (5 / 392) * _screenWidth;
-    _buttonWidth = (_buttonWidthMaster - _fabSpacing) * 0.80;
-    _fabMapWidth = (_buttonWidthMaster - _fabSpacing) * 0.20;
+    _buttonWidth = (_buttonWidthMaster - _fabSpacing) * 0.70;
+    _fabMapWidth = (_buttonWidthMaster - _fabSpacing) * 0.30;
     _buttonSpacing = (10 / 392) * _screenWidth;
     _explainerTextPadding = (12 / 392) * _screenWidth;
     _listViewPaddingSides = (12 / 392) * _screenWidth;

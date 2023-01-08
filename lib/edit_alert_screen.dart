@@ -16,9 +16,8 @@ import 'go_back_button.dart';
 import 'background_theme.dart';
 
 class EditAlertScreen extends StatefulWidget {
-  final ReminderTile reminderTile;
-  const EditAlertScreen({required this.reminderTile, Key? key})
-      : super(key: key);
+  final AlertObject alert;
+  const EditAlertScreen({required this.alert, Key? key}) : super(key: key);
 
   @override
   State<EditAlertScreen> createState() => _EditAlertScreenState();
@@ -79,10 +78,10 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
 
   @override
   void initState() {
-    if (widget.reminderTile.isSpecific) {
+    if (widget.alert.isSpecific) {
       _isGeneric = false;
     }
-    _location = widget.reminderTile.location;
+    _location = widget.alert.location;
     super.initState();
   }
 
@@ -190,14 +189,14 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     return TextFormField(
         autofocus: true,
         textCapitalization: TextCapitalization.sentences,
-        initialValue: widget.reminderTile.reminder,
+        initialValue: widget.alert.reminder,
         style: TextStyle(color: Colors.black, fontSize: _formFontSize),
         decoration: InputDecoration(
             filled: true,
             fillColor: Colors.white,
             labelStyle: TextStyle(
                 color: Color(s_aquarium), fontWeight: FontWeight.bold),
-            hintText: widget.reminderTile.reminder,
+            hintText: widget.alert.reminder,
             hintStyle: TextStyle(color: Colors.grey, fontSize: _formFontSize),
             errorStyle: TextStyle(
                 color: Color(s_declineRed),
@@ -226,7 +225,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
 
   Widget locationEntry() {
     if (_isGeneric) {
-      if (widget.reminderTile.isSpecific) {
+      if (widget.alert.isSpecific) {
         _location = 'Grocery Store';
       }
       return Center(
@@ -258,11 +257,11 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
           _locationTextMapPick = false;
         } else {
           if (_isStart) {
-            _controllerRecentLocations.text = widget.reminderTile.location;
+            _controllerRecentLocations.text = widget.alert.location;
             _isStart = false;
           }
         }
-        hintTextForGeneric = widget.reminderTile.location;
+        hintTextForGeneric = widget.alert.location;
       } else {
         _controllerRecentLocations.text = '';
         hintTextForGeneric = '42 Wallaby Way, Sydney, NSW';
@@ -446,8 +445,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                   .push(createRoute(
                       // Do I want this to be the location that's always in the location field?
                       PickOnMapScreen(
-                          startLatitude: widget.reminderTile.latitude,
-                          startLongitude: widget.reminderTile.longitude),
+                          startLatitude: widget.alert.latitude,
+                          startLongitude: widget.alert.longitude),
                       'from_right'))
                   .then((value) => setState(() {
                         populateLocationFromPickOnMap(value);
@@ -475,7 +474,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   Widget deleteButton(double buttonWidth, double buttonHeight) {
     return ElevatedButton(
         onPressed: () async {
-          _dbServices.deleteRemindersAlert(context, widget.reminderTile.id);
+          _dbServices.deleteRemindersAlert(context, widget.alert.id);
           _dbServices.updateUsersReminderDeleted(context);
           // Remove keyboard
           FocusScopeNode currentFocus = FocusScope.of(context);
@@ -528,7 +527,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                   // Update in db
                   _dbServices.updateRemindersSpecificAlert(
                       context,
-                      widget.reminderTile.id,
+                      widget.alert.id,
                       _reminderBody,
                       locationToUse,
                       _locationServices.alertLat,
@@ -550,12 +549,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                     await _dbServices.checkRemindersNum(context);
                 if (formKey.currentState!.validate() && lessThanLimit) {
                   formKey.currentState?.save();
-                  _dbServices.updateRemindersGenericAlert(
-                      context,
-                      widget.reminderTile.id,
-                      _reminderBody,
-                      _location,
-                      !_isGeneric);
+                  _dbServices.updateRemindersGenericAlert(context,
+                      widget.alert.id, _reminderBody, _location, !_isGeneric);
                   _dbServices.updateUsersReminderUpdated(context);
                   // Remove keyboard
                   FocusScopeNode currentFocus = FocusScope.of(context);
@@ -608,7 +603,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   //             // Update in db
   //             _dbServices.updateSpecificAlert(
   //                 context,
-  //                 widget.reminderTile.id,
+  //                 widget.alert.id,
   //                 _reminderBody,
   //                 locationToUse,
   //                 _locationServices.alertLat,
@@ -620,7 +615,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   //         } else {
   //           if (formKey.currentState!.validate()) {
   //             formKey.currentState?.save();
-  //             _dbServices.updateGenericAlert(context, widget.reminderTile.id,
+  //             _dbServices.updateGenericAlert(context, widget.alert.id,
   //                 _reminderBody, _location, !_isGeneric);
   //           }
   //         }

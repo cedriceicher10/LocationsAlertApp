@@ -80,12 +80,12 @@ Widget fabBar(
                 );
               }
             },
-            backgroundColor: Color(s_aquarium),
+            backgroundColor: Color.fromARGB(255, 252, 241, 144),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(cornerRadius))),
             label: Icon(
               iconSelection,
-              color: Colors.white,
+              color: Color(s_darkSalmon),
               size: iconSize,
             )))
   ]);

@@ -13,30 +13,9 @@ import 'database_services.dart';
 import 'background_theme.dart';
 import 'styles.dart';
 import 'fab_bar.dart';
-
-class AlertObject {
-  String id;
-  String dateTimeCreated;
-  String dateTimeCompleted;
-  bool isCompleted;
-  bool isSpecific;
-  String location;
-  double latitude;
-  double longitude;
-  String reminder;
-  String userId;
-  AlertObject(
-      {required this.id,
-      required this.dateTimeCreated,
-      required this.dateTimeCompleted,
-      required this.isCompleted,
-      required this.isSpecific,
-      required this.location,
-      required this.latitude,
-      required this.longitude,
-      required this.reminder,
-      required this.userId});
-}
+import 'start_screen.dart';
+import 'edit_alert_screen.dart';
+import 'my_alerts_screen.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -52,7 +31,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   List<AlertObject> _alertObjs = [];
   List<LatLng> _alertLatLngList = [];
   MapController _mapController = MapController();
-  //PopupController _popupLayerController = PopupController();
+  PopupController _popupController = PopupController();
 
   double _locationOnZoom = 14;
   double _locationOffZoom = 4;
@@ -79,6 +58,14 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   double _buttonWidthMaster = 0;
   double _mapButtonIconSize = 0;
   double _noAlertsYetText = 0;
+  double _popupWidth = 0;
+  double _popupErrorFontSize = 0;
+  double _popupBorderRadius = 0;
+  double _popupTextPadding = 0;
+  double _popupTitleFontSize = 0;
+  double _popupLocationFontSize = 0;
+  double _popupDateFontSize = 0;
+  double _editIconSize = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -243,7 +230,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       options: MapOptions(
         center: LatLng(_startLat, _startLon),
         zoom: (_userPin) ? _locationOnZoom : _locationOffZoom,
-        //onTap: (_, __) => _popupLayerController.hideAllPopups(),
+        plugins: [MarkerClusterPlugin()],
+        onTap: (_, __) => _popupController.hideAllPopups(),
       ),
       layers: [
         TileLayerOptions(
@@ -253,16 +241,61 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
           subdomains: ['a', 'b', 'c'],
         ),
-        MarkerLayerOptions(
-          markers: _alertMarkers,
-        ),
-        // PopupMarkerLayerOptions(
+        // DEBUG: Static for testing purposes
+        // MarkerLayerOptions(
         //   markers: _alertMarkers,
-        //   popupController: _popupLayerController,
-        //   popupBuilder: (_, Marker marker) {
-        //     return Card(child: Text('Hello There'));
-        //   },
         // ),
+        MarkerClusterLayerOptions(
+          maxClusterRadius: 190,
+          disableClusteringAtZoom: 13,
+          size: Size(50, 50),
+          fitBoundsOptions: FitBoundsOptions(
+            padding: EdgeInsets.all(50),
+          ),
+          markers: _alertMarkers,
+          polygonOptions: PolygonOptions(
+              borderColor: Colors.blueAccent,
+              color: Colors.black12,
+              borderStrokeWidth: 3),
+          builder: (context, markers) {
+            return Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  color: Color(s_darkSalmon), shape: BoxShape.circle),
+              child: Text('${markers.length}',
+                  style: TextStyle(color: Colors.white)),
+            );
+          },
+          popupOptions: PopupOptions(
+              popupSnap: PopupSnap.markerTop,
+              popupController: _popupController,
+              popupBuilder: (_, marker) => GestureDetector(
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(createRoute(
+                            EditAlertScreen(alert: findMarkerAlertObj(marker)),
+                            'from_right'))
+                        .then((value) => setState(() {
+                              checkIfInstaPop(value);
+                            }));
+                  },
+                  child: FittedBox(
+                      fit: BoxFit.fitHeight,
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: _popupWidth,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.rectangle,
+                            border: Border.all(
+                                color: Color(s_darkSalmon), width: 3),
+                            borderRadius: BorderRadius.all(
+                                Radius.circular(_popupBorderRadius))),
+                        child: Padding(
+                            padding: EdgeInsets.all(_popupTextPadding),
+                            child: popupText(marker)),
+                      )))),
+        ),
       ],
       nonRotatedChildren: [
         (_userPin)
@@ -279,7 +312,6 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                             LatLng(_alertLatLngList[0].latitude,
                                 _alertLatLngList[0].longitude),
                             _locationOnZoom);
-                        //_mapController.move(_alertLatLngList[0], _locationOnZoom);
                       }
                     });
                   },
@@ -309,6 +341,12 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     return false;
   }
 
+  void checkIfInstaPop(bool value) {
+    if (value) {
+      Navigator.pop(context);
+    }
+  }
+
   Widget fab() {
     return fabBar(
         context,
@@ -321,6 +359,108 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         _fabSpacing,
         _fabMapWidth,
         _mapButtonIconSize);
+  }
+
+  Widget popupText(Marker marker) {
+    AlertObject alertObj = findMarkerAlertObj(marker);
+    if (alertObj.id == 'USER_LOCATION') {
+      return FormattedText(
+        text: 'Your Location!',
+        size: _popupErrorFontSize,
+        color: Colors.red,
+        font: s_font_IBMPlexSans,
+        weight: FontWeight.bold,
+        align: TextAlign.center,
+      );
+    } else if (alertObj.id == 'NOT_FOUND') {
+      return FormattedText(
+          text: 'Alert Information Could Not Be Found!',
+          size: _popupErrorFontSize,
+          color: Colors.red,
+          font: s_font_IBMPlexSans,
+          weight: FontWeight.bold,
+          align: TextAlign.center);
+    }
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      reminderCardTitleText(alertObj.reminder),
+      reminderCardLocationText('at: ${alertObj.location}'),
+      reminderCardDateText('Date Created: ${alertObj.dateTimeCreated}'),
+      Center(
+          child: Icon(
+        Icons.edit,
+        color: Color(s_darkSalmon),
+        size: _editIconSize,
+      ))
+    ]);
+  }
+
+  Widget reminderCardTitleText(String text) {
+    return FormattedText(
+      text: text,
+      size: _popupTitleFontSize,
+      color: const Color(s_blackBlue),
+      font: s_font_IBMPlexSans,
+      weight: FontWeight.bold,
+    );
+  }
+
+  Widget reminderCardLocationText(String text) {
+    return FormattedText(
+      text: text,
+      size: _popupLocationFontSize,
+      color: const Color(s_aquarium),
+      font: s_font_IBMPlexSans,
+      decoration: TextDecoration.underline,
+      weight: FontWeight.bold,
+    );
+  }
+
+  Widget reminderCardDateText(String text) {
+    return FormattedText(
+      text: text,
+      size: _popupDateFontSize,
+      color: const Color(s_blackBlue),
+      font: s_font_IBMPlexSans,
+      style: FontStyle.italic,
+      weight: FontWeight.bold,
+    );
+  }
+
+  AlertObject findMarkerAlertObj(Marker marker) {
+    for (int index = 0; index < _alertObjs.length; ++index) {
+      // User's location marker
+      if ((marker.point.latitude == _startLat) &&
+          (marker.point.longitude == _startLon)) {
+        return AlertObject(
+            id: 'USER_LOCATION',
+            dateTimeCreated: '',
+            dateTimeCompleted: '',
+            isCompleted: false,
+            isSpecific: true,
+            location: '',
+            latitude: 0,
+            longitude: 0,
+            reminder: '',
+            userId: '');
+      }
+      // Alert marker
+      if ((_alertObjs[index].latitude == marker.point.latitude) &&
+          (_alertObjs[index].longitude == marker.point.longitude)) {
+        return _alertObjs[index];
+      }
+    }
+    // Nothing found
+    return AlertObject(
+        id: 'NOT_FOUND',
+        dateTimeCreated: '',
+        dateTimeCompleted: '',
+        isCompleted: false,
+        isSpecific: true,
+        location: '',
+        latitude: 0,
+        longitude: 0,
+        reminder: '',
+        userId: '');
   }
 
   Widget myAlertsScreenTitle(String title) {
@@ -365,19 +505,27 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     // Width
     _buttonWidthMaster = (325 / 392) * _screenWidth;
     _fabSpacing = (5 / 392) * _screenWidth;
-    _buttonWidth = (_buttonWidthMaster - _fabSpacing) * 0.80;
-    _fabMapWidth = (_buttonWidthMaster - _fabSpacing) * 0.20;
+    _buttonWidth = (_buttonWidthMaster - _fabSpacing) * 0.70;
+    _fabMapWidth = (_buttonWidthMaster - _fabSpacing) * 0.30;
+    _popupWidth = (250 / 392) * _screenWidth;
 
     // Font
     _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height;
     _backButtonFontSize = (20 / 60) * _buttonHeight;
     _noAlertsYetText = (26 / 781) * _screenHeight;
+    _popupTitleFontSize = (20 / 781) * _screenHeight;
+    _popupLocationFontSize = (14 / 781) * _screenHeight;
+    _popupDateFontSize = (12 / 781) * _screenHeight;
+    _popupErrorFontSize = (16 / 781) * _screenHeight;
 
     // Icons
     _backButtonIconSize = (24 / 60) * _buttonHeight;
     _mapButtonIconSize = (30 / 60) * _buttonHeight;
+    _editIconSize = (20 / 60) * _buttonHeight;
 
     // Styling
     _backButtonCornerRadius = (10 / 60) * _buttonHeight;
+    _popupBorderRadius = (25 / _popupWidth) * 250;
+    _popupTextPadding = (15 / _popupWidth) * 250;
   }
 }

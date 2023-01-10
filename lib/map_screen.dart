@@ -250,15 +250,27 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     // Create marker circles
     List<CircleMarker> _alertCircles = [];
     for (int index = 0; index < _alertObjs.length; ++index) {
-      CircleMarker circle = CircleMarker(
-          //radius marker
-          point:
-              LatLng(_alertObjs[index].latitude, _alertObjs[index].longitude),
-          color: Colors.blue.withOpacity(0.2),
-          borderStrokeWidth: 3.0,
-          borderColor: Colors.blue,
-          useRadiusInMeter: true,
-          radius: 402.336);
+      CircleMarker circle;
+      if ((index == 0) && (_userPin)) {
+        // The user location doesn't need a circle
+        circle = CircleMarker(
+            point:
+                LatLng(_alertObjs[index].latitude, _alertObjs[index].longitude),
+            color: Colors.blue.withOpacity(0.0),
+            borderStrokeWidth: 0,
+            borderColor: Colors.blue,
+            useRadiusInMeter: true,
+            radius: 0);
+      } else {
+        circle = CircleMarker(
+            point:
+                LatLng(_alertObjs[index].latitude, _alertObjs[index].longitude),
+            color: Colors.blue.withOpacity(0.2),
+            borderStrokeWidth: 3.0,
+            borderColor: Colors.blue,
+            useRadiusInMeter: true,
+            radius: 402.336);
+      }
       _alertCircles.add(circle);
     }
     // Button placements

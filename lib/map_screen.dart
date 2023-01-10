@@ -230,7 +230,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   }
 
   Widget buildMapWithMarkers() {
-    // Turn the latlon pairs into map markers
+    // Create markers
     List<Marker> _alertMarkers = [];
     for (int index = 0; index < _alertObjs.length; ++index) {
       Marker marker = Marker(
@@ -246,6 +246,20 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                     : Color(s_aquariumLighter),
               ));
       _alertMarkers.add(marker);
+    }
+    // Create marker circles
+    List<CircleMarker> _alertCircles = [];
+    for (int index = 0; index < _alertObjs.length; ++index) {
+      CircleMarker circle = CircleMarker(
+          //radius marker
+          point:
+              LatLng(_alertObjs[index].latitude, _alertObjs[index].longitude),
+          color: Colors.blue.withOpacity(0.2),
+          borderStrokeWidth: 3.0,
+          borderColor: Colors.blue,
+          useRadiusInMeter: true,
+          radius: 402.336);
+      _alertCircles.add(circle);
     }
     // Button placements
     double rotateResetButtonBottomDistance = 115;
@@ -273,6 +287,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         // MarkerLayerOptions(
         //   markers: _alertMarkers,
         // ),
+        CircleLayerOptions(
+          circles: _alertCircles,
+        ),
         MarkerClusterLayerOptions(
           maxClusterRadius: 190,
           disableClusteringAtZoom: 13,

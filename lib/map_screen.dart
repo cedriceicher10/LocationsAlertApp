@@ -66,6 +66,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   double _popupLocationFontSize = 0;
   double _popupDateFontSize = 0;
   double _editIconSize = 0;
+  double _popupUserLocationWidth = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +146,17 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       if (initUserLocation) {
         _startLat = _locationServices.userLat;
         _startLon = _locationServices.userLon;
-        _alertLatLngList.add(LatLng(_startLat, _startLon));
+        _alertObjs.add(AlertObject(
+            id: 'USER_LOCATION',
+            dateTimeCreated: '',
+            dateTimeCompleted: '',
+            isCompleted: false,
+            isSpecific: true,
+            location: '',
+            latitude: _startLat,
+            longitude: _startLon,
+            reminder: '',
+            userId: ''));
         _userPin = true;
       } else {
         _startLat = DEFAULT_LOCATION_LAT;
@@ -201,23 +212,30 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           longitude: snapshotReminders.data!.docs[index]['longitude'],
           reminder: snapshotReminders.data!.docs[index]['reminderBody'],
           userId: snapshotReminders.data!.docs[index]['userId']);
-      _alertObjs.add(alertObj);
-      // Add the objects to the LatLng list as objects
-      // Note: The .contains check ensures we don't get duplicates with
-      //       retriggering map refreshes
-      if (!_alertLatLngList
-          .contains(LatLng(alertObj.latitude, alertObj.longitude))) {
-        _alertLatLngList.add(LatLng(alertObj.latitude, alertObj.longitude));
+      // Add to the master list; we check if we need to update or newly add
+      addOrUpdateAlertObjs(alertObj);
+    }
+  }
+
+  void addOrUpdateAlertObjs(AlertObject alertObj) {
+    // Check if already present in the list and update it
+    for (int index = 0; index < _alertObjs.length; ++index) {
+      if (alertObj.id == _alertObjs[index].id) {
+        _alertObjs[index] = alertObj;
+        return;
       }
     }
+    // Add if truly new
+    _alertObjs.add(alertObj);
   }
 
   Widget buildMapWithMarkers() {
     // Turn the latlon pairs into map markers
     List<Marker> _alertMarkers = [];
-    for (int index = 0; index < _alertLatLngList.length; ++index) {
+    for (int index = 0; index < _alertObjs.length; ++index) {
       Marker marker = Marker(
-          point: _alertLatLngList[index],
+          point:
+              LatLng(_alertObjs[index].latitude, _alertObjs[index].longitude),
           width: 50,
           height: 50,
           builder: (context) => Icon(
@@ -281,6 +299,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               popupController: _popupController,
               popupBuilder: (_, marker) => GestureDetector(
                   onTap: () {
+                    _popupController.hideAllPopups();
                     Navigator.of(context)
                         .push(createRoute(
                             EditAlertScreen(alert: findMarkerAlertObj(marker)),
@@ -293,7 +312,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                       fit: BoxFit.fitHeight,
                       child: Container(
                         alignment: Alignment.center,
-                        width: _popupWidth,
+                        width: (useSmallPopupMarker(marker))
+                            ? _popupUserLocationWidth
+                            : _popupWidth,
                         decoration: BoxDecoration(
                             color: Colors.white,
                             shape: BoxShape.rectangle,
@@ -321,9 +342,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                       if (_userPin) {
                         _mapController.rotate(0);
                         _animatedMapMove(
-                            LatLng(_alertLatLngList[0].latitude,
-                                _alertLatLngList[0].longitude),
-                            _locationOnZoom);
+                            LatLng(_startLat, _startLon), _locationOnZoom);
                       }
                     });
                   },
@@ -456,6 +475,15 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     );
   }
 
+  bool useSmallPopupMarker(Marker marker) {
+    if ((_userPin) &&
+        ((marker.point.latitude == _startLat) &&
+            (marker.point.longitude == _startLon))) {
+      return true;
+    }
+    return false;
+  }
+
   AlertObject findMarkerAlertObj(Marker marker) {
     for (int index = 0; index < _alertObjs.length; ++index) {
       // User's location marker
@@ -538,6 +566,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     _buttonWidth = (_buttonWidthMaster - _fabSpacing) * 0.70;
     _fabMapWidth = (_buttonWidthMaster - _fabSpacing) * 0.30;
     _popupWidth = (250 / 392) * _screenWidth;
+    _popupUserLocationWidth = (150 / 392) * _screenWidth;
 
     // Font
     _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height;

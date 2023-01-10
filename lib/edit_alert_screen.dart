@@ -68,6 +68,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   double _fabPadding = 0;
   double _bottomPadding = 0;
   double _formErrorFontSize = 0;
+  double _markCompleteIconSize = 0;
 
   PickOnMapLocation __pickOnMapLocation = PickOnMapLocation('', 0.0, 0.0);
   bool _usingRecentLocation = false;
@@ -175,7 +176,15 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                             pickOnMapButton(
                                 _locationButtonWidth, _locationButtonHeight),
                           ]),
-                      deleteButton(_locationButtonWidth, _locationButtonHeight),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            markCompleteButton(
+                                _locationButtonWidth, _locationButtonHeight),
+                            SizedBox(width: _buttonSpacing),
+                            deleteButton(
+                                _locationButtonWidth, _locationButtonHeight),
+                          ]),
                       // switchReminderTypeButton(_locationButtonWidth, _locationButtonHeight),
                       // SizedBox(height: _deleteButtonTopPadding),
                       // cancelButton(_textWidth, _buttonHeight),
@@ -308,7 +317,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                 })),
         PopupMenuButton<String>(
           icon: Icon(Icons.arrow_drop_down,
-              size: _dropDownIconSize, color: Color(s_darkSalmon)),
+              size: _dropDownIconSize, color: Colors.white),
           onSelected: (String value) {
             _controllerRecentLocations.text = value;
             _locationTextUserEntered = true;
@@ -469,6 +478,37 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
               ),
               smallButtonText('Pick on Map')
             ])));
+  }
+
+  Widget markCompleteButton(double buttonWidth, double buttonHeight) {
+    return ElevatedButton(
+        onPressed: () async {
+          _dbServices.completeRemindersAlertWithContext(
+              context, widget.alert.id);
+          _dbServices.updateUsersReminderComplete();
+          // Remove keyboard
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+          Navigator.pop(context, false);
+        },
+        style: ElevatedButton.styleFrom(
+            backgroundColor: s_markCompleteButtonColor,
+            fixedSize: Size(buttonWidth, buttonHeight),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Icon(
+            Icons.check_circle_rounded,
+            color: Color(s_darkSalmon),
+            size: _markCompleteIconSize,
+          ),
+          SizedBox(
+            width: _iconGapWidth,
+          ),
+          smallButtonText('Mark Done')
+        ]));
   }
 
   Widget deleteButton(double buttonWidth, double buttonHeight) {
@@ -779,6 +819,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     _dropDownIconSize = 40;
     _updateButtonIconSize = (32 / 60) * _buttonHeight;
     _deleteAlertIconSize = (20 / 60) * _buttonHeight;
+    _markCompleteIconSize = (18 / 60) * _buttonHeight;
     _cancelIconSize = (24 / 60) * _buttonHeight;
     _switchReminderTypeIconSize = (16 / _locationButtonHeight) * _screenHeight;
 

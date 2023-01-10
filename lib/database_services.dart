@@ -354,6 +354,22 @@ class DatabaseServices {
     });
   }
 
+  void completeRemindersAlertWithContext(
+      BuildContext context, String id) async {
+    // Mark alert complete
+    await FirebaseFirestore.instance
+        .collection(COLLECTION_REMINDERS)
+        .doc(id)
+        .update({
+      'dateTimeCompleted': Timestamp.now(),
+      'isCompleted': true,
+    }).catchError((error) {
+      _exception.popUp(context,
+          'Mark complete in reminders database: Action failed\n error string: ${error.toString()}\nerror raw: $error');
+      throw ('Error: $error');
+    });
+  }
+
   void completeRemindersAlert(String id) async {
     // Complete alert
     await FirebaseFirestore.instance

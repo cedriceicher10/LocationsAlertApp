@@ -243,7 +243,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
       ),
       PopupMenuButton<String>(
         icon: Icon(Icons.arrow_drop_down,
-            size: _dropDownIconSize, color: Color(s_darkSalmon)),
+            size: _dropDownIconSize, color: Colors.white),
         onSelected: (String value) {
           _controllerRecentLocations.text = value;
         },

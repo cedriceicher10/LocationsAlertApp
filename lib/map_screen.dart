@@ -202,8 +202,13 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           reminder: snapshotReminders.data!.docs[index]['reminderBody'],
           userId: snapshotReminders.data!.docs[index]['userId']);
       _alertObjs.add(alertObj);
-      // Extract the lat lon values for markers
-      _alertLatLngList.add(LatLng(alertObj.latitude, alertObj.longitude));
+      // Add the objects to the LatLng list as objects
+      // Note: The .contains check ensures we don't get duplicates with
+      //       retriggering map refreshes
+      if (!_alertLatLngList
+          .contains(LatLng(alertObj.latitude, alertObj.longitude))) {
+        _alertLatLngList.add(LatLng(alertObj.latitude, alertObj.longitude));
+      }
     }
   }
 
@@ -223,6 +228,11 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                     : Color(s_aquariumLighter),
               ));
       _alertMarkers.add(marker);
+    }
+    // Button placements
+    double rotateResetButtonBottomDistance = 115;
+    if (_userPin) {
+      rotateResetButtonBottomDistance = 180;
     }
     // Build the map
     return FlutterMap(
@@ -303,11 +313,13 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                 right: 5,
                 bottom: 115,
                 child: FloatingActionButton(
+                  heroTag: 'user_location',
                   backgroundColor: Color(s_declineRed),
                   onPressed: () {
                     // Go to the user's location
                     setState(() {
                       if (_userPin) {
+                        _mapController.rotate(0);
                         _animatedMapMove(
                             LatLng(_alertLatLngList[0].latitude,
                                 _alertLatLngList[0].longitude),
@@ -322,6 +334,24 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                 ),
               )
             : Container(),
+        Positioned(
+          right: 5,
+          bottom: rotateResetButtonBottomDistance,
+          child: FloatingActionButton(
+            heroTag: 'rotation_reset',
+            backgroundColor: Color(s_darkGray),
+            onPressed: () {
+              // Go to the user's location
+              setState(() {
+                _mapController.rotate(0);
+              });
+            },
+            child: const Icon(
+              Icons.arrow_upward_sharp,
+              color: Color(s_aquarium),
+            ),
+          ),
+        )
       ],
     );
   }

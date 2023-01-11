@@ -67,6 +67,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   double _popupDateFontSize = 0;
   double _editIconSize = 0;
   double _popupUserLocationWidth = 0;
+  double _clusterAlertNumFontSize = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -238,6 +239,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               LatLng(_alertObjs[index].latitude, _alertObjs[index].longitude),
           width: 50,
           height: 50,
+          anchorPos: AnchorPos.align(AnchorAlign.center),
           builder: (context) => Icon(
                 Icons.location_on_sharp,
                 size: (index == 0 && (_userPin)) ? 50 : 60,
@@ -305,7 +307,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         MarkerClusterLayerOptions(
           maxClusterRadius: 190,
           disableClusteringAtZoom: 13,
-          size: Size(50, 50),
+          size: Size(100, 100),
           fitBoundsOptions: FitBoundsOptions(
             padding: EdgeInsets.all(50),
           ),
@@ -320,7 +322,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               decoration: BoxDecoration(
                   color: Color(s_darkSalmon), shape: BoxShape.circle),
               child: Text('${markers.length}',
-                  style: TextStyle(color: Colors.white)),
+                  style: TextStyle(
+                      color: Colors.white, fontSize: _clusterAlertNumFontSize)),
             );
           },
           popupOptions: PopupOptions(
@@ -605,6 +608,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     _popupLocationFontSize = (14 / 781) * _screenHeight;
     _popupDateFontSize = (12 / 781) * _screenHeight;
     _popupErrorFontSize = (16 / 781) * _screenHeight;
+    _clusterAlertNumFontSize = (28 / 781) * _screenHeight;
 
     // Icons
     _backButtonIconSize = (24 / 60) * _buttonHeight;

@@ -75,8 +75,17 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
                     ));
                   }
                 }),
+            floatingActionButton: osmDisclosure(),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
           ),
         ));
+  }
+
+  Widget osmDisclosure() {
+    return Padding(
+        padding: EdgeInsets.fromLTRB(0, 0, 0, 45),
+        child: Text('Maps courtesy of OpenStreetMap'));
   }
 
   Future<bool> locationOnCheck() async {

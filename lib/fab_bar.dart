@@ -18,8 +18,10 @@ Widget fabBar(
     double iconWidth,
     double iconSize) {
   IconData iconSelection = Icons.map;
+  String fabToggleText = 'Map View';
   if (fabSelection == FAB.LIST) {
     iconSelection = Icons.list;
+    fabToggleText = 'List View';
   }
   return Column(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -92,11 +94,17 @@ Widget fabBar(
                   shape: RoundedRectangleBorder(
                       borderRadius:
                           BorderRadius.all(Radius.circular(cornerRadius))),
-                  label: Icon(
-                    iconSelection,
-                    color: Color(s_darkSalmon),
-                    size: iconSize,
-                  )))
+                  label: Column(children: [
+                    Text(
+                      fabToggleText,
+                      style: TextStyle(color: Color(s_darkSalmon)),
+                    ),
+                    Icon(
+                      iconSelection,
+                      color: Color(s_darkSalmon),
+                      size: iconSize,
+                    )
+                  ])))
         ])
       ]);
 }

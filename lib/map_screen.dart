@@ -306,8 +306,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         ),
         MarkerClusterLayerOptions(
           maxClusterRadius: 190,
-          disableClusteringAtZoom: 13,
-          size: Size(100, 100),
+          disableClusteringAtZoom: 12,
+          size: Size(90, 90),
           fitBoundsOptions: FitBoundsOptions(
             padding: EdgeInsets.all(50),
           ),
@@ -608,7 +608,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     _popupLocationFontSize = (14 / 781) * _screenHeight;
     _popupDateFontSize = (12 / 781) * _screenHeight;
     _popupErrorFontSize = (16 / 781) * _screenHeight;
-    _clusterAlertNumFontSize = (28 / 781) * _screenHeight;
+    _clusterAlertNumFontSize = (20 / 781) * _screenHeight;
 
     // Icons
     _backButtonIconSize = (24 / 60) * _buttonHeight;

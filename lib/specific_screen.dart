@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:locationalertsapp/recent_locations.dart';
+import 'package:locationalertsapp/slider_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter/material.dart';
@@ -56,6 +57,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
   double _fabPadding = 0;
   double _bottomPadding = 0;
   double _formErrorFontSize = 0;
+
+  List<double> triggerRangeList = [0.25, 0.5, 0.75, 1.0, 1.5];
+  int selectedIndex = 0;
 
   PickOnMapLocation __pickOnMapLocation = PickOnMapLocation('', 0.0, 0.0);
 
@@ -147,12 +151,48 @@ class _SpecificScreenState extends State<SpecificScreen> {
                             pickOnMapButton(
                                 _locationButtonWidth, _locationButtonHeight),
                           ]),
+                      SizedBox(height: _buttonSpacing),
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            titleText('Within ___ miles...'),
+                            SizedBox(height: _buttonSpacing),
+                            triggerRangeSlider(),
+                          ]),
                       // SizedBox(height: _submitButtonTopPadding),
                       // cancelButton(_textWidth, _buttonHeight),
                       // SizedBox(height: _buttonSpacing),
                       // submitButton(_textWidth, _buttonHeight),
                       // SizedBox(height: _bottomPadding),
                     ]))));
+  }
+
+  Widget triggerRangeSlider() {
+    return SliderWidget(
+      sliderWidth: _textWidth,
+      sliderHeight: 48,
+      min: 0,
+      max: 2,
+      gradientColorStart: Color(s_aquariumLighter),
+      gradientColorEnd: Color(s_darkSalmon),
+    );
+
+    // return Container(
+    //     width: _textWidth,
+    //     child: Slider(
+    //       value: selectedIndex.toDouble(),
+    //       label: triggerRangeList[selectedIndex].toString(),
+    //       min: 0,
+    //       max: triggerRangeList.length - 1,
+    //       divisions: triggerRangeList.length - 1,
+    //       activeColor: Color(s_aquarium),
+    //       thumbColor: Color(s_darkSalmon),
+    //       onChanged: (double newTriggerRange) {
+    //         setState(() {
+    //           selectedIndex = newTriggerRange.toInt();
+    //         });
+    //       },
+    //     ));
   }
 
   Widget reminderEntry() {

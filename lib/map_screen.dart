@@ -276,9 +276,13 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       _alertCircles.add(circle);
     }
     // Button placements
-    double rotateResetButtonBottomDistance = 115;
+    double rotateResetButtonBottomDistance = 115 + 65 + 65;
+    double zoomInButtonBottomDistance = 115 + 65;
+    double zoomOutButtonBottomDistance = 115;
     if (_userPin) {
-      rotateResetButtonBottomDistance = 180;
+      zoomOutButtonBottomDistance = 180;
+      zoomInButtonBottomDistance = zoomOutButtonBottomDistance + 65;
+      rotateResetButtonBottomDistance = zoomInButtonBottomDistance + 65;
     }
     // Build the map
     return FlutterMap(
@@ -390,7 +394,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           bottom: rotateResetButtonBottomDistance,
           child: FloatingActionButton(
             heroTag: 'rotation_reset',
-            backgroundColor: Color(s_darkGray),
+            backgroundColor: Colors.white,
             onPressed: () {
               // Go to the user's location
               setState(() {
@@ -400,6 +404,44 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
             child: const Icon(
               Icons.arrow_upward_sharp,
               color: Color(s_aquarium),
+            ),
+          ),
+        ),
+        Positioned(
+          right: 5,
+          bottom: zoomInButtonBottomDistance,
+          child: FloatingActionButton(
+            heroTag: 'zoom_in',
+            backgroundColor: Color(s_aquariumLighter),
+            onPressed: () {
+              // Zoom in
+              setState(() {
+                _animatedMapMove(
+                    _mapController.center, _mapController.zoom + 1);
+              });
+            },
+            child: const Icon(
+              Icons.zoom_in,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        Positioned(
+          right: 5,
+          bottom: zoomOutButtonBottomDistance,
+          child: FloatingActionButton(
+            heroTag: 'zoom_out',
+            backgroundColor: Color(s_aquariumLighter),
+            onPressed: () {
+              // Zoom in
+              setState(() {
+                _animatedMapMove(
+                    _mapController.center, _mapController.zoom - 1);
+              });
+            },
+            child: const Icon(
+              Icons.zoom_out,
+              color: Colors.white,
             ),
           ),
         )

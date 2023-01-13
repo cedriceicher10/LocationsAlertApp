@@ -29,12 +29,11 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   final BackgroundTheme _background = BackgroundTheme(Screen.MY_ALERTS_SCREEN);
   final LocationServices _locationServices = LocationServices();
   List<AlertObject> _alertObjs = [];
-  List<LatLng> _alertLatLngList = [];
   MapController _mapController = MapController();
   PopupController _popupController = PopupController();
 
   double _locationOnZoom = 14;
-  double _locationOffZoom = 4;
+  double _locationOffZoom = 7;
 
   double _startLat = 0;
   double _startLon = 0;
@@ -288,7 +287,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     return FlutterMap(
       mapController: _mapController,
       options: MapOptions(
-        center: LatLng(_startLat, _startLon),
+        center: determineMapStartLocation(),
         zoom: (_userPin) ? _locationOnZoom : _locationOffZoom,
         plugins: [MarkerClusterPlugin()],
         onTap: (_, __) => _popupController.hideAllPopups(),
@@ -447,6 +446,20 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         )
       ],
     );
+  }
+
+  LatLng determineMapStartLocation() {
+    if ((!_userPin) && (_alertObjs.length > 0)) {
+      double latTotal = 0;
+      double lonTotal = 0;
+      for (int index = 0; index < _alertObjs.length; ++index) {
+        latTotal += _alertObjs[index].latitude;
+        lonTotal += _alertObjs[index].longitude;
+      }
+      return LatLng(latTotal / _alertObjs.length, lonTotal / _alertObjs.length);
+    } else {
+      return LatLng(_startLat, _startLon);
+    }
   }
 
   Future<bool> locationOnCheck() async {

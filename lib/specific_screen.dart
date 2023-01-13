@@ -151,14 +151,14 @@ class _SpecificScreenState extends State<SpecificScreen> {
                             pickOnMapButton(
                                 _locationButtonWidth, _locationButtonHeight),
                           ]),
-                      SizedBox(height: _buttonSpacing),
-                      Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            titleText('Within ___ miles...'),
-                            SizedBox(height: _buttonSpacing),
-                            triggerRangeSlider(),
-                          ]),
+                      // SizedBox(height: _buttonSpacing),
+                      // Column(
+                      //     crossAxisAlignment: CrossAxisAlignment.start,
+                      //     children: [
+                      //       titleText('Within ___ miles...'),
+                      //       SizedBox(height: _buttonSpacing),
+                      //       triggerRangeSlider(),
+                      //     ]),
                       // SizedBox(height: _submitButtonTopPadding),
                       // cancelButton(_textWidth, _buttonHeight),
                       // SizedBox(height: _buttonSpacing),

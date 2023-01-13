@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'styles.dart';
 
 class TriggerSlider extends StatelessWidget {
   final double value;
@@ -12,6 +13,7 @@ class TriggerSlider extends StatelessWidget {
   final int labelValuePrecision;
   final bool linearStep;
   final List<double>? steps;
+  final String unit;
 
   TriggerSlider({
     required this.value,
@@ -20,6 +22,7 @@ class TriggerSlider extends StatelessWidget {
     required this.majorTick,
     required this.minorTick,
     required this.onChanged,
+    required this.unit,
     this.activeColor,
     this.inactiveColor,
     this.labelValuePrecision = 2,
@@ -29,14 +32,19 @@ class TriggerSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final allocatedHeight = MediaQuery.of(context).size.height;
-    final allocatedWidth = MediaQuery.of(context).size.width;
+    final allocatedHeight = MediaQuery.of(context).size.height; // 1057.45
+    final allocatedWidth = MediaQuery.of(context).size.width; // 523.64
+
+    // Generate layout
+    double _sliderPadding = (7 / 523.64) * allocatedWidth;
+    double _tickFontSize = (17 / 1057.45) * allocatedHeight;
+
     final divisions = (majorTick - 1) * minorTick + majorTick;
     final double valueHeight =
         allocatedHeight * 0.05 < 41 ? 41 : allocatedHeight * 0.05;
     final double tickHeight =
         allocatedHeight * 0.025 < 20 ? 20 : allocatedHeight * 0.025;
-    final labelOffset = allocatedWidth / divisions / 2;
+    final labelOffset = (allocatedWidth / divisions / 2) - _sliderPadding;
 
     return Column(
       children: [
@@ -47,17 +55,17 @@ class TriggerSlider extends StatelessWidget {
               child: Column(
                 children: [
                   Container(
-                    alignment: Alignment.bottomCenter,
+                    alignment: Alignment.center,
                     height: valueHeight,
-                    child: Text(tickText(steps!, index),
+                    child: Text(tickText(steps!, index, unit),
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: _tickFontSize,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center),
                   ),
                   Container(
-                    alignment: Alignment.bottomCenter,
+                    alignment: Alignment.center,
                     height: tickHeight,
                     child: VerticalDivider(
                       indent: index % (minorTick + 1) == 0 ? 2 : 6,
@@ -69,7 +77,6 @@ class TriggerSlider extends StatelessWidget {
                           : Colors.grey.shade300,
                     ),
                   ),
-                  hello(index, value),
                 ],
               ),
             ),
@@ -85,7 +92,7 @@ class TriggerSlider extends StatelessWidget {
               inactiveTickMarkColor: inactiveColor ?? Colors.orange.shade50,
               activeTrackColor: activeColor ?? Colors.orange,
               inactiveTrackColor: inactiveColor ?? Colors.orange.shade50,
-              thumbColor: Colors.yellow ?? Colors.orange,
+              thumbColor: s_myLocationColor,
               overlayColor: activeColor == null
                   ? Colors.orange.withOpacity(0.1)
                   : activeColor!.withOpacity(0.1),
@@ -102,7 +109,6 @@ class TriggerSlider extends StatelessWidget {
               max: maxValue,
               divisions: divisions - 1,
               onChanged: onChanged,
-              label: value.toStringAsFixed(labelValuePrecision),
             ),
           ),
         ),
@@ -111,17 +117,11 @@ class TriggerSlider extends StatelessWidget {
   }
 }
 
-Widget hello(int index, double value) {
-  print('index: $index');
-  print('value: $value');
-  return Container();
-}
-
-String tickText(List<double> steps, int index) {
+String tickText(List<double> steps, int index, String unit) {
   if (index == 0) {
-    return '${(steps[index]).toStringAsFixed(2)}';
+    return '${(steps[index]).toStringAsFixed(2)} $unit';
   } else {
-    return '${(steps[index]).toStringAsFixed(1)}';
+    return '${(steps[index]).toStringAsFixed(1)} $unit';
   }
   // Determining whole numbers: if (steps[index] == steps[index].roundToDouble())
 }

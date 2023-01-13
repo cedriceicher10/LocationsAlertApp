@@ -59,10 +59,12 @@ class _SpecificScreenState extends State<SpecificScreen> {
   double _fabPadding = 0;
   double _bottomPadding = 0;
   double _formErrorFontSize = 0;
+  double _triggerUnitsFontSize = 0;
 
-  List<double> triggerRangeList = [0.25, 0.5, 1.0, 5.0, 10.0];
-  int selectedIndex = 0;
-  double selectedTrigger = 0.25;
+  List<double> triggerRangeMiList = [0.25, 0.5, 1.0, 5.0, 10.0];
+  List<double> triggerRangeKmList = [0.5, 0.75, 1.5, 8.0, 15.0];
+  double selectedMiTrigger = 0.25;
+  double selectedKmTrigger = 0.50;
   TriggerUnits? _character = TriggerUnits.mi;
 
   PickOnMapLocation __pickOnMapLocation = PickOnMapLocation('', 0.0, 0.0);
@@ -171,21 +173,57 @@ class _SpecificScreenState extends State<SpecificScreen> {
 
   Widget triggerRangeSlider() {
     return TriggerSlider(
-      minValue: triggerRangeList[0],
-      maxValue: triggerRangeList[triggerRangeList.length - 1],
-      value: selectedTrigger,
+      minValue: determineMinValue(),
+      maxValue: determineMaxValue(),
+      value: determineTrigger(),
       majorTick: 3, // # major ticks
       minorTick: 1, // # minor ticks between major ticks
       labelValuePrecision: 0,
       onChanged: (val) => setState(() {
-        selectedTrigger = val;
+        if (_character == TriggerUnits.kms) {
+          selectedKmTrigger = val;
+        } else {
+          selectedMiTrigger = val;
+        }
       }),
       activeColor: Color(s_darkSalmon),
       inactiveColor: Color(s_aquariumLighter),
       linearStep: true,
-      steps: triggerRangeList,
+      steps: determineSteps(),
       unit: determineUnits(),
     );
+  }
+
+  double determineMinValue() {
+    if (_character == TriggerUnits.kms) {
+      return triggerRangeKmList[0];
+    } else {
+      return triggerRangeMiList[0];
+    }
+  }
+
+  double determineMaxValue() {
+    if (_character == TriggerUnits.kms) {
+      return triggerRangeKmList[triggerRangeKmList.length - 1];
+    } else {
+      return triggerRangeMiList[triggerRangeMiList.length - 1];
+    }
+  }
+
+  double determineTrigger() {
+    if (_character == TriggerUnits.kms) {
+      return selectedKmTrigger;
+    } else {
+      return selectedMiTrigger;
+    }
+  }
+
+  List<double> determineSteps() {
+    if (_character == TriggerUnits.kms) {
+      return triggerRangeKmList;
+    } else {
+      return triggerRangeMiList;
+    }
   }
 
   String determineUnits() {
@@ -207,9 +245,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
         Expanded(
             flex: insideFlex,
             child: ListTileTheme(
-                horizontalTitleGap: 1,
+                horizontalTitleGap: 0,
                 child: ListTile(
-                  title: const Text('mi'),
+                  title: triggerUnitsText('mi'),
                   leading: Radio<TriggerUnits>(
                     value: TriggerUnits.mi,
                     groupValue: _character,
@@ -223,9 +261,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
         Expanded(
             flex: insideFlex,
             child: ListTileTheme(
-                horizontalTitleGap: 1,
+                horizontalTitleGap: 0,
                 child: ListTile(
-                  title: const Text('kms'),
+                  title: triggerUnitsText('km'),
                   leading: Radio<TriggerUnits>(
                     value: TriggerUnits.kms,
                     groupValue: _character,
@@ -558,17 +596,14 @@ class _SpecificScreenState extends State<SpecificScreen> {
     );
   }
 
-  // Widget cancelButton(double buttonWidth, double buttonHeight) {
-  //   return GoBackButton().back(
-  //       'Cancel',
-  //       buttonWidth,
-  //       buttonHeight,
-  //       _submitButtonFontSize,
-  //       _cancelIconSize,
-  //       _largeButtonCornerRadius,
-  //       context,
-  //       Color(s_darkSalmon));
-  // }
+  Widget triggerUnitsText(String text) {
+    return FormattedText(
+        text: text,
+        size: _triggerUnitsFontSize,
+        color: Color(s_darkSalmon),
+        font: s_font_IBMPlexSans,
+        weight: FontWeight.bold);
+  }
 
   Widget smallButtonText(String text) {
     return FormattedText(
@@ -626,6 +661,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
     _locationButtonTextFontSize = (16 / 30) * _locationButtonHeight;
     _submitButtonFontSize = (20 / 60) * _buttonHeight;
     _formErrorFontSize = (12 / 60) * _buttonHeight;
+    _triggerUnitsFontSize = (16 / 60) * _buttonHeight;
 
     // Icons
     _atMyLocationIconSize = (16 / 30) * _locationButtonHeight;

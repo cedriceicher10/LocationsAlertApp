@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'styles.dart';
 
 class TriggerSlider extends StatelessWidget {
-  final double value;
+  double value;
   final double minValue;
   final double maxValue;
   final int majorTick;
@@ -45,6 +45,11 @@ class TriggerSlider extends StatelessWidget {
     final double tickHeight =
         allocatedHeight * 0.025 < 20 ? 20 : allocatedHeight * 0.025;
     final labelOffset = (allocatedWidth / divisions / 2) - _sliderPadding;
+
+    // Work-around for weird error where value = 0.0 and throwing exception
+    if (value == 0.0) {
+      value = steps![0];
+    }
 
     return Column(
       children: [

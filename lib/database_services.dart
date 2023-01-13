@@ -255,7 +255,9 @@ class DatabaseServices {
       bool isCompleted,
       String location,
       double latitude,
-      double longitude) async {
+      double longitude,
+      double triggerDistance,
+      String triggerUnits) async {
     // Put in Firestore cloud database
     reminders.add({
       'userId': UUID_GLOBAL,
@@ -267,6 +269,8 @@ class DatabaseServices {
       'longitude': longitude,
       'dateTimeCreated': Timestamp.now(),
       'dateTimeCompleted': Timestamp.now(),
+      'triggerDistance': triggerDistance,
+      'triggerUnits': triggerUnits
     }).catchError((error) {
       _exception.popUp(context,
           'Add to reminders database: Action failed\n error string: ${error.toString()}\nerror raw: $error');
@@ -319,7 +323,9 @@ class DatabaseServices {
       String location,
       double latitude,
       double longitude,
-      bool isSpecific) async {
+      bool isSpecific,
+      double triggerDistance,
+      String triggerUnits) async {
     // Update alert
     await FirebaseFirestore.instance
         .collection(COLLECTION_REMINDERS)
@@ -330,6 +336,8 @@ class DatabaseServices {
       'latitude': latitude,
       'longitude': longitude,
       'isSpecific': isSpecific,
+      'triggerDistance': triggerDistance,
+      'triggerUnits': triggerUnits
     }).catchError((error) {
       _exception.popUp(context,
           'Update in reminders database: Action failed\n error string: ${error.toString()}\nerror raw: $error');

@@ -156,7 +156,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
             latitude: _startLat,
             longitude: _startLon,
             reminder: '',
-            userId: ''));
+            userId: '',
+            triggerDistance: 0,
+            triggerUnits: ''));
         _userPin = true;
       } else {
         _startLat = DEFAULT_LOCATION_LAT;
@@ -199,19 +201,21 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     for (var index = 0; index < snapshotReminders.data!.docs.length; ++index) {
       // Convert to lightweight alert objects
       AlertObject alertObj = AlertObject(
-          id: snapshotReminders.data!.docs[index].id,
-          dateTimeCompleted: DateFormat.yMMMMd('en_US').add_jm().format(
-              snapshotReminders.data!.docs[index]['dateTimeCompleted']
-                  .toDate()),
-          dateTimeCreated: DateFormat.yMMMMd('en_US').add_jm().format(
-              snapshotReminders.data!.docs[index]['dateTimeCreated'].toDate()),
-          isCompleted: snapshotReminders.data!.docs[index]['isCompleted'],
-          isSpecific: snapshotReminders.data!.docs[index]['isSpecific'],
-          location: snapshotReminders.data!.docs[index]['location'],
-          latitude: snapshotReminders.data!.docs[index]['latitude'],
-          longitude: snapshotReminders.data!.docs[index]['longitude'],
-          reminder: snapshotReminders.data!.docs[index]['reminderBody'],
-          userId: snapshotReminders.data!.docs[index]['userId']);
+        id: snapshotReminders.data!.docs[index].id,
+        dateTimeCompleted: DateFormat.yMMMMd('en_US').add_jm().format(
+            snapshotReminders.data!.docs[index]['dateTimeCompleted'].toDate()),
+        dateTimeCreated: DateFormat.yMMMMd('en_US').add_jm().format(
+            snapshotReminders.data!.docs[index]['dateTimeCreated'].toDate()),
+        isCompleted: snapshotReminders.data!.docs[index]['isCompleted'],
+        isSpecific: snapshotReminders.data!.docs[index]['isSpecific'],
+        location: snapshotReminders.data!.docs[index]['location'],
+        latitude: snapshotReminders.data!.docs[index]['latitude'],
+        longitude: snapshotReminders.data!.docs[index]['longitude'],
+        reminder: snapshotReminders.data!.docs[index]['reminderBody'],
+        userId: snapshotReminders.data!.docs[index]['userId'],
+        triggerDistance: snapshotReminders.data!.docs[index]['triggerDistance'],
+        triggerUnits: snapshotReminders.data!.docs[index]['triggerUnits'],
+      );
       // Add to the master list; we check if we need to update or newly add
       addOrUpdateAlertObjs(alertObj);
     }
@@ -270,7 +274,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
             borderStrokeWidth: 3.0,
             borderColor: Colors.blue,
             useRadiusInMeter: true,
-            radius: 402.336);
+            radius: determineRadiusInMeters(index));
       }
       _alertCircles.add(circle);
     }
@@ -448,6 +452,14 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     );
   }
 
+  double determineRadiusInMeters(int index) {
+    if (_alertObjs[index].triggerUnits == TriggerUnits.km) {
+      return _alertObjs[index].triggerDistance * 1000; // km to m
+    } else {
+      return _alertObjs[index].triggerDistance * 1609.34; // mi to m
+    }
+  }
+
   LatLng determineMapStartLocation() {
     if ((!_userPin) && (_alertObjs.length > 0)) {
       double latTotal = 0;
@@ -586,7 +598,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
             latitude: 0,
             longitude: 0,
             reminder: '',
-            userId: '');
+            userId: '',
+            triggerDistance: 0,
+            triggerUnits: '');
       }
       // Alert marker
       if ((_alertObjs[index].latitude == marker.point.latitude) &&
@@ -605,7 +619,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         latitude: 0,
         longitude: 0,
         reminder: '',
-        userId: '');
+        userId: '',
+        triggerDistance: 0,
+        triggerUnits: '');
   }
 
   Widget myAlertsScreenTitle(String title) {

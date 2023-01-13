@@ -15,6 +15,9 @@ import 'pick_on_map_screen.dart';
 import 'recent_locations.dart';
 import 'go_back_button.dart';
 import 'background_theme.dart';
+import 'trigger_slider.dart';
+
+enum TriggerUnits { mi, km }
 
 class EditAlertScreen extends StatefulWidget {
   final AlertObject alert;
@@ -70,6 +73,15 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   double _bottomPadding = 0;
   double _formErrorFontSize = 0;
   double _markCompleteIconSize = 0;
+  double _triggerUnitsFontSize = 0;
+
+  List<String> unitStrings = ['mi', 'km'];
+  List<double> triggerRangeMiList = [0.25, 0.5, 1.0, 5.0, 10.0];
+  List<double> triggerRangeKmList = [0.5, 0.75, 1.5, 8.0, 15.0];
+  double selectedMiTrigger = 0.25;
+  double selectedKmTrigger = 0.5;
+  TriggerUnits? _character = TriggerUnits.mi;
+  bool loadedTriggerDistanceUnits = false;
 
   PickOnMapLocation __pickOnMapLocation = PickOnMapLocation('', 0.0, 0.0);
   bool _usingRecentLocation = false;
@@ -84,20 +96,37 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
       _isGeneric = false;
     }
     _location = widget.alert.location;
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    generateLayout();
-    loadRecentLocations();
     if (_isGeneric) {
       atLocationText = 'generic';
       atLocationTextOpposite = 'specific';
     } else {
       atLocationText = 'specific';
       atLocationTextOpposite = 'generic';
+      // Assign trigger distance/units slider and radio buttons
+      // triggerDistance is equal to triggerRange*List[*]
+      // We must conver this to ((max - min) / num_divisions) * index
+      if (widget.alert.triggerUnits == unitStrings[0]) {
+        selectedMiTrigger =
+            getTriggerDistanceMiIndex(widget.alert.triggerDistance) *
+                ((triggerRangeMiList[triggerRangeMiList.length - 1] -
+                        triggerRangeMiList[0]) /
+                    (triggerRangeMiList.length - 1));
+        _character = TriggerUnits.mi;
+      } else {
+        selectedKmTrigger =
+            getTriggerDistanceKmIndex(widget.alert.triggerDistance) *
+                ((triggerRangeKmList[triggerRangeKmList.length - 1] -
+                        triggerRangeKmList[0]) /
+                    (triggerRangeKmList.length - 1));
+        _character = TriggerUnits.km;
+      }
     }
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    generateLayout();
     // Wrapping the MaterialApp allows the user to tap anywhere on the screen
     // to remove the keyboard focus
     // See: https://flutterigniter.com/dismiss-keyboard-form-lose-focus/
@@ -129,6 +158,24 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     _rl.retrieveRecentLocations();
     _recentLocations = _rl.recentLocations;
     _recentLocationsMap = _rl.recentLocationsMap;
+  }
+
+  int getTriggerDistanceKmIndex(double triggerDistance) {
+    for (int index = 0; index < triggerRangeKmList.length; ++index) {
+      if (triggerDistance == triggerRangeKmList[index]) {
+        return index;
+      }
+    }
+    return 0;
+  }
+
+  int getTriggerDistanceMiIndex(double triggerDistance) {
+    for (int index = 0; index < triggerRangeMiList.length; ++index) {
+      if (triggerDistance == triggerRangeMiList[index]) {
+        return index;
+      }
+    }
+    return 0;
   }
 
   Widget buttonsFAB() {
@@ -186,13 +233,126 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                             deleteButton(
                                 _locationButtonWidth, _locationButtonHeight),
                           ]),
-                      // switchReminderTypeButton(_locationButtonWidth, _locationButtonHeight),
-                      // SizedBox(height: _deleteButtonTopPadding),
-                      // cancelButton(_textWidth, _buttonHeight),
-                      // SizedBox(height: _buttonSpacing),
-                      // updateButton(_textWidth, _buttonHeight),
-                      // SizedBox(height: _bottomPadding),
+                      SizedBox(height: _buttonSpacing),
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            titleText('At the trigger distance...'),
+                            Container(
+                                width: _textWidth, child: triggerRangeSlider()),
+                          ]),
+                      Container(
+                          width: _textWidth,
+                          child: unitsRadioButtons(_textWidth))
                     ]))));
+  }
+
+  Widget triggerRangeSlider() {
+    return TriggerSlider(
+      minValue: determineMinValue(),
+      maxValue: determineMaxValue(),
+      value: determineTrigger(),
+      majorTick: 3, // # major ticks
+      minorTick: 1, // # minor ticks between major ticks
+      labelValuePrecision: 0,
+      onChanged: (val) => setState(() {
+        if (_character == TriggerUnits.km) {
+          selectedKmTrigger = val;
+        } else {
+          selectedMiTrigger = val;
+        }
+      }),
+      activeColor: Color(s_darkSalmon),
+      inactiveColor: Color(s_aquariumLighter),
+      linearStep: true,
+      steps: determineSteps(),
+      unit: determineUnits(),
+    );
+  }
+
+  double determineMinValue() {
+    if (_character == TriggerUnits.km) {
+      return triggerRangeKmList[0];
+    } else {
+      return triggerRangeMiList[0];
+    }
+  }
+
+  double determineMaxValue() {
+    if (_character == TriggerUnits.km) {
+      return triggerRangeKmList[triggerRangeKmList.length - 1];
+    } else {
+      return triggerRangeMiList[triggerRangeMiList.length - 1];
+    }
+  }
+
+  double determineTrigger() {
+    if (_character == TriggerUnits.km) {
+      return selectedKmTrigger;
+    } else {
+      return selectedMiTrigger;
+    }
+  }
+
+  List<double> determineSteps() {
+    if (_character == TriggerUnits.km) {
+      return triggerRangeKmList;
+    } else {
+      return triggerRangeMiList;
+    }
+  }
+
+  String determineUnits() {
+    if (_character == TriggerUnits.km) {
+      return unitStrings[1];
+    } else {
+      return unitStrings[0];
+    }
+  }
+
+  Widget unitsRadioButtons(double width) {
+    int outsideFlex = 5;
+    int insideFlex = 6;
+    return Center(
+        child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Expanded(flex: outsideFlex, child: Container()),
+        Expanded(
+            flex: insideFlex,
+            child: ListTileTheme(
+                horizontalTitleGap: 0,
+                child: ListTile(
+                  title: triggerUnitsText(unitStrings[0]),
+                  leading: Radio<TriggerUnits>(
+                    value: TriggerUnits.mi,
+                    groupValue: _character,
+                    onChanged: (TriggerUnits? value) {
+                      setState(() {
+                        _character = value;
+                      });
+                    },
+                  ),
+                ))),
+        Expanded(
+            flex: insideFlex,
+            child: ListTileTheme(
+                horizontalTitleGap: 0,
+                child: ListTile(
+                  title: triggerUnitsText(unitStrings[1]),
+                  leading: Radio<TriggerUnits>(
+                    value: TriggerUnits.km,
+                    groupValue: _character,
+                    onChanged: (TriggerUnits? value) {
+                      setState(() {
+                        _character = value;
+                      });
+                    },
+                  ),
+                ))),
+        Expanded(flex: outsideFlex, child: Container()),
+      ],
+    ));
   }
 
   Widget reminderEntry() {
@@ -567,13 +727,16 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                   formKey.currentState?.save();
                   // Update in db
                   _dbServices.updateRemindersSpecificAlert(
-                      context,
-                      widget.alert.id,
-                      _reminderBody,
-                      locationToUse,
-                      _locationServices.alertLat,
-                      _locationServices.alertLon,
-                      !_isGeneric);
+                    context,
+                    widget.alert.id,
+                    _reminderBody,
+                    locationToUse,
+                    _locationServices.alertLat,
+                    _locationServices.alertLon,
+                    !_isGeneric,
+                    determineSubmitTriggerDistance(),
+                    determineSubmitTriggerUnits(),
+                  );
                   _dbServices.updateUsersReminderUpdated(context);
                   // Save for previously chosen locations
                   _rl.add(locationToUse);
@@ -625,71 +788,35 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
             ])));
   }
 
-  // Widget updateButton(double buttonWidth, double buttonHeight) {
-  //   return ElevatedButton(
-  //       onPressed: () async {
-  //         formKey.currentState?.save();
-  //         if (!_isGeneric) {
-  //           _usingRecentLocation = checkRecentLocationMap(_location);
-  //           String locationToUse;
-  //           if (_usingRecentLocation) {
-  //             locationToUse = _recentLocationsMap[_location];
-  //           } else {
-  //             locationToUse = _location;
-  //           }
-  //           _reverseGeolocateSuccess = await _locationServices
-  //               .reverseGeolocateCheck(context, locationToUse);
-  //           if (formKey.currentState!.validate()) {
-  //             formKey.currentState?.save();
-  //             // Update in db
-  //             _dbServices.updateSpecificAlert(
-  //                 context,
-  //                 widget.alert.id,
-  //                 _reminderBody,
-  //                 locationToUse,
-  //                 _locationServices.alertLat,
-  //                 _locationServices.alertLon,
-  //                 !_isGeneric);
-  //             // Save for previously chosen locations
-  //             _rl.add(locationToUse);
-  //           }
-  //         } else {
-  //           if (formKey.currentState!.validate()) {
-  //             formKey.currentState?.save();
-  //             _dbServices.updateGenericAlert(context, widget.alert.id,
-  //                 _reminderBody, _location, !_isGeneric);
-  //           }
-  //         }
-  //         // Remove keyboard
-  //         FocusScopeNode currentFocus = FocusScope.of(context);
-  //         if (!currentFocus.hasPrimaryFocus) {
-  //           currentFocus.unfocus();
-  //         }
-  //         Navigator.pop(context, false);
-  //       },
-  //       style: ElevatedButton.styleFrom(
-  //           backgroundColor: const Color(s_aquarium),
-  //           fixedSize: Size(buttonWidth, buttonHeight),
-  //           shape: RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.circular(_largeButtonCornerRadius))),
-  //       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-  //         Icon(
-  //           Icons.update,
-  //           color: Colors.white,
-  //           size: _updateButtonIconSize,
-  //         ),
-  //         SizedBox(
-  //           width: _iconGapWidth,
-  //         ),
-  //         FormattedText(
-  //           text: 'Update Alert',
-  //           size: _updateButtonFontSize,
-  //           color: Colors.white,
-  //           font: s_font_BonaNova,
-  //           weight: FontWeight.bold,
-  //         )
-  //       ]));
-  // }
+  double determineSubmitTriggerDistance() {
+    // selected*Trigger is equal to ((max - min) / num_divisions) * index
+    // We must conver this to triggerRange*List[index]
+    if (_character == TriggerUnits.km) {
+      double val = triggerRangeKmList[((selectedKmTrigger -
+                  triggerRangeKmList[0]) ~/ // This is equivalent to .toInt()
+              ((triggerRangeKmList[triggerRangeKmList.length - 1] -
+                      triggerRangeKmList[0]) /
+                  ((triggerRangeKmList.length - 1))))]
+          .toDouble();
+      return val;
+    } else {
+      double val = triggerRangeMiList[((selectedMiTrigger -
+                  triggerRangeMiList[0]) ~/ // This is equivalent to .toInt()
+              ((triggerRangeMiList[triggerRangeMiList.length - 1] -
+                      triggerRangeMiList[0]) /
+                  ((triggerRangeMiList.length - 1))))]
+          .toDouble();
+      return val;
+    }
+  }
+
+  String determineSubmitTriggerUnits() {
+    if (_character == TriggerUnits.km) {
+      return unitStrings[1];
+    } else {
+      return unitStrings[0];
+    }
+  }
 
   Widget cancelButtonFAB(double buttonWidth, double buttonHeight) {
     return Container(
@@ -736,19 +863,6 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     );
   }
 
-  // Widget cancelButton(double buttonWidth, double buttonHeight) {
-  //   return GoBackButton().back(
-  //       'Cancel',
-  //       buttonWidth,
-  //       buttonHeight,
-  //       _updateButtonFontSize,
-  //       _cancelIconSize,
-  //       _largeButtonCornerRadius,
-  //       context,
-  //       Color(s_darkSalmon),
-  //       1); // return false
-  // }
-
   bool checkRecentLocationMap(String location) {
     if (_recentLocationsMap[location] == null) {
       return false;
@@ -784,6 +898,15 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
         weight: FontWeight.bold);
   }
 
+  Widget triggerUnitsText(String text) {
+    return FormattedText(
+        text: text,
+        size: _triggerUnitsFontSize,
+        color: Color(s_darkSalmon),
+        font: s_font_IBMPlexSans,
+        weight: FontWeight.bold);
+  }
+
   void generateLayout() {
     double _screenWidth = MediaQuery.of(context).size.width;
     double _screenHeight = MediaQuery.of(context).size.height;
@@ -813,6 +936,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     _updateButtonFontSize = (20 / 60) * _buttonHeight;
     _switchReminderFontsize = (12 / 30) * _locationButtonHeight;
     _formErrorFontSize = (12 / 60) * _buttonHeight;
+    _triggerUnitsFontSize = (16 / 60) * _buttonHeight;
 
     // Icons
     _atMyLocationIconSize = (16 / 30) * _locationButtonHeight;

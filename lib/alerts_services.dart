@@ -7,16 +7,16 @@ class AlertServices {
   final TRIGGER_DISTANCE = 0.25; // mi
   final NEW_ALERT_TIME = 1; // min
 
-  // doNotAlertList [docId, lat, lon]
+  // doNotAlertList [docId, lat, lon, triggerDistance, triggerUnits]
   //  - If alert is already active
   //  - If alert is new
   //  - If alert is new && within distance
   List doNotAlertList = [
-    ['', 0.0, 0.0]
+    ['', 0.0, 0.0, 0.0, '']
   ];
 
-  bool checkAlertDistance(
-      double userLat, double userLon, double alertLat, double alertLon) {
+  bool checkAlertDistance(double userLat, double userLon, double alertLat,
+      double alertLon, double triggerDistance, String triggerUnits) {
     // All angles MUST BE IN RADIANS
 
     // References:
@@ -41,7 +41,16 @@ class AlertServices {
     // print(
     //     'ALERT DET: ${greatCircleDistanceMiles.toStringAsFixed(2)} vs ${TRIGGER_DISTANCE} mi');
 
-    if (greatCircleDistanceMiles <= TRIGGER_DISTANCE) {
+    // Trigger distance is unique per alert
+    if (triggerDistance == 0) {
+      triggerDistance = TRIGGER_DISTANCE;
+    } else {
+      if (triggerUnits == 'km') {
+        triggerDistance *= 0.621371; // km to mi
+      }
+    }
+
+    if (greatCircleDistanceMiles <= triggerDistance) {
       return true;
     }
     return false;
@@ -59,16 +68,23 @@ class AlertServices {
   void alertDeterminationLogic(double userBgLat, double userBgLon, var alert) {
     if (checkNewAlert(alert['dateTimeCreated'])) {
       // print('ALERT DET: NEW - ${alert['reminderBody']}');
-      addToDoNotAlertList(alert.id, alert['latitude'], alert['longitude']);
+      addToDoNotAlertList(alert.id, alert['latitude'], alert['longitude'],
+          alert['triggerDistance'], alert['triggerUnits']);
     } else {
       if (!checkDoNotAlertList(alert.id)) {
         // print('ALERT DET: NOT IN DoNotAlert - ${alert['reminderBody']}');
         if (checkAlertDistance(
-            userBgLat, userBgLon, alert['latitude'], alert['longitude'])) {
+            userBgLat,
+            userBgLon,
+            alert['latitude'],
+            alert['longitude'],
+            alert['triggerDistance'],
+            alert['triggerUnits'])) {
           // print('ALERT DET: WITHIN DISTANCE - ${alert['reminderBody']}');
           NotificationServices().showNotification(
               alert.id, alert['reminderBody'], alert['location']);
-          addToDoNotAlertList(alert.id, alert['latitude'], alert['longitude']);
+          addToDoNotAlertList(alert.id, alert['latitude'], alert['longitude'],
+              alert['triggerDistance'], alert['triggerUnits']);
         } else {
           // print('ALERT DET: NOT WITHIN DISTANCE - ${alert['reminderBody']}');
         }
@@ -93,8 +109,10 @@ class AlertServices {
     return false;
   }
 
-  void addToDoNotAlertList(String docId, double latitude, double longitude) {
-    doNotAlertList.add([docId, latitude, longitude]);
+  void addToDoNotAlertList(String docId, double latitude, double longitude,
+      double triggerDistance, String triggerUnits) {
+    doNotAlertList
+        .add([docId, latitude, longitude, triggerDistance, triggerUnits]);
   }
 
   // Purging removes all alerts that are
@@ -102,8 +120,13 @@ class AlertServices {
   // 2. No longer new (&& no longer within distance)
   void purgeDoNotAlertList(double userBgLat, double userBgLon) {
     for (int index = 1; index < doNotAlertList.length; ++index) {
-      if (!checkAlertDistance(userBgLat, userBgLon, doNotAlertList[index][1],
-          doNotAlertList[index][2])) {
+      if (!checkAlertDistance(
+          userBgLat,
+          userBgLon,
+          doNotAlertList[index][1],
+          doNotAlertList[index][2],
+          doNotAlertList[index][3],
+          doNotAlertList[index][4])) {
         doNotAlertList.removeAt(index);
       }
     }

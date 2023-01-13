@@ -13,7 +13,7 @@ import 'go_back_button.dart';
 import 'background_theme.dart';
 import 'trigger_slider.dart';
 
-enum TriggerUnits { mi, kms }
+enum TriggerUnits { mi, km }
 
 class SpecificScreen extends StatefulWidget {
   const SpecificScreen({Key? key}) : super(key: key);
@@ -61,6 +61,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
   double _formErrorFontSize = 0;
   double _triggerUnitsFontSize = 0;
 
+  List<String> unitStrings = ['mi', 'km'];
   List<double> triggerRangeMiList = [0.25, 0.5, 1.0, 5.0, 10.0];
   List<double> triggerRangeKmList = [0.5, 0.75, 1.5, 8.0, 15.0];
   double selectedMiTrigger = 0.25;
@@ -180,7 +181,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
       minorTick: 1, // # minor ticks between major ticks
       labelValuePrecision: 0,
       onChanged: (val) => setState(() {
-        if (_character == TriggerUnits.kms) {
+        if (_character == TriggerUnits.km) {
           selectedKmTrigger = val;
         } else {
           selectedMiTrigger = val;
@@ -195,7 +196,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
   }
 
   double determineMinValue() {
-    if (_character == TriggerUnits.kms) {
+    if (_character == TriggerUnits.km) {
       return triggerRangeKmList[0];
     } else {
       return triggerRangeMiList[0];
@@ -203,7 +204,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
   }
 
   double determineMaxValue() {
-    if (_character == TriggerUnits.kms) {
+    if (_character == TriggerUnits.km) {
       return triggerRangeKmList[triggerRangeKmList.length - 1];
     } else {
       return triggerRangeMiList[triggerRangeMiList.length - 1];
@@ -211,7 +212,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
   }
 
   double determineTrigger() {
-    if (_character == TriggerUnits.kms) {
+    if (_character == TriggerUnits.km) {
       return selectedKmTrigger;
     } else {
       return selectedMiTrigger;
@@ -219,7 +220,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
   }
 
   List<double> determineSteps() {
-    if (_character == TriggerUnits.kms) {
+    if (_character == TriggerUnits.km) {
       return triggerRangeKmList;
     } else {
       return triggerRangeMiList;
@@ -227,10 +228,10 @@ class _SpecificScreenState extends State<SpecificScreen> {
   }
 
   String determineUnits() {
-    if (_character == TriggerUnits.kms) {
-      return 'km';
+    if (_character == TriggerUnits.km) {
+      return unitStrings[1];
     } else {
-      return 'mi';
+      return unitStrings[0];
     }
   }
 
@@ -247,7 +248,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
             child: ListTileTheme(
                 horizontalTitleGap: 0,
                 child: ListTile(
-                  title: triggerUnitsText('mi'),
+                  title: triggerUnitsText(unitStrings[0]),
                   leading: Radio<TriggerUnits>(
                     value: TriggerUnits.mi,
                     groupValue: _character,
@@ -263,9 +264,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
             child: ListTileTheme(
                 horizontalTitleGap: 0,
                 child: ListTile(
-                  title: triggerUnitsText('km'),
+                  title: triggerUnitsText(unitStrings[1]),
                   leading: Radio<TriggerUnits>(
-                    value: TriggerUnits.kms,
+                    value: TriggerUnits.km,
                     groupValue: _character,
                     onChanged: (TriggerUnits? value) {
                       setState(() {
@@ -415,7 +416,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
                     false,
                     locationToUse,
                     _locationServices.alertLat,
-                    _locationServices.alertLon);
+                    _locationServices.alertLon,
+                    determineSubmitTriggerDistance(),
+                    determineSubmitTriggerUnits());
                 _dbServices.updateUsersReminderCreated(context);
                 // Remove keyboard
                 FocusScopeNode currentFocus = FocusScope.of(context);
@@ -446,6 +449,36 @@ class _SpecificScreenState extends State<SpecificScreen> {
                 weight: FontWeight.bold,
               )
             ])));
+  }
+
+  double determineSubmitTriggerDistance() {
+    // selected*Trigger is equal to ((max - min) / num_divisions) * index
+    // We must conver this to triggerRange*List[index]
+    if (_character == TriggerUnits.km) {
+      double val = triggerRangeKmList[((selectedKmTrigger -
+                  triggerRangeKmList[0]) ~/ // This is equivalent to .toInt()
+              ((triggerRangeKmList[triggerRangeKmList.length - 1] -
+                      triggerRangeKmList[0]) /
+                  ((triggerRangeKmList.length - 1))))]
+          .toDouble();
+      return val;
+    } else {
+      double val = triggerRangeMiList[((selectedMiTrigger -
+                  triggerRangeMiList[0]) ~/ // This is equivalent to .toInt()
+              ((triggerRangeMiList[triggerRangeMiList.length - 1] -
+                      triggerRangeMiList[0]) /
+                  ((triggerRangeMiList.length - 1))))]
+          .toDouble();
+      return val;
+    }
+  }
+
+  String determineSubmitTriggerUnits() {
+    if (_character == TriggerUnits.km) {
+      return unitStrings[1];
+    } else {
+      return unitStrings[0];
+    }
   }
 
   void populateLocationFromPickOnMap(PickOnMapLocation pickOnMapLocation) {

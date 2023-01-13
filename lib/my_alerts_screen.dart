@@ -22,6 +22,8 @@ class AlertObject {
   double longitude;
   String reminder;
   String userId;
+  double triggerDistance;
+  String triggerUnits;
   AlertObject(
       {required this.id,
       required this.dateTimeCreated,
@@ -32,7 +34,9 @@ class AlertObject {
       required this.latitude,
       required this.longitude,
       required this.reminder,
-      required this.userId});
+      required this.userId,
+      required this.triggerDistance,
+      required this.triggerUnits});
 }
 
 class MyAlertsScreen extends StatefulWidget {
@@ -168,19 +172,21 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     for (var index = 0; index < snapshotReminders.data!.docs.length; ++index) {
       // Convert to lightweight reminder tile objects
       AlertObject alertObj = AlertObject(
-          id: snapshotReminders.data!.docs[index].id,
-          dateTimeCompleted: DateFormat.yMMMMd('en_US').add_jm().format(
-              snapshotReminders.data!.docs[index]['dateTimeCompleted']
-                  .toDate()),
-          dateTimeCreated: DateFormat.yMMMMd('en_US').add_jm().format(
-              snapshotReminders.data!.docs[index]['dateTimeCreated'].toDate()),
-          isCompleted: snapshotReminders.data!.docs[index]['isCompleted'],
-          isSpecific: snapshotReminders.data!.docs[index]['isSpecific'],
-          location: snapshotReminders.data!.docs[index]['location'],
-          latitude: snapshotReminders.data!.docs[index]['latitude'],
-          longitude: snapshotReminders.data!.docs[index]['longitude'],
-          reminder: snapshotReminders.data!.docs[index]['reminderBody'],
-          userId: snapshotReminders.data!.docs[index]['userId']);
+        id: snapshotReminders.data!.docs[index].id,
+        dateTimeCompleted: DateFormat.yMMMMd('en_US').add_jm().format(
+            snapshotReminders.data!.docs[index]['dateTimeCompleted'].toDate()),
+        dateTimeCreated: DateFormat.yMMMMd('en_US').add_jm().format(
+            snapshotReminders.data!.docs[index]['dateTimeCreated'].toDate()),
+        isCompleted: snapshotReminders.data!.docs[index]['isCompleted'],
+        isSpecific: snapshotReminders.data!.docs[index]['isSpecific'],
+        location: snapshotReminders.data!.docs[index]['location'],
+        latitude: snapshotReminders.data!.docs[index]['latitude'],
+        longitude: snapshotReminders.data!.docs[index]['longitude'],
+        reminder: snapshotReminders.data!.docs[index]['reminderBody'],
+        userId: snapshotReminders.data!.docs[index]['userId'],
+        triggerDistance: snapshotReminders.data!.docs[index]['triggerDistance'],
+        triggerUnits: snapshotReminders.data!.docs[index]['triggerUnits'],
+      );
       reminderObjects.add(alertObj);
     }
     return reminderObjects;

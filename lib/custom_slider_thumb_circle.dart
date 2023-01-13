@@ -9,11 +9,13 @@ class CustomSliderThumbCircle extends SliderComponentShape {
   final double thumbRadius;
   final double min;
   final double max;
+  final List<double> valueList;
 
   const CustomSliderThumbCircle({
     required this.thumbRadius,
     this.min = 0,
     this.max = 10,
+    this.valueList = const [],
   });
 
   @override
@@ -59,11 +61,12 @@ class CustomSliderThumbCircle extends SliderComponentShape {
     Offset textCenter =
         Offset(center.dx - (tp.width / 2), center.dy - (tp.height / 2));
 
-    canvas.drawCircle(center, thumbRadius * .9, paint);
+    canvas.drawCircle(center, thumbRadius, paint);
     tp.paint(canvas, textCenter);
   }
 
   String getValue(double value) {
-    return (min + (max - min) * value).round().toString();
+    //return (min + (max - min) * value).round().toString();
+    return valueList[(value * valueList.length).toInt()].toString();
   }
 }

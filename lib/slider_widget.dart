@@ -9,6 +9,7 @@ import 'custom_slider_thumb_circle.dart';
 class SliderWidget extends StatefulWidget {
   final double sliderHeight;
   final double sliderWidth;
+  final List<double> valueList;
   final double min;
   final double max;
   Color gradientColorStart;
@@ -18,6 +19,7 @@ class SliderWidget extends StatefulWidget {
   SliderWidget(
       {this.sliderHeight = 48,
       this.sliderWidth = 200,
+      this.valueList = const [],
       this.max = 10,
       this.min = 0,
       this.gradientColorStart = const Color(0xFF00c6ff),
@@ -29,7 +31,7 @@ class SliderWidget extends StatefulWidget {
 }
 
 class _SliderWidgetState extends State<SliderWidget> {
-  double _value = 0;
+  int _value = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -82,17 +84,22 @@ class _SliderWidgetState extends State<SliderWidget> {
                       thumbRadius: this.widget.sliderHeight * .4,
                       min: this.widget.min,
                       max: this.widget.max,
+                      valueList: this.widget.valueList,
                     ),
                     overlayColor: Colors.white.withOpacity(.4),
                     //valueIndicatorColor: Colors.white,
                     activeTickMarkColor: Colors.white,
-                    inactiveTickMarkColor: Colors.red.withOpacity(.7),
+                    inactiveTickMarkColor: Colors.white,
                   ),
                   child: Slider(
-                      value: _value,
-                      onChanged: (value) {
+                      value: _value.toDouble(),
+                      min: 0,
+                      max: this.widget.valueList.length - 1,
+                      label: this.widget.valueList[_value].toString(),
+                      divisions: this.widget.valueList.length - 1,
+                      onChanged: (double value) {
                         setState(() {
-                          _value = value;
+                          _value = value.toInt();
                         });
                       }),
                 ),
@@ -117,6 +124,6 @@ class _SliderWidgetState extends State<SliderWidget> {
   }
 
   double getCurrentValue() {
-    return _value;
+    return this.widget.valueList[_value];
   }
 }

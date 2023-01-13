@@ -12,6 +12,7 @@ import 'start_screen.dart';
 import 'pick_on_map_screen.dart';
 import 'go_back_button.dart';
 import 'background_theme.dart';
+import 'trigger_slider.dart';
 
 class SpecificScreen extends StatefulWidget {
   const SpecificScreen({Key? key}) : super(key: key);
@@ -58,8 +59,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
   double _bottomPadding = 0;
   double _formErrorFontSize = 0;
 
-  List<double> triggerRangeList = [0.25, 0.5, 0.75, 1.0, 1.5];
+  List<double> triggerRangeList = [0.25, 0.5, 1.0, 1.5, 2.5, 5.0, 10.0];
   int selectedIndex = 0;
+  double selectedTrigger = 0.25;
 
   PickOnMapLocation __pickOnMapLocation = PickOnMapLocation('', 0.0, 0.0);
 
@@ -151,14 +153,13 @@ class _SpecificScreenState extends State<SpecificScreen> {
                             pickOnMapButton(
                                 _locationButtonWidth, _locationButtonHeight),
                           ]),
-                      // SizedBox(height: _buttonSpacing),
-                      // Column(
-                      //     crossAxisAlignment: CrossAxisAlignment.start,
-                      //     children: [
-                      //       titleText('Within ___ miles...'),
-                      //       SizedBox(height: _buttonSpacing),
-                      //       triggerRangeSlider(),
-                      //     ]),
+                      SizedBox(height: _buttonSpacing),
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            titleText('And trigger at ____ miles...'),
+                            triggerRangeSlider(),
+                          ]),
                       // SizedBox(height: _submitButtonTopPadding),
                       // cancelButton(_textWidth, _buttonHeight),
                       // SizedBox(height: _buttonSpacing),
@@ -168,14 +169,33 @@ class _SpecificScreenState extends State<SpecificScreen> {
   }
 
   Widget triggerRangeSlider() {
-    return SliderWidget(
-      sliderWidth: _textWidth,
-      sliderHeight: 48,
-      min: 0,
-      max: 2,
-      gradientColorStart: Color(s_aquariumLighter),
-      gradientColorEnd: Color(s_darkSalmon),
-    );
+    return Container(
+        width: _textWidth,
+        child: TriggerSlider(
+          minValue: triggerRangeList[0],
+          maxValue: triggerRangeList[6],
+          value: selectedTrigger,
+          majorTick: 3,
+          minorTick: 2,
+          labelValuePrecision: 0,
+          onChanged: (val) => setState(() {
+            selectedTrigger = val;
+          }),
+          activeColor: Color(s_darkSalmon),
+          inactiveColor: Color(s_aquariumLighter),
+          linearStep: true,
+          steps: triggerRangeList,
+        ));
+
+    // return SliderWidget(
+    //   sliderWidth: _textWidth,
+    //   sliderHeight: 48,
+    //   valueList: triggerRangeList,
+    //   min: triggerRangeList[0],
+    //   max: triggerRangeList[7],
+    //   gradientColorStart: Color(s_aquariumLighter),
+    //   gradientColorEnd: Color(s_darkSalmon),
+    // );
 
     // return Container(
     //     width: _textWidth,

@@ -923,7 +923,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     _deleteButtonTopPadding = (125 / 781) * _screenHeight;
     _locationButtonHeight = (30 / 781) * _screenHeight;
     _bottomPadding = (20 / 781) * _screenHeight;
-    _fabPadding = (_buttonHeight * 2.75) + _buttonSpacing;
+    _fabPadding = (_buttonHeight * 2.25) + _buttonSpacing;
 
     // Width
     _textWidth = (325 / 392) * _screenWidth;

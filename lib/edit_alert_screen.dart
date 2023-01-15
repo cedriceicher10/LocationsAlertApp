@@ -311,8 +311,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   }
 
   Widget unitsRadioButtons(double width) {
-    int outsideFlex = 5;
-    int insideFlex = 6;
+    int outsideFlex = 2;
+    int insideFlex = 4;
     return Center(
         child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -904,7 +904,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
         size: _triggerUnitsFontSize,
         color: Color(s_darkSalmon),
         font: s_font_IBMPlexSans,
-        weight: FontWeight.bold);
+        weight: FontWeight.bold,
+        align: TextAlign.center);
   }
 
   void generateLayout() {
@@ -915,7 +916,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     // and a 56 height appBar
 
     // Height
-    _topPadding = (80 / 781) * _screenHeight;
+    _topPadding = (40 / 781) * _screenHeight;
     _buttonHeight = (60 / 781) * _screenHeight;
     _deleteButtonTopPadding = (125 / 781) * _screenHeight;
     _locationButtonHeight = (30 / 781) * _screenHeight;

@@ -105,20 +105,22 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
       // Assign trigger distance/units slider and radio buttons
       // triggerDistance is equal to triggerRange*List[*]
       // We must conver this to ((max - min) / num_divisions) * index
-      if (widget.alert.triggerUnits == unitStrings[0]) {
-        selectedMiTrigger =
-            getTriggerDistanceMiIndex(widget.alert.triggerDistance) *
-                ((triggerRangeMiList[triggerRangeMiList.length - 1] -
-                        triggerRangeMiList[0]) /
-                    (triggerRangeMiList.length - 1));
-        _character = TriggerUnits.mi;
-      } else {
+      if (widget.alert.triggerUnits == unitStrings[1]) {
         selectedKmTrigger =
-            getTriggerDistanceKmIndex(widget.alert.triggerDistance) *
-                ((triggerRangeKmList[triggerRangeKmList.length - 1] -
-                        triggerRangeKmList[0]) /
-                    (triggerRangeKmList.length - 1));
+            (getTriggerDistanceKmIndex(widget.alert.triggerDistance) *
+                    ((triggerRangeKmList[triggerRangeKmList.length - 1] -
+                            triggerRangeKmList[0]) /
+                        (triggerRangeKmList.length - 1))) +
+                triggerRangeKmList[0];
         _character = TriggerUnits.km;
+      } else {
+        selectedMiTrigger =
+            (getTriggerDistanceMiIndex(widget.alert.triggerDistance) *
+                    ((triggerRangeMiList[triggerRangeMiList.length - 1] -
+                            triggerRangeMiList[0]) /
+                        (triggerRangeMiList.length - 1))) +
+                triggerRangeMiList[0];
+        _character = TriggerUnits.mi;
       }
     }
     super.initState();

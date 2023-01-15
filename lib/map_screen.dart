@@ -231,6 +231,12 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     }
     // Add if truly new
     _alertObjs.add(alertObj);
+    // Remove those that may have been completed
+    for (int index = 0; index < _alertObjs.length; ++index) {
+      if (_alertObjs[index].isCompleted == true) {
+        _alertObjs.removeAt(index);
+      }
+    }
   }
 
   Widget buildMapWithMarkers() {
@@ -261,16 +267,13 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         circle = CircleMarker(
             point:
                 LatLng(_alertObjs[index].latitude, _alertObjs[index].longitude),
-            color: Colors.blue.withOpacity(0.0),
-            borderStrokeWidth: 0,
-            borderColor: Colors.blue,
             useRadiusInMeter: true,
             radius: 0);
       } else {
         circle = CircleMarker(
             point:
                 LatLng(_alertObjs[index].latitude, _alertObjs[index].longitude),
-            color: Colors.blue.withOpacity(0.2),
+            color: Colors.blue.withOpacity(0.15),
             borderStrokeWidth: 3.0,
             borderColor: Colors.blue,
             useRadiusInMeter: true,
@@ -308,9 +311,10 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         // MarkerLayerOptions(
         //   markers: _alertMarkers,
         // ),
-        CircleLayerOptions(
-          circles: _alertCircles,
-        ),
+        // CircleLayerOptions(
+        //   circles: _alertCircles,
+        // ),
+        generateMarkerCircles(_alertCircles),
         MarkerClusterLayerOptions(
           maxClusterRadius: 190,
           disableClusteringAtZoom: 12,
@@ -328,9 +332,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                   color: Color(s_darkSalmon), shape: BoxShape.circle),
-              child: Text('${markers.length}',
-                  style: TextStyle(
-                      color: Colors.white, fontSize: _clusterAlertNumFontSize)),
+              child: clusteringText(markers),
             );
           },
           popupOptions: PopupOptions(
@@ -450,6 +452,42 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         )
       ],
     );
+  }
+
+  CircleLayerOptions generateMarkerCircles(List<CircleMarker> alertCircles) {
+    try {
+      //print('The map zoom is: ${_mapController.zoom}');
+      if (_mapController.zoom >= 12) {
+        return CircleLayerOptions(
+          circles: alertCircles,
+        );
+      } else {
+        return CircleLayerOptions(
+            circles: [CircleMarker(point: LatLng(0, 0), radius: 0.0)]);
+      }
+    } catch (e) {
+      if (_userPin) {
+        return CircleLayerOptions(
+          circles: alertCircles,
+        );
+      } else {
+        return CircleLayerOptions(
+            circles: [CircleMarker(point: LatLng(0, 0), radius: 0.0)]);
+      }
+    }
+  }
+
+  Text clusteringText(List<Marker> markers) {
+    int userPinOffset = 0;
+    for (int index = 0; index < markers.length; ++index) {
+      if ((markers[index].point.latitude == _startLat) &&
+          (markers[index].point.longitude == _startLon)) {
+        userPinOffset = 1;
+      }
+    }
+    return Text('${markers.length - userPinOffset}',
+        style:
+            TextStyle(color: Colors.white, fontSize: _clusterAlertNumFontSize));
   }
 
   double determineRadiusInMeters(int index) {

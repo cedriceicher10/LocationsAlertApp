@@ -316,9 +316,6 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         // MarkerLayerOptions(
         //   markers: _alertMarkers,
         // ),
-        // CircleLayerOptions(
-        //   circles: _alertCircles,
-        // ),
         generateMarkerCircles(_alertCircles),
         MarkerClusterLayerOptions(
           maxClusterRadius: 190,
@@ -460,26 +457,31 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   }
 
   CircleLayerOptions generateMarkerCircles(List<CircleMarker> alertCircles) {
-    try {
-      //print('The map zoom is: ${_mapController.zoom}');
-      if (_mapController.zoom >= 12) {
-        return CircleLayerOptions(
-          circles: alertCircles,
-        );
-      } else {
-        return CircleLayerOptions(
-            circles: [CircleMarker(point: LatLng(0, 0), radius: 0.0)]);
-      }
-    } catch (e) {
-      if (_userPin) {
-        return CircleLayerOptions(
-          circles: alertCircles,
-        );
-      } else {
-        return CircleLayerOptions(
-            circles: [CircleMarker(point: LatLng(0, 0), radius: 0.0)]);
-      }
-    }
+    return CircleLayerOptions(
+      circles: alertCircles,
+    );
+
+    // Turning this off for now, until pinch layer reload issue is figured out
+    // try {
+    //   print('The map zoom is: ${_mapController.zoom}');
+    //   if (_mapController.zoom >= 12) {
+    //     return CircleLayerOptions(
+    //       circles: alertCircles,
+    //     );
+    //   } else {
+    //     return CircleLayerOptions(
+    //         circles: [CircleMarker(point: LatLng(0, 0), radius: 0.0)]);
+    //   }
+    // } catch (e) {
+    //   if (_userPin) {
+    //     return CircleLayerOptions(
+    //       circles: alertCircles,
+    //     );
+    //   } else {
+    //     return CircleLayerOptions(
+    //         circles: [CircleMarker(point: LatLng(0, 0), radius: 0.0)]);
+    //   }
+    // }
   }
 
   Text clusteringText(List<Marker> markers) {

@@ -253,13 +253,13 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               LatLng(_alertObjs[index].latitude, _alertObjs[index].longitude),
           width: 50,
           height: 50,
-          anchorPos: AnchorPos.align(AnchorAlign.center),
+          anchorPos: AnchorPos.align(AnchorAlign.top),
           builder: (context) => Icon(
                 Icons.location_on_sharp,
                 size: (index == 0 && (_userPin)) ? 50 : 60,
                 color: (index == 0 && (_userPin))
                     ? Color(s_declineRed)
-                    : Color(s_aquariumLighter),
+                    : Color(s_aquarium),
               ));
       _alertMarkers.add(marker);
     }

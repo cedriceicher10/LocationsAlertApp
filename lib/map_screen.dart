@@ -198,7 +198,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   }
 
   void convertAlertsToMarkers(AsyncSnapshot<QuerySnapshot> snapshotReminders) {
-    for (var index = 0; index < snapshotReminders.data!.docs.length; ++index) {
+    List<String> snapshotIds = [];
+    for (int index = 0; index < snapshotReminders.data!.docs.length; ++index) {
       // Convert to lightweight alert objects
       AlertObject alertObj = AlertObject(
         id: snapshotReminders.data!.docs[index].id,
@@ -218,6 +219,16 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       );
       // Add to the master list; we check if we need to update or newly add
       addOrUpdateAlertObjs(alertObj);
+      // Keep track of alert ids to check if they're no longer active
+      snapshotIds.add(snapshotReminders.data!.docs[index].id);
+    }
+    // Remove those that may have been completed (and are no longer in the db response)
+    for (int index = 0; index < _alertObjs.length; ++index) {
+      if ((!(snapshotIds.contains(_alertObjs[index].id))) &&
+          (_alertObjs[index].latitude != _startLat) &&
+          (_alertObjs[index].longitude != _startLon)) {
+        _alertObjs.removeAt(index);
+      }
     }
   }
 
@@ -231,12 +242,6 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     }
     // Add if truly new
     _alertObjs.add(alertObj);
-    // Remove those that may have been completed
-    for (int index = 0; index < _alertObjs.length; ++index) {
-      if (_alertObjs[index].isCompleted == true) {
-        _alertObjs.removeAt(index);
-      }
-    }
   }
 
   Widget buildMapWithMarkers() {

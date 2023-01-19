@@ -45,6 +45,23 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   bool _locationTextMapPick = false;
   bool _locationTextUserEntered = false;
 
+  bool _isMiles = true;
+
+  Color unitsMiBorderColor = s_myLocationColor;
+  Color unitsMiTextColor = s_myLocationColor;
+  Color unitsMiButtonColor = Color(s_darkSalmon);
+
+  Color unitsKmBorderColor = Color(s_aquarium);
+  Color unitsKmTextColor = Color(s_aquarium);
+  Color unitsKmButtonColor = Color(s_darkSalmon);
+
+  Color unitsBorderColorActivated = s_myLocationColor;
+  Color unitsBorderColorInactive = Color(s_darkSalmon);
+  Color unitsTextColorActivated = s_myLocationColor;
+  Color unitsTextColorInactive = Color(s_aquariumLighter);
+  Color unitsButtonColorActivated = Color(s_darkSalmon);
+  Color unitsButtonColorInactive = Color(s_darkSalmon);
+
   double _topPadding = 0;
   double _deleteButtonTopPadding = 0;
   double _buttonHeight = 0;
@@ -74,13 +91,14 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   double _formErrorFontSize = 0;
   double _markCompleteIconSize = 0;
   double _triggerUnitsFontSize = 0;
+  double _radioButtonWidth = 0;
+  double _radioButtonsSpacerWidth = 0;
 
   List<String> unitStrings = ['mi', 'km'];
   List<double> triggerRangeMiList = [0.25, 0.5, 1.0, 5.0, 10.0];
   List<double> triggerRangeKmList = [0.5, 0.75, 1.5, 8.0, 15.0];
   double selectedMiTrigger = 0.25;
   double selectedKmTrigger = 0.5;
-  TriggerUnits? _character = TriggerUnits.mi;
   bool loadedTriggerDistanceUnits = false;
 
   PickOnMapLocation __pickOnMapLocation = PickOnMapLocation('', 0.0, 0.0);
@@ -112,7 +130,13 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                             triggerRangeKmList[0]) /
                         (triggerRangeKmList.length - 1))) +
                 triggerRangeKmList[0];
-        _character = TriggerUnits.km;
+        _isMiles = false;
+        unitsMiBorderColor = unitsBorderColorInactive;
+        unitsMiButtonColor = unitsButtonColorInactive;
+        unitsMiTextColor = unitsTextColorInactive;
+        unitsKmBorderColor = unitsBorderColorActivated;
+        unitsKmButtonColor = unitsButtonColorActivated;
+        unitsKmTextColor = unitsTextColorActivated;
       } else {
         selectedMiTrigger =
             (getTriggerDistanceMiIndex(widget.alert.triggerDistance) *
@@ -120,7 +144,13 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                             triggerRangeMiList[0]) /
                         (triggerRangeMiList.length - 1))) +
                 triggerRangeMiList[0];
-        _character = TriggerUnits.mi;
+        _isMiles = true;
+        unitsMiBorderColor = unitsBorderColorActivated;
+        unitsMiButtonColor = unitsButtonColorActivated;
+        unitsMiTextColor = unitsButtonColorActivated;
+        unitsKmBorderColor = unitsBorderColorInactive;
+        unitsKmButtonColor = unitsButtonColorInactive;
+        unitsKmTextColor = unitsTextColorInactive;
       }
     }
     super.initState();
@@ -245,7 +275,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                           ]),
                       Container(
                           width: _textWidth,
-                          child: unitsRadioButtons(_textWidth))
+                          child: unitsRadioButtons(
+                              _radioButtonWidth, _locationButtonHeight))
                     ]))));
   }
 
@@ -258,7 +289,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
       minorTick: 1, // # minor ticks between major ticks
       labelValuePrecision: 0,
       onChanged: (val) => setState(() {
-        if (_character == TriggerUnits.km) {
+        if (!_isMiles) {
           selectedKmTrigger = val;
         } else {
           selectedMiTrigger = val;
@@ -273,7 +304,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   }
 
   double determineMinValue() {
-    if (_character == TriggerUnits.km) {
+    if (!_isMiles) {
       return triggerRangeKmList[0];
     } else {
       return triggerRangeMiList[0];
@@ -281,7 +312,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   }
 
   double determineMaxValue() {
-    if (_character == TriggerUnits.km) {
+    if (!_isMiles) {
       return triggerRangeKmList[triggerRangeKmList.length - 1];
     } else {
       return triggerRangeMiList[triggerRangeMiList.length - 1];
@@ -289,7 +320,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   }
 
   double determineTrigger() {
-    if (_character == TriggerUnits.km) {
+    if (!_isMiles) {
       return selectedKmTrigger;
     } else {
       return selectedMiTrigger;
@@ -297,7 +328,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   }
 
   List<double> determineSteps() {
-    if (_character == TriggerUnits.km) {
+    if (!_isMiles) {
       return triggerRangeKmList;
     } else {
       return triggerRangeMiList;
@@ -305,56 +336,87 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   }
 
   String determineUnits() {
-    if (_character == TriggerUnits.km) {
+    if (!_isMiles) {
       return unitStrings[1];
     } else {
       return unitStrings[0];
     }
   }
 
-  Widget unitsRadioButtons(double width) {
-    int outsideFlex = 2;
-    int insideFlex = 4;
+  Widget unitsRadioButtons(double buttonWidth, double buttonHeight) {
     return Center(
-        child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Expanded(flex: outsideFlex, child: Container()),
-        Expanded(
-            flex: insideFlex,
-            child: ListTileTheme(
-                horizontalTitleGap: 0,
-                child: ListTile(
-                  title: triggerUnitsText(unitStrings[0]),
-                  leading: Radio<TriggerUnits>(
-                    value: TriggerUnits.mi,
-                    groupValue: _character,
-                    onChanged: (TriggerUnits? value) {
-                      setState(() {
-                        _character = value;
-                      });
-                    },
-                  ),
-                ))),
-        Expanded(
-            flex: insideFlex,
-            child: ListTileTheme(
-                horizontalTitleGap: 0,
-                child: ListTile(
-                  title: triggerUnitsText(unitStrings[1]),
-                  leading: Radio<TriggerUnits>(
-                    value: TriggerUnits.km,
-                    groupValue: _character,
-                    onChanged: (TriggerUnits? value) {
-                      setState(() {
-                        _character = value;
-                      });
-                    },
-                  ),
-                ))),
-        Expanded(flex: outsideFlex, child: Container()),
-      ],
-    ));
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            side: BorderSide(width: 2, color: unitsMiBorderColor),
+            backgroundColor: unitsMiButtonColor,
+            fixedSize: Size(buttonWidth, buttonHeight),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
+        child: triggerUnitsText(unitStrings[0], unitsMiTextColor),
+        onPressed: () async {
+          setState(() {
+            swapColors();
+          });
+        },
+      ),
+      SizedBox(width: _radioButtonsSpacerWidth),
+      ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            side: BorderSide(width: 2, color: unitsKmBorderColor),
+            backgroundColor: unitsKmButtonColor,
+            fixedSize: Size(buttonWidth, buttonHeight),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
+        child: triggerUnitsText(unitStrings[1], unitsKmTextColor),
+        onPressed: () async {
+          setState(() {
+            swapColors();
+          });
+        },
+      )
+    ]));
+  }
+
+  void swapColors() {
+    // Which activated tracker
+    if (_isMiles) {
+      _isMiles = false;
+    } else {
+      _isMiles = true;
+    }
+    // Miles button
+    if (unitsMiBorderColor == unitsBorderColorActivated) {
+      unitsMiBorderColor = unitsBorderColorInactive;
+    } else {
+      unitsMiBorderColor = unitsBorderColorActivated;
+    }
+    if (unitsMiTextColor == unitsTextColorActivated) {
+      unitsMiTextColor = unitsTextColorInactive;
+    } else {
+      unitsMiTextColor = unitsTextColorActivated;
+    }
+    if (unitsMiButtonColor == unitsButtonColorActivated) {
+      unitsMiButtonColor = unitsButtonColorInactive;
+    } else {
+      unitsMiButtonColor = unitsButtonColorActivated;
+    }
+    // Km button
+    if (unitsKmBorderColor == unitsBorderColorActivated) {
+      unitsKmBorderColor = unitsBorderColorInactive;
+    } else {
+      unitsKmBorderColor = unitsBorderColorActivated;
+    }
+    if (unitsKmTextColor == unitsTextColorActivated) {
+      unitsKmTextColor = unitsTextColorInactive;
+    } else {
+      unitsKmTextColor = unitsTextColorActivated;
+    }
+    if (unitsKmButtonColor == unitsButtonColorActivated) {
+      unitsKmButtonColor = unitsButtonColorInactive;
+    } else {
+      unitsKmButtonColor = unitsButtonColorActivated;
+    }
   }
 
   Widget reminderEntry() {
@@ -793,7 +855,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   double determineSubmitTriggerDistance() {
     // selected*Trigger is equal to ((max - min) / num_divisions) * index
     // We must conver this to triggerRange*List[index]
-    if (_character == TriggerUnits.km) {
+    if (!_isMiles) {
       double val = triggerRangeKmList[((selectedKmTrigger -
                   triggerRangeKmList[0]) ~/ // This is equivalent to .toInt()
               ((triggerRangeKmList[triggerRangeKmList.length - 1] -
@@ -813,7 +875,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   }
 
   String determineSubmitTriggerUnits() {
-    if (_character == TriggerUnits.km) {
+    if (!_isMiles) {
       return unitStrings[1];
     } else {
       return unitStrings[0];
@@ -900,11 +962,11 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
         weight: FontWeight.bold);
   }
 
-  Widget triggerUnitsText(String text) {
+  Widget triggerUnitsText(String text, Color color) {
     return FormattedText(
         text: text,
         size: _triggerUnitsFontSize,
-        color: Color(s_darkSalmon),
+        color: color,
         font: s_font_IBMPlexSans,
         weight: FontWeight.bold,
         align: TextAlign.center);
@@ -930,6 +992,8 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     _buttonSpacing = (10 / 392) * _screenWidth;
     _locationButtonWidth = ((_textWidth - _buttonSpacing) / 2);
     _iconGapWidth = 8;
+    _radioButtonWidth = (60 / 392) * _screenWidth;
+    _radioButtonsSpacerWidth = (40 / 392) * _screenWidth;
 
     // Font
     _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height;

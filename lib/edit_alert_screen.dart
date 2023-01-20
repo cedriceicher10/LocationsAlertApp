@@ -147,7 +147,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
         _isMiles = true;
         unitsMiBorderColor = unitsBorderColorActivated;
         unitsMiButtonColor = unitsButtonColorActivated;
-        unitsMiTextColor = unitsButtonColorActivated;
+        unitsMiTextColor = unitsTextColorActivated;
         unitsKmBorderColor = unitsBorderColorInactive;
         unitsKmButtonColor = unitsButtonColorInactive;
         unitsKmTextColor = unitsTextColorInactive;

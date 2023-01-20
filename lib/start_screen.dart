@@ -17,6 +17,8 @@ import 'alerts_services.dart';
 import 'background_theme.dart';
 import 'side_drawer.dart';
 import 'logging_services.dart';
+import 'package:translator/translator.dart';
+import 'language_services.dart';
 
 String UUID_GLOBAL = '';
 int ALERTS_NUM_GLOBAL = 0;
@@ -88,6 +90,7 @@ class _StartScreenState extends State<StartScreen> {
   final LocationServices _locationServices = LocationServices();
   final BackgroundTheme _background = BackgroundTheme(Screen.START_SCREEN);
   //final LoggingServices _logger = LoggingServices();
+  final LanguageServices _languageServices = LanguageServices();
   double _userBgLat = 0;
   double _userBgLon = 0;
 
@@ -524,11 +527,15 @@ class _StartScreenState extends State<StartScreen> {
                   // genericLocationButton(context, 'Generic'),
                   // genericHelpText(),
                   SizedBox(height: _gapBeforeButtons),
-                  specificLocationButton(context, 'Create Alert'),
+                  //specificLocationButton(context, 'Create Alert'),
+                  specificLocationButton(
+                      context, _languageServices.startScreenCreateAlert),
                   //specificHelpText(),
                   SizedBox(height: _buttonSpacing),
-                  myAlertsButton(
-                      context, 'View my Alerts ($ALERTS_NUM_GLOBAL)'),
+                  // myAlertsButton(
+                  //     context, 'View my Alerts ($ALERTS_NUM_GLOBAL)'),
+                  myAlertsButton(context,
+                      '${_languageServices.startScreenViewAlerts} ($ALERTS_NUM_GLOBAL)'),
                   SizedBox(height: _gapAfterButtons),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -547,7 +554,8 @@ class _StartScreenState extends State<StartScreen> {
 
   Widget explainerTitle(String text) {
     return FormattedText(
-        text: text,
+        //text: text,
+        text: _languageServices.startScreenExplainer,
         size: _explainerFontSize,
         color: Colors.white,
         font: s_font_BonaNova,
@@ -558,7 +566,8 @@ class _StartScreenState extends State<StartScreen> {
   Widget locationToggle() {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       FormattedText(
-          text: 'Allow My Location: ',
+          //text: 'Allow My Location: ',
+          text: _languageServices.startScreenLocationToggle,
           size: _locationToggleFontSize,
           color: _masterLocationColor,
           font: s_font_IBMPlexSans,
@@ -765,7 +774,8 @@ class _StartScreenState extends State<StartScreen> {
 
   Widget startScreenTitle(String title) {
     return FormattedText(
-      text: title,
+      //text: title,
+      text: _languageServices.startScreenTitle,
       size: _titleTextFontSize,
       color: Colors.white,
       font: s_font_BerkshireSwash,
@@ -790,7 +800,8 @@ class _StartScreenState extends State<StartScreen> {
               fontSize: _signatureFontSize,
               fontWeight: FontWeight.bold,
               decoration: TextDecoration.underline),
-          text: 'An App by Cedric Eicher',
+          //text: 'An App by Cedric Eicher',
+          text: _languageServices.startScreenSignature,
           recognizer: TapGestureRecognizer()
             ..onTap = () async {
               var url = "https://www.linkedin.com/in/cedriceicher/";
@@ -853,7 +864,8 @@ class _StartScreenState extends State<StartScreen> {
 
   Widget locationDisclosureText(String text) {
     return FormattedText(
-        text: text,
+        //text: text,
+        text: _languageServices.startScreenLocationDisclosure,
         size: _locationDisclosureFontSize,
         color: Colors.white,
         font: s_font_IBMPlexSans,
@@ -897,7 +909,7 @@ class _StartScreenState extends State<StartScreen> {
 
     // Font
     _submitButtonFontSize = (20 / 60) * _buttonHeight;
-    _locationDisclosureFontSize = (11 / 30) * _locationDisclosureButtonHeight;
+    _locationDisclosureFontSize = (10 / 30) * _locationDisclosureButtonHeight;
     _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height;
     _explainerFontSize = (26 / 781) * _screenHeight;
     _helpFontSize = (16 / 781) * _screenHeight;

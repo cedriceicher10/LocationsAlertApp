@@ -6,7 +6,17 @@ class LanguageServices {
   static final LanguageServices _instance = LanguageServices._internal();
 
   final _translator = GoogleTranslator();
-  String _currentLanguage = 'en';
+  final List<String> _masterLanguageList = [
+    'English',
+    'Spanish',
+    'French',
+    'German'
+  ];
+  final List<String> _masterLanguageCodeList = ['en', 'es', 'fr', 'de'];
+  final Map<String, String> _masterLanguageMap = {}; // [code]:[language]
+
+  String _currentLanguageCode = 'en';
+  String _currentLanguage = 'English';
 
   // Start Screen
   String startScreenTitle = 'Location Alerts';
@@ -37,20 +47,30 @@ class LanguageServices {
   }
 
   LanguageServices._internal() {
+    formMap();
     fetchCurrentLanguage();
     formLists();
     //loadLanguageTranslations(false, 'en');
+
     // DEBUG
     loadLanguageTranslations(true, 'es');
+  }
+
+  void formMap() {
+    for (int index = 0; index < _masterLanguageList.length; ++index) {
+      _masterLanguageMap[_masterLanguageCodeList[index]] =
+          _masterLanguageList[index];
+    }
   }
 
   void fetchCurrentLanguage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getString('currentLanguage') == null) {
-      prefs.setString('currentLanguage', _currentLanguage);
+      prefs.setString('currentLanguage', _currentLanguageCode);
     } else {
-      _currentLanguage = prefs.getString('currentLanguage')!;
+      _currentLanguageCode = prefs.getString('currentLanguage')!;
     }
+    _currentLanguage = _masterLanguageMap[_currentLanguageCode]!;
   }
 
   void formLists() {
@@ -64,6 +84,19 @@ class LanguageServices {
       startScreenLocationDisclosure,
       startScreenSignature,
     ];
+    // New Alert (Specific Screen) Screen
+
+    // My Alerts Screen
+
+    // Map View Screen
+
+    // Edit Alert Screen
+
+    // Pick On Map Screen
+
+    // Side Drawer
+
+    // Disclosures
   }
 
   void newLanguage(String newLanguage) async {
@@ -74,19 +107,43 @@ class LanguageServices {
       bool newLanguageTranslations, String newLanguage) async {
     // New language check
     if (newLanguageTranslations) {
-      _currentLanguage = newLanguage;
+      _currentLanguageCode = newLanguage;
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('currentLanguage', newLanguage);
+    }
+    // Translate master language list
+    _currentLanguage = (await _translator.translate(_currentLanguage,
+            to: _currentLanguageCode))
+        .text;
+    for (int index = 0; index < _masterLanguageList.length; ++index) {
+      _masterLanguageList[index] = (await _translator.translate(
+              _masterLanguageList[index],
+              to: _masterLanguageCodeList[index]))
+          .text;
     }
     // Start Screen
     for (int index = 0; index < _startScreenList.length; ++index) {
       _startScreenList[index] = (await _translator
-              .translate(_startScreenList[index], to: _currentLanguage))
+              .translate(_startScreenList[index], to: _currentLanguageCode))
           .text;
     }
     resetGettersStartScreen(_startScreenList);
+    // New Alert (Specific Screen) Screen
+
+    // My Alerts Screen
+
+    // Map View Screen
+
+    // Edit Alert Screen
+
+    // Pick On Map Screen
+
+    // Side Drawer
+
+    // Disclosures
   }
 
+  // Start Screen
   void resetGettersStartScreen(List<String> newVars) {
     startScreenTitle = newVars[0];
     startScreenExplainer = newVars[1];
@@ -95,5 +152,48 @@ class LanguageServices {
     startScreenViewAlerts = newVars[4];
     startScreenLocationDisclosure = newVars[5];
     startScreenSignature = newVars[6];
+  }
+
+  // New Alert (Specific Screen) Screen
+
+  // My Alerts Screen
+
+  // Map View Screen
+
+  // Edit Alert Screen
+
+  // Pick On Map Screen
+
+  // Side Drawer
+
+  // Disclosures
+
+  List<String> getLanguageList() {
+    List<String> languageListWithCurrentLanguageFirst = _masterLanguageList;
+    String currentLanguage = '';
+    for (int index = 0;
+        index < languageListWithCurrentLanguageFirst.length;
+        ++index) {
+      if (_currentLanguage == languageListWithCurrentLanguageFirst[index]) {
+        currentLanguage = languageListWithCurrentLanguageFirst[index];
+      }
+    }
+    if (languageListWithCurrentLanguageFirst.remove(currentLanguage)) {
+      languageListWithCurrentLanguageFirst.insertAll(0, [currentLanguage]);
+    }
+    return capitalizeFirstLetter(languageListWithCurrentLanguageFirst);
+  }
+
+  String getCurrentLanguage() {
+    return _currentLanguage;
+  }
+
+  List<String> capitalizeFirstLetter(List<String> list) {
+    for (int index = 0; index < list.length; ++index) {
+      if (!(list[0].isEmpty)) {
+        list[0] = list[0][0].toUpperCase() + list[0].substring(1);
+      }
+    }
+    return list;
   }
 }

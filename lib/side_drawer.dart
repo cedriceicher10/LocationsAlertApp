@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore_platform_interface/src/timestamp.dart';
+import 'package:locationalertsapp/language_selection_alert_dialog.dart';
 import 'package:locationalertsapp/start_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'exception_services.dart';
@@ -182,6 +183,22 @@ class SideDrawer extends StatelessWidget {
                       _sideDrawerDividerTextPaddingTop,
                       0,
                       _sideDrawerDividerTextPaddingBottom),
+                  child: dividerText('Language')),
+              ListTile(
+                dense: true,
+                title: language(context),
+                onTap: () {
+                  languageSelection(context);
+                },
+              ),
+              SizedBox(height: _sideDrawerDividerBottomPadding),
+              Divider(),
+              Padding(
+                  padding: EdgeInsets.fromLTRB(
+                      _sideDrawerDividerTextPaddingLeft,
+                      _sideDrawerDividerTextPaddingTop,
+                      0,
+                      _sideDrawerDividerTextPaddingBottom),
                   child: dividerText('User Statistics')),
               listTileDate('First Login:', userSideDrawerInfo.firstLogin),
               listTileDate('Last Login:', userSideDrawerInfo.lastLogin),
@@ -230,6 +247,15 @@ class SideDrawer extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return showAboutMeAlert(context);
+      },
+    );
+  }
+
+  dynamic languageSelection(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return LanguageSelectionAlertDialogue(padding: _alertPaddingRight);
       },
     );
   }
@@ -421,6 +447,18 @@ class SideDrawer extends StatelessWidget {
               size: _adDisclosureIconSize, color: Color(s_blackBlue)),
           SizedBox(width: _adIconSpacer),
           listText('About')
+        ]);
+  }
+
+  Widget language(BuildContext context) {
+    return Row(
+        //mainAxisAlignment: MainAxisAlignment.center,
+        //crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(Icons.language,
+              size: _adDisclosureIconSize, color: Color(s_blackBlue)),
+          SizedBox(width: _adIconSpacer),
+          listText('Change Language')
         ]);
   }
 

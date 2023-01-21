@@ -296,6 +296,10 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       rotateResetButtonBottomDistance = zoomInButtonBottomDistance + 65;
     }
     // Build the map
+    _mapController.mapEventStream.listen((event) {
+      // This reloads the map for the circles to show up if zoomed in enough
+      setState(() {});
+    });
     return FlutterMap(
       mapController: _mapController,
       options: MapOptions(
@@ -457,31 +461,25 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   }
 
   CircleLayerOptions generateMarkerCircles(List<CircleMarker> alertCircles) {
-    return CircleLayerOptions(
-      circles: alertCircles,
-    );
-
-    // Turning this off for now, until pinch layer reload issue is figured out
-    // try {
-    //   print('The map zoom is: ${_mapController.zoom}');
-    //   if (_mapController.zoom >= 12) {
-    //     return CircleLayerOptions(
-    //       circles: alertCircles,
-    //     );
-    //   } else {
-    //     return CircleLayerOptions(
-    //         circles: [CircleMarker(point: LatLng(0, 0), radius: 0.0)]);
-    //   }
-    // } catch (e) {
-    //   if (_userPin) {
-    //     return CircleLayerOptions(
-    //       circles: alertCircles,
-    //     );
-    //   } else {
-    //     return CircleLayerOptions(
-    //         circles: [CircleMarker(point: LatLng(0, 0), radius: 0.0)]);
-    //   }
-    // }
+    try {
+      if (_mapController.zoom >= 12) {
+        return CircleLayerOptions(
+          circles: alertCircles,
+        );
+      } else {
+        return CircleLayerOptions(
+            circles: [CircleMarker(point: LatLng(0, 0), radius: 0.0)]);
+      }
+    } catch (e) {
+      if (_userPin) {
+        return CircleLayerOptions(
+          circles: alertCircles,
+        );
+      } else {
+        return CircleLayerOptions(
+            circles: [CircleMarker(point: LatLng(0, 0), radius: 0.0)]);
+      }
+    }
   }
 
   Text clusteringText(List<Marker> markers) {

@@ -13,7 +13,7 @@ class LanguageServices {
     'German'
   ];
   final List<String> _masterLanguageCodeList = ['en', 'es', 'fr', 'de'];
-  final Map<String, String> _masterLanguageMap = {}; // [code]:[language]
+  final Map<String, String> _masterLanguageMap = {}; // [language]:[key]
 
   String _currentLanguageCode = 'en';
   String _currentLanguage = 'English';
@@ -50,16 +50,16 @@ class LanguageServices {
     formMap();
     fetchCurrentLanguage();
     formLists();
-    //loadLanguageTranslations(false, 'en');
+    loadLanguageTranslations(false, 'en');
 
     // DEBUG
-    loadLanguageTranslations(true, 'es');
+    //loadLanguageTranslations(true, 'en');
   }
 
   void formMap() {
     for (int index = 0; index < _masterLanguageList.length; ++index) {
-      _masterLanguageMap[_masterLanguageCodeList[index]] =
-          _masterLanguageList[index];
+      _masterLanguageMap[_masterLanguageList[index]] =
+          _masterLanguageCodeList[index];
     }
   }
 
@@ -70,7 +70,8 @@ class LanguageServices {
     } else {
       _currentLanguageCode = prefs.getString('currentLanguage')!;
     }
-    _currentLanguage = _masterLanguageMap[_currentLanguageCode]!;
+    _currentLanguage = _masterLanguageMap.keys
+        .firstWhere((key) => _masterLanguageMap[key] == _currentLanguageCode);
   }
 
   void formLists() {
@@ -115,12 +116,9 @@ class LanguageServices {
     _currentLanguage = (await _translator.translate(_currentLanguage,
             to: _currentLanguageCode))
         .text;
-    for (int index = 0; index < _masterLanguageList.length; ++index) {
-      _masterLanguageList[index] = (await _translator.translate(
-              _masterLanguageList[index],
-              to: _masterLanguageCodeList[index]))
-          .text;
-    }
+    _masterLanguageMap.forEach((language, code) async {
+      language = (await _translator.translate(language, to: code)).text;
+    });
     // Start Screen
     for (int index = 0; index < _startScreenList.length; ++index) {
       _startScreenList[index] = (await _translator
@@ -169,7 +167,10 @@ class LanguageServices {
   // Disclosures
 
   List<String> getLanguageList() {
-    List<String> languageListWithCurrentLanguageFirst = _masterLanguageList;
+    List<String> languageListWithCurrentLanguageFirst = [];
+    _masterLanguageMap.forEach((language, code) {
+      languageListWithCurrentLanguageFirst.add(language);
+    });
     String currentLanguage = '';
     for (int index = 0;
         index < languageListWithCurrentLanguageFirst.length;
@@ -191,9 +192,14 @@ class LanguageServices {
   List<String> capitalizeFirstLetter(List<String> list) {
     for (int index = 0; index < list.length; ++index) {
       if (!(list[0].isEmpty)) {
-        list[0] = list[0][0].toUpperCase() + list[0].substring(1);
+        list[index] = list[index][0].toUpperCase() + list[index].substring(1);
       }
     }
     return list;
+  }
+
+  String getLanguageCode(String language) {
+    // Query map
+    return _masterLanguageMap[language]!;
   }
 }

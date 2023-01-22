@@ -39,6 +39,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   double _startLon = 0;
   bool _userPin = false;
   bool _alreadyUpdated = false;
+  bool _circlesOff = false;
 
   // False Idol
   double DEFAULT_LOCATION_LAT = 32.72078130242355;
@@ -298,7 +299,10 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     // Build the map
     _mapController.mapEventStream.listen((event) {
       // This reloads the map for the circles to show up if zoomed in enough
-      setState(() {});
+      if (((_mapController.zoom >= 12) && (_circlesOff)) ||
+          ((_mapController.zoom < 12) && !(_circlesOff))) {
+        setState(() {});
+      }
     });
     return FlutterMap(
       mapController: _mapController,

@@ -6,14 +6,35 @@ class LanguageServices {
   static final LanguageServices _instance = LanguageServices._internal();
 
   final _translator = GoogleTranslator();
-  final List<String> _masterLanguageList = [
-    'English',
-    'Spanish',
-    'French',
-    'German'
-  ];
-  final List<String> _masterLanguageCodeList = ['en', 'es', 'fr', 'de'];
-  final Map<String, String> _masterLanguageMap = {}; // [language]:[key]
+  // [language]:[key]
+  final Map<String, String> _masterLanguageMap = {
+    'en': 'English',
+    'es': 'Spanish',
+    'fr': 'French',
+    'de': 'German',
+    'nl': 'Dutch',
+    'haw': 'Hawaiian',
+    'pt': 'Portuguese',
+    'el': 'Greek',
+    'it': 'Italian',
+    'ga': 'Irish',
+    'ja': 'Japanese',
+    'hi': 'Hindi',
+    'ar': 'Arabic',
+    'hr': 'Croatian',
+    'pl': 'Polish',
+    'sv': 'Swedish',
+    'no': 'Norwegian',
+    'id': 'Indonesian',
+    'th': 'Thai',
+    'vi': 'Vietnamese',
+    'cy': 'Welsh',
+    'yi': 'Yiddish',
+    'ru': 'Russian',
+    'sr': 'Serbian',
+    'ur': 'Urdu',
+    'tr': 'Turkish',
+  };
 
   String _currentLanguageCode = 'en';
   String _currentLanguage = 'English';
@@ -47,31 +68,19 @@ class LanguageServices {
   }
 
   LanguageServices._internal() {
-    formMap();
-    fetchCurrentLanguage();
+    // formMap();
+    // fetchCurrentLanguage();
+    // formLists();
+    // loadLanguageTranslations();
+  }
+
+  Future<bool> initLanguage() async {
     formLists();
-    loadLanguageTranslations(false, 'en');
-
-    // DEBUG
-    //loadLanguageTranslations(true, 'en');
-  }
-
-  void formMap() {
-    for (int index = 0; index < _masterLanguageList.length; ++index) {
-      _masterLanguageMap[_masterLanguageList[index]] =
-          _masterLanguageCodeList[index];
+    await fetchCurrentLanguage();
+    if (_currentLanguageCode != 'en') {
+      await loadLanguageTranslations();
     }
-  }
-
-  void fetchCurrentLanguage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.getString('currentLanguage') == null) {
-      prefs.setString('currentLanguage', _currentLanguageCode);
-    } else {
-      _currentLanguageCode = prefs.getString('currentLanguage')!;
-    }
-    _currentLanguage = _masterLanguageMap.keys
-        .firstWhere((key) => _masterLanguageMap[key] == _currentLanguageCode);
+    return true;
   }
 
   void formLists() {
@@ -100,24 +109,25 @@ class LanguageServices {
     // Disclosures
   }
 
-  void newLanguage(String newLanguage) async {
-    loadLanguageTranslations(true, newLanguage);
+  Future<bool> fetchCurrentLanguage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('currentLanguage') == null) {
+      prefs.setString('currentLanguage', _currentLanguageCode);
+    } else {
+      _currentLanguageCode = prefs.getString('currentLanguage')!;
+    }
+    _currentLanguage = _masterLanguageMap[_currentLanguageCode]!;
+    return true;
   }
 
-  void loadLanguageTranslations(
-      bool newLanguageTranslations, String newLanguage) async {
-    // New language check
-    if (newLanguageTranslations) {
-      _currentLanguageCode = newLanguage;
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('currentLanguage', newLanguage);
-    }
+  Future<bool> loadLanguageTranslations() async {
     // Translate master language list
     _currentLanguage = (await _translator.translate(_currentLanguage,
             to: _currentLanguageCode))
         .text;
-    _masterLanguageMap.forEach((language, code) async {
-      language = (await _translator.translate(language, to: code)).text;
+    _masterLanguageMap.forEach((code, language) async {
+      _masterLanguageMap[code] =
+          (await _translator.translate(language, to: code)).text;
     });
     // Start Screen
     for (int index = 0; index < _startScreenList.length; ++index) {
@@ -139,6 +149,8 @@ class LanguageServices {
     // Side Drawer
 
     // Disclosures
+
+    return true;
   }
 
   // Start Screen
@@ -166,9 +178,15 @@ class LanguageServices {
 
   // Disclosures
 
+  void setNewLanguage(String newLanguage) async {
+    String newLanguageCode = getLanguageCode(newLanguage);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('currentLanguage', newLanguageCode);
+  }
+
   List<String> getLanguageList() {
     List<String> languageListWithCurrentLanguageFirst = [];
-    _masterLanguageMap.forEach((language, code) {
+    _masterLanguageMap.forEach((code, language) {
       languageListWithCurrentLanguageFirst.add(language);
     });
     String currentLanguage = '';
@@ -185,10 +203,6 @@ class LanguageServices {
     return capitalizeFirstLetter(languageListWithCurrentLanguageFirst);
   }
 
-  String getCurrentLanguage() {
-    return _currentLanguage;
-  }
-
   List<String> capitalizeFirstLetter(List<String> list) {
     for (int index = 0; index < list.length; ++index) {
       if (!(list[0].isEmpty)) {
@@ -198,8 +212,13 @@ class LanguageServices {
     return list;
   }
 
+  String getCurrentLanguage() {
+    return _currentLanguage;
+  }
+
   String getLanguageCode(String language) {
     // Query map
-    return _masterLanguageMap[language]!;
+    return _masterLanguageMap.keys
+        .firstWhere((code) => _masterLanguageMap[code] == language);
   }
 }

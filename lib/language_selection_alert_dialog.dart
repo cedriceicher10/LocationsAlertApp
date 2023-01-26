@@ -128,13 +128,8 @@ class _LanguageSelectionAlertDialogueState
   }
 
   void changeLanguage(String chosenLanguage) async {
-    // Get new language code
-    String newLanguageCode = _languageServices.getLanguageCode(chosenLanguage);
-    // Change language in shared prefs
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('currentLanguage', newLanguageCode);
-    // Load new translations
-    _languageServices.newLanguage(newLanguageCode);
+    // Start new language setup
+    _languageServices.setNewLanguage(chosenLanguage);
   }
 
   void generateLayout() {

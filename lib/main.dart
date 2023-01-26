@@ -13,7 +13,7 @@ void main() async {
   await Firebase.initializeApp();
   NotificationServices().initNotifications();
 
-  LanguageServices();
+  await LanguageServices().initLanguage();
 
   runApp(const App());
 }

@@ -34,6 +34,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
 
   double _locationOnZoom = 14;
   double _locationOffZoom = 7;
+  double _zoomCirclesCutOff = 10;
+  double _zoomClusteringCutOff = 10;
 
   double _startLat = 0;
   double _startLon = 0;
@@ -299,8 +301,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     // Build the map
     _mapController.mapEventStream.listen((event) {
       // This reloads the map for the circles to show up if zoomed in enough
-      if (((_mapController.zoom >= 12) && (_circlesOff)) ||
-          ((_mapController.zoom < 12) && !(_circlesOff))) {
+      if (((_mapController.zoom >= _zoomCirclesCutOff) && (_circlesOff)) ||
+          ((_mapController.zoom < _zoomCirclesCutOff) && !(_circlesOff))) {
         setState(() {});
       }
     });
@@ -327,7 +329,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         generateMarkerCircles(_alertCircles),
         MarkerClusterLayerOptions(
           maxClusterRadius: 190,
-          disableClusteringAtZoom: 12,
+          disableClusteringAtZoom: _zoomClusteringCutOff.toInt(),
           size: Size(90, 90),
           fitBoundsOptions: FitBoundsOptions(
             padding: EdgeInsets.all(50),
@@ -466,7 +468,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
 
   CircleLayerOptions generateMarkerCircles(List<CircleMarker> alertCircles) {
     try {
-      if (_mapController.zoom >= 12) {
+      if (_mapController.zoom >= _zoomCirclesCutOff) {
         return CircleLayerOptions(
           circles: alertCircles,
         );

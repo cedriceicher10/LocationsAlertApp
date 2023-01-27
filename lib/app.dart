@@ -43,7 +43,7 @@ class App extends StatelessWidget {
   }
 
   Future<bool> translationCheck() async {
-    await _languageServices.initLanguage();
+    await _languageServices.translate();
     return true;
   }
 

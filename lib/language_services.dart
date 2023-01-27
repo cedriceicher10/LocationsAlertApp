@@ -46,8 +46,6 @@ class LanguageServices {
     'af': 'Afrikaans',
     'hy': 'Armenian',
     'bg': 'Bulgarian',
-    'fil': 'Tagalog',
-    'he': 'Hebrew',
     'la': 'Latin',
     'ne': 'Nepali',
     'sm': 'Samoan',
@@ -102,10 +100,44 @@ class LanguageServices {
     } else {
       _translationNeeded = prefs.getBool('translationNeeded')!;
     }
-    return _translationNeeded;
+    // Check for cached language translations
+    if (_translationNeeded) {
+      if (prefs.getStringList(_currentLanguageCode + '-startScreenList') ==
+          null) {
+        return true;
+      } else {
+        // Retrieve cached language translations and assign
+        await retrieveCachedTranslations();
+        return false;
+      }
+    }
+    return false;
   }
 
-  Future<bool> initLanguage() async {
+  Future<bool> retrieveCachedTranslations() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // Start Screen
+    _startScreenList =
+        prefs.getStringList(_currentLanguageCode + '-startScreenList')!;
+    resetGettersStartScreen(_startScreenList);
+
+    // New Alert (Specific Screen) Screen
+
+    // My Alerts Screen
+
+    // Map View Screen
+
+    // Edit Alert Screen
+
+    // Pick On Map Screen
+
+    // Side Drawer
+
+    // Disclosures
+    return true;
+  }
+
+  Future<bool> translate() async {
     await fetchCurrentLanguage();
     if (_currentLanguageCode != 'en') {
       await loadLanguageTranslations();
@@ -152,6 +184,7 @@ class LanguageServices {
   }
 
   Future<bool> loadLanguageTranslations() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     // Start Screen
     for (int index = 0; index < _startScreenList.length; ++index) {
       _startScreenList[index] = (await _translator
@@ -159,6 +192,8 @@ class LanguageServices {
           .text;
     }
     resetGettersStartScreen(_startScreenList);
+    prefs.setStringList(
+        _currentLanguageCode + '-startScreenList', _startScreenList);
     // New Alert (Specific Screen) Screen
 
     // My Alerts Screen
@@ -174,7 +209,7 @@ class LanguageServices {
     // Disclosures
 
     // Reset translation flag
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs = await SharedPreferences.getInstance();
     prefs.setBool('translationNeeded', false);
 
     return true;

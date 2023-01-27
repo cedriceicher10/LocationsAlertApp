@@ -5,7 +5,14 @@ import 'package:translator/translator.dart';
 class LanguageServices {
   static final LanguageServices _instance = LanguageServices._internal();
 
+  factory LanguageServices() {
+    return _instance;
+  }
+
+  LanguageServices._internal() {}
+
   final _translator = GoogleTranslator();
+
   // [language]:[key]
   final Map<String, String> _masterLanguageMap = {
     'en': 'English',
@@ -36,8 +43,10 @@ class LanguageServices {
     'tr': 'Turkish',
   };
 
+  // Default
   String _currentLanguageCode = 'en';
   String _currentLanguage = 'English';
+  bool _translationNeeded = false;
 
   // Start Screen
   String startScreenTitle = 'Location Alerts';
@@ -63,19 +72,28 @@ class LanguageServices {
 
   // Disclosures
 
-  factory LanguageServices() {
-    return _instance;
-  }
-
-  LanguageServices._internal() {
-    // formMap();
-    // fetchCurrentLanguage();
-    // formLists();
-    // loadLanguageTranslations();
+  Future<bool> checkTranslationStatus() async {
+    formLists();
+    // Do this here since initLanguage bypasses with 'en' selected
+    // Translate master language list
+    _currentLanguage = (await _translator.translate(_currentLanguage,
+            to: _currentLanguageCode))
+        .text;
+    _masterLanguageMap.forEach((code, language) async {
+      _masterLanguageMap[code] =
+          (await _translator.translate(language, to: code)).text;
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // First time
+    if (prefs.getBool('translationNeeded') == null) {
+      prefs.setBool('translationNeeded', false);
+    } else {
+      _translationNeeded = prefs.getBool('translationNeeded')!;
+    }
+    return _translationNeeded;
   }
 
   Future<bool> initLanguage() async {
-    formLists();
     await fetchCurrentLanguage();
     if (_currentLanguageCode != 'en') {
       await loadLanguageTranslations();
@@ -111,6 +129,7 @@ class LanguageServices {
 
   Future<bool> fetchCurrentLanguage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    // First time
     if (prefs.getString('currentLanguage') == null) {
       prefs.setString('currentLanguage', _currentLanguageCode);
     } else {
@@ -121,14 +140,6 @@ class LanguageServices {
   }
 
   Future<bool> loadLanguageTranslations() async {
-    // Translate master language list
-    _currentLanguage = (await _translator.translate(_currentLanguage,
-            to: _currentLanguageCode))
-        .text;
-    _masterLanguageMap.forEach((code, language) async {
-      _masterLanguageMap[code] =
-          (await _translator.translate(language, to: code)).text;
-    });
     // Start Screen
     for (int index = 0; index < _startScreenList.length; ++index) {
       _startScreenList[index] = (await _translator
@@ -149,6 +160,10 @@ class LanguageServices {
     // Side Drawer
 
     // Disclosures
+
+    // Reset translation flag
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('translationNeeded', false);
 
     return true;
   }
@@ -182,6 +197,7 @@ class LanguageServices {
     String newLanguageCode = getLanguageCode(newLanguage);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('currentLanguage', newLanguageCode);
+    prefs.setBool('translationNeeded', true);
   }
 
   List<String> getLanguageList() {

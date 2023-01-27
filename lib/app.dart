@@ -1,11 +1,89 @@
 import 'package:flutter/material.dart';
 import 'splash_screen.dart';
+import 'language_services.dart';
+import 'formatted_text.dart';
+import 'styles.dart';
 
 class App extends StatelessWidget {
-  const App({Key? key}) : super(key: key);
+  App({Key? key}) : super(key: key);
+
+  LanguageServices _languageServices = LanguageServices();
+
+  double _loadingTextFontSize = 0;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: SplashScreen(), debugShowCheckedModeBanner: false);
+    return FutureBuilder(
+        future: _languageServices.checkTranslationStatus(),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data!) {
+              return FutureBuilder(
+                  future: translationCheck(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                    if (snapshot.hasData) {
+                      return MaterialApp(
+                          home: SplashScreen(),
+                          debugShowCheckedModeBanner: false);
+                    } else {
+                      return MaterialApp(
+                          home: translatingScreen(),
+                          debugShowCheckedModeBanner: false);
+                    }
+                  });
+            } else {
+              return MaterialApp(
+                  home: SplashScreen(), debugShowCheckedModeBanner: false);
+            }
+          } else {
+            return MaterialApp(
+                home: loadingScreen(), debugShowCheckedModeBanner: false);
+          }
+        });
+  }
+
+  Future<bool> translationCheck() async {
+    await _languageServices.initLanguage();
+    return true;
+  }
+
+  Widget loadingScreen() {
+    return Center(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+          loadingText('Loading...'),
+          SizedBox(height: 10),
+          CircularProgressIndicator(
+            color: Colors.pink,
+          )
+        ]));
+  }
+
+  Widget translatingScreen() {
+    return Center(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+          loadingText('Changing Language...'),
+          SizedBox(height: 10),
+          CircularProgressIndicator(
+            color: Colors.pink,
+          )
+        ]));
+  }
+
+  Widget loadingText(String text) {
+    return FormattedText(
+      text: text,
+      size: 24,
+      color: Colors.blue,
+      font: s_font_IBMPlexSans,
+      weight: FontWeight.bold,
+      decoration: TextDecoration.none,
+    );
   }
 }

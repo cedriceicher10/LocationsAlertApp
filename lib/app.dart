@@ -9,8 +9,6 @@ class App extends StatelessWidget {
 
   LanguageServices _languageServices = LanguageServices();
 
-  double _loadingTextFontSize = 0;
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -28,7 +26,7 @@ class App extends StatelessWidget {
                           debugShowCheckedModeBanner: false);
                     } else {
                       return MaterialApp(
-                          home: translatingScreen(),
+                          home: loadingScreen('Changing Language...'),
                           debugShowCheckedModeBanner: false);
                     }
                   });
@@ -38,7 +36,8 @@ class App extends StatelessWidget {
             }
           } else {
             return MaterialApp(
-                home: loadingScreen(), debugShowCheckedModeBanner: false);
+                home: loadingScreen('Loading...'),
+                debugShowCheckedModeBanner: false);
           }
         });
   }
@@ -48,39 +47,35 @@ class App extends StatelessWidget {
     return true;
   }
 
-  Widget loadingScreen() {
-    return Center(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-          loadingText('Loading...'),
-          SizedBox(height: 10),
-          CircularProgressIndicator(
-            color: Colors.pink,
-          )
-        ]));
-  }
-
-  Widget translatingScreen() {
-    return Center(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-          loadingText('Changing Language...'),
-          SizedBox(height: 10),
-          CircularProgressIndicator(
-            color: Colors.pink,
-          )
-        ]));
+  Widget loadingScreen(String text) {
+    return Container(
+        decoration: const BoxDecoration(
+            gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [
+            Colors.lightBlue,
+            Colors.pink,
+          ],
+        )),
+        child: Center(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+              loadingText(text),
+              SizedBox(height: 10),
+              CircularProgressIndicator(
+                color: Colors.white,
+              )
+            ])));
   }
 
   Widget loadingText(String text) {
     return FormattedText(
       text: text,
       size: 24,
-      color: Colors.blue,
+      color: Colors.white,
       font: s_font_IBMPlexSans,
       weight: FontWeight.bold,
       decoration: TextDecoration.none,

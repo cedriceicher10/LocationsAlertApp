@@ -16,8 +16,7 @@ import 'database_services.dart';
 import 'alerts_services.dart';
 import 'background_theme.dart';
 import 'side_drawer.dart';
-import 'logging_services.dart';
-import 'package:translator/translator.dart';
+//import 'logging_services.dart';
 import 'language_services.dart';
 
 String UUID_GLOBAL = '';

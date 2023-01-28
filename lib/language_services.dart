@@ -68,7 +68,26 @@ class LanguageServices {
   String startScreenSignature = 'An App by Cedric Eicher';
   List<String> _startScreenList = [];
 
-  // New Alert (Specific Screen) Screen
+  // Create Alert (Specific Screen) Screen
+  String createAlertTitle = 'Create Alert';
+  String createAlertRemindMe = 'Remind me to...';
+  String createAlertAtLocation = 'At the location...';
+  String createAlertMyLocationButton = 'My Location';
+  String createAlertPickOnMapButton = 'Pick on Map';
+  String createAlertAtTrigger = 'At the trigger distance...';
+  String createAlertCancelButton = 'Cancel';
+  String createAlertCreateAlertButton = 'Create Alert';
+  String createAlertReminderFieldEmpty = 'Please enter a reminder';
+  String createAlertReminderTooLong =
+      'Please shorten the reminder to less than 200 characters';
+  String createAlertReminderHint = 'E.g. Pick up some limes';
+  String createAlertLocationHint = 'E.g. Sprouts, Redlands, CA';
+  String createAlertLocationEmpty = 'Please enter a location';
+  String createAlertLocationTooLong =
+      'Please shorten the reminder to less than 200 characters';
+  String createAlertLocationNotFound =
+      'Could not locate the location you entered. \nPlease be more specific.';
+  List<String> _createAlertList = [];
 
   // My Alerts Screen
 
@@ -82,6 +101,8 @@ class LanguageServices {
 
   // Disclosures
 
+  // Units
+
   Future<bool> checkTranslationStatus() async {
     formLists();
     await fetchCurrentLanguage();
@@ -91,8 +112,8 @@ class LanguageServices {
             to: _currentLanguageCode))
         .text;
     _masterLanguageMap.forEach((code, language) async {
-      _masterLanguageMap[code] =
-          (await _translator.translate(language, to: code)).text;
+      _masterLanguageMap[code] = capitalizeFirstLetter(
+          (await _translator.translate(language, to: code)).text);
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // First time
@@ -122,7 +143,10 @@ class LanguageServices {
         prefs.getStringList(_currentLanguageCode + '-startScreenList')!;
     resetGettersStartScreen(_startScreenList);
 
-    // New Alert (Specific Screen) Screen
+    // Create Alert (Specific Screen) Screen
+    _createAlertList =
+        prefs.getStringList(_currentLanguageCode + '-createAlertList')!;
+    resetGettersCreateAlert(_createAlertList);
 
     // My Alerts Screen
 
@@ -135,6 +159,9 @@ class LanguageServices {
     // Side Drawer
 
     // Disclosures
+
+    // Units
+
     return true;
   }
 
@@ -157,7 +184,24 @@ class LanguageServices {
       startScreenLocationDisclosure,
       startScreenSignature,
     ];
-    // New Alert (Specific Screen) Screen
+    // Create Alert (Specific Screen) Screen
+    _createAlertList = [
+      createAlertTitle,
+      createAlertRemindMe,
+      createAlertAtLocation,
+      createAlertMyLocationButton,
+      createAlertPickOnMapButton,
+      createAlertAtTrigger,
+      createAlertCancelButton,
+      createAlertCreateAlertButton,
+      createAlertReminderFieldEmpty,
+      createAlertReminderTooLong,
+      createAlertReminderHint,
+      createAlertLocationHint,
+      createAlertLocationEmpty,
+      createAlertLocationTooLong,
+      createAlertLocationNotFound,
+    ];
 
     // My Alerts Screen
 
@@ -170,6 +214,8 @@ class LanguageServices {
     // Side Drawer
 
     // Disclosures
+
+    // Units
   }
 
   Future<bool> fetchCurrentLanguage() async {
@@ -195,7 +241,15 @@ class LanguageServices {
     resetGettersStartScreen(_startScreenList);
     prefs.setStringList(
         _currentLanguageCode + '-startScreenList', _startScreenList);
-    // New Alert (Specific Screen) Screen
+    // Create Alert (Specific Screen) Screen
+    for (int index = 0; index < _createAlertList.length; ++index) {
+      _createAlertList[index] = (await _translator
+              .translate(_createAlertList[index], to: _currentLanguageCode))
+          .text;
+    }
+    resetGettersCreateAlert(_createAlertList);
+    prefs.setStringList(
+        _currentLanguageCode + '-createAlertList', _createAlertList);
 
     // My Alerts Screen
 
@@ -208,6 +262,8 @@ class LanguageServices {
     // Side Drawer
 
     // Disclosures
+
+    // Units
 
     // Reset translation flag
     prefs = await SharedPreferences.getInstance();
@@ -227,7 +283,24 @@ class LanguageServices {
     startScreenSignature = newVars[6];
   }
 
-  // New Alert (Specific Screen) Screen
+  // Create Alert (Specific Screen) Screen
+  void resetGettersCreateAlert(List<String> newVars) {
+    createAlertTitle = newVars[0];
+    createAlertRemindMe = newVars[1];
+    createAlertAtLocation = newVars[2];
+    createAlertMyLocationButton = newVars[3];
+    createAlertPickOnMapButton = newVars[4];
+    createAlertAtTrigger = newVars[5];
+    createAlertCancelButton = newVars[6];
+    createAlertCreateAlertButton = newVars[7];
+    createAlertReminderFieldEmpty = newVars[8];
+    createAlertReminderTooLong = newVars[9];
+    createAlertReminderHint = newVars[10];
+    createAlertLocationHint = newVars[11];
+    createAlertLocationEmpty = newVars[12];
+    createAlertLocationTooLong = newVars[13];
+    createAlertLocationNotFound = newVars[14];
+  }
 
   // My Alerts Screen
 
@@ -240,6 +313,8 @@ class LanguageServices {
   // Side Drawer
 
   // Disclosures
+
+  // Units
 
   void setNewLanguage(String newLanguage) async {
     String newLanguageCode = getLanguageCode(newLanguage);
@@ -264,16 +339,11 @@ class LanguageServices {
     if (languageListWithCurrentLanguageFirst.remove(currentLanguage)) {
       languageListWithCurrentLanguageFirst.insertAll(0, [currentLanguage]);
     }
-    return capitalizeFirstLetter(languageListWithCurrentLanguageFirst);
+    return languageListWithCurrentLanguageFirst;
   }
 
-  List<String> capitalizeFirstLetter(List<String> list) {
-    for (int index = 0; index < list.length; ++index) {
-      if (!(list[0].isEmpty)) {
-        list[index] = list[index][0].toUpperCase() + list[index].substring(1);
-      }
-    }
-    return list;
+  String capitalizeFirstLetter(String language) {
+    return language[0].toUpperCase() + language.substring(1);
   }
 
   String getCurrentLanguage() {

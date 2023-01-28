@@ -12,6 +12,7 @@ import 'pick_on_map_screen.dart';
 import 'go_back_button.dart';
 import 'background_theme.dart';
 import 'trigger_slider.dart';
+import 'language_services.dart';
 
 class SpecificScreen extends StatefulWidget {
   const SpecificScreen({Key? key}) : super(key: key);
@@ -26,6 +27,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
   final DatabaseServices _dbServices = DatabaseServices();
   final BackgroundTheme _background =
       BackgroundTheme(Screen.SPECIFIC_ALERT_SCREEN);
+  final LanguageServices _languageServices = LanguageServices();
   RecentLocations _rl = RecentLocations();
   String _reminderBody = '';
   String _specificLocation = '';
@@ -109,7 +111,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           title: 'Specific Screen',
           home: Scaffold(
             appBar: AppBar(
-              title: specificScreenTitle('Create Alert'),
+              title: specificScreenTitle(),
               backgroundColor: const Color(s_aquarium),
               centerTitle: true,
             ),
@@ -153,7 +155,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          titleText('Remind me to...'),
+                          titleText(_languageServices.createAlertRemindMe),
                           SizedBox(width: _textWidth, child: reminderEntry()),
                         ],
                       ),
@@ -161,7 +163,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            titleText('At the location...'),
+                            titleText(_languageServices.createAlertAtLocation),
                             SizedBox(width: _textWidth, child: locationEntry()),
                           ]),
                       SizedBox(height: _buttonSpacing),
@@ -178,7 +180,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            titleText('At the trigger distance...'),
+                            titleText(_languageServices.createAlertAtTrigger),
                             Container(
                                 width: _textWidth, child: triggerRangeSlider()),
                           ]),
@@ -338,7 +340,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
             fillColor: Colors.white,
             labelStyle: TextStyle(
                 color: Color(s_aquarium), fontWeight: FontWeight.bold),
-            hintText: 'E.g. Pick up some limes',
+            hintText: _languageServices.createAlertReminderHint,
             hintStyle: TextStyle(
                 color: Color(s_disabledGray), fontSize: _formFontSize),
             errorStyle: TextStyle(
@@ -357,9 +359,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
         },
         validator: (value) {
           if (value!.isEmpty) {
-            return 'Please enter a reminder';
+            return _languageServices.createAlertReminderFieldEmpty;
           } else if (value.length > 200) {
-            return 'Please shorten the reminder to less than 200 characters';
+            return _languageServices.createAlertReminderFieldEmpty;
           } else {
             return null;
           }
@@ -385,7 +387,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
                 fillColor: Colors.white,
                 labelStyle:
                     TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                hintText: 'E.g. Sprouts, Redlands, CA',
+                hintText: _languageServices.createAlertLocationHint,
                 hintStyle: TextStyle(
                     color: Color(s_disabledGray), fontSize: _formFontSize),
                 errorStyle: TextStyle(
@@ -404,11 +406,11 @@ class _SpecificScreenState extends State<SpecificScreen> {
             },
             validator: (value) {
               if (value!.isEmpty) {
-                return 'Please enter a location';
+                return _languageServices.createAlertLocationEmpty;
               } else if (value.length > 200) {
-                return 'Please shorten the reminder to less than 200 characters';
+                return _languageServices.createAlertLocationTooLong;
               } else if (!_reverseGeolocateSuccess) {
-                return 'Could not locate the location you entered. \nPlease be more specific.';
+                return _languageServices.createAlertLocationNotFound;
               } else {
                 return null;
               }
@@ -490,7 +492,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
                 width: _iconGapWidth,
               ),
               FormattedText(
-                text: 'Create Alert',
+                text: _languageServices.createAlertCreateAlertButton,
                 size: _submitButtonFontSize,
                 color: Colors.white,
                 font: s_font_BonaNova,
@@ -595,7 +597,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           SizedBox(
             width: _iconGapWidth,
           ),
-          smallButtonText('My Location')
+          smallButtonText(_languageServices.createAlertMyLocationButton)
         ]));
   }
 
@@ -628,7 +630,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           SizedBox(
             width: _iconGapWidth,
           ),
-          smallButtonText('Pick on Map')
+          smallButtonText(_languageServices.createAlertPickOnMapButton)
         ]));
   }
 
@@ -663,13 +665,13 @@ class _SpecificScreenState extends State<SpecificScreen> {
               SizedBox(
                 width: 8,
               ),
-              cancelButtonText('Cancel', _submitButtonFontSize)
+              cancelButtonText(_submitButtonFontSize)
             ])));
   }
 
-  Widget cancelButtonText(String text, double fontSize) {
+  Widget cancelButtonText(double fontSize) {
     return FormattedText(
-      text: text,
+      text: _languageServices.createAlertCancelButton,
       size: fontSize,
       color: Colors.white,
       font: s_font_BonaNova,
@@ -697,9 +699,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
     );
   }
 
-  Widget specificScreenTitle(String title) {
+  Widget specificScreenTitle() {
     return FormattedText(
-      text: title,
+      text: _languageServices.createAlertTitle,
       size: _titleTextFontSize,
       color: Colors.white,
       font: s_font_BerkshireSwash,

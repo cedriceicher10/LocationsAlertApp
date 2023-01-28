@@ -84,6 +84,7 @@ class LanguageServices {
 
   Future<bool> checkTranslationStatus() async {
     formLists();
+    await fetchCurrentLanguage();
     // Do this here since initLanguage bypasses with 'en' selected
     // Translate master language list
     _currentLanguage = (await _translator.translate(_currentLanguage,
@@ -101,7 +102,7 @@ class LanguageServices {
       _translationNeeded = prefs.getBool('translationNeeded')!;
     }
     // Check for cached language translations
-    if (_translationNeeded) {
+    if ((_translationNeeded) || (_currentLanguageCode != 'en')) {
       if (prefs.getStringList(_currentLanguageCode + '-startScreenList') ==
           null) {
         return true;

@@ -185,7 +185,11 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               // Fetch the map
               return buildMapWithMarkers();
             } else {
-              return Center(child: noAlertsYetText('No alerts created yet!'));
+              return Container(
+                  decoration: _background.getBackground(),
+                  child: Center(
+                      child: noAlertsYetText(
+                          'Create an alert to see it \non the map!')));
             }
           } else {
             return const Center(
@@ -695,6 +699,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   Widget noAlertsYetText(String text) {
     return FormattedText(
       text: text,
+      align: TextAlign.center,
       size: _noAlertsYetText,
       color: Color(s_darkSalmon),
       font: s_font_BonaNova,

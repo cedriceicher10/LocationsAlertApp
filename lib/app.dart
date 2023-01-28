@@ -17,7 +17,7 @@ class App extends StatelessWidget {
           if (snapshot.hasData) {
             if (snapshot.data!) {
               return FutureBuilder(
-                  future: translationCheck(),
+                  future: _languageServices.translate(),
                   builder:
                       (BuildContext context, AsyncSnapshot<bool> snapshot) {
                     if (snapshot.hasData) {
@@ -40,11 +40,6 @@ class App extends StatelessWidget {
                 debugShowCheckedModeBanner: false);
           }
         });
-  }
-
-  Future<bool> translationCheck() async {
-    await _languageServices.translate();
-    return true;
   }
 
   Widget loadingScreen(String text) {

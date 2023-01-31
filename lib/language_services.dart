@@ -90,6 +90,8 @@ class LanguageServices {
   List<String> _createAlertList = [];
 
   // My Alerts Screen
+  //String myAlertsNoneYet = 'No alerts created yet!';
+  //String myAlertsExplainer =
 
   // Map View Screen
 
@@ -102,6 +104,9 @@ class LanguageServices {
   // Disclosures
 
   // Units
+  String unitsMi = 'mi';
+  String unitsKm = 'km';
+  List<String> _unitsList = [];
 
   Future<bool> checkTranslationStatus() async {
     formLists();
@@ -161,6 +166,8 @@ class LanguageServices {
     // Disclosures
 
     // Units
+    _unitsList = prefs.getStringList(_currentLanguageCode + '-unitsList')!;
+    resetGettersUnits(_unitsList);
 
     return true;
   }
@@ -216,6 +223,7 @@ class LanguageServices {
     // Disclosures
 
     // Units
+    _unitsList = [unitsMi, unitsKm];
   }
 
   Future<bool> fetchCurrentLanguage() async {
@@ -264,6 +272,13 @@ class LanguageServices {
     // Disclosures
 
     // Units
+    for (int index = 0; index < _unitsList.length; ++index) {
+      _unitsList[index] = (await _translator.translate(_unitsList[index],
+              to: _currentLanguageCode))
+          .text;
+    }
+    resetGettersUnits(_unitsList);
+    prefs.setStringList(_currentLanguageCode + '-unitsList', _unitsList);
 
     // Reset translation flag
     prefs = await SharedPreferences.getInstance();
@@ -315,6 +330,10 @@ class LanguageServices {
   // Disclosures
 
   // Units
+  void resetGettersUnits(List<String> newVars) {
+    unitsMi = newVars[0];
+    unitsKm = newVars[1];
+  }
 
   void setNewLanguage(String newLanguage) async {
     String newLanguageCode = getLanguageCode(newLanguage);

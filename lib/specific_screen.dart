@@ -248,9 +248,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
 
   String determineUnits() {
     if (!_isMiles) {
-      return unitStrings[1];
+      return _languageServices.unitsKm;
     } else {
-      return unitStrings[0];
+      return _languageServices.unitsMi;
     }
   }
 
@@ -264,7 +264,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
-        child: triggerUnitsText(unitStrings[0], unitsMiTextColor),
+        child: triggerUnitsText(_languageServices.unitsMi, unitsMiTextColor),
         onPressed: () async {
           setState(() {
             swapColors();
@@ -279,7 +279,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
-        child: triggerUnitsText(unitStrings[1], unitsKmTextColor),
+        child: triggerUnitsText(_languageServices.unitsKm, unitsKmTextColor),
         onPressed: () async {
           setState(() {
             swapColors();

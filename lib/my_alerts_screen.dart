@@ -9,6 +9,7 @@ import 'styles.dart';
 import 'database_services.dart';
 import 'background_theme.dart';
 import 'go_back_button.dart';
+import 'language_services.dart';
 import 'fab_bar.dart';
 
 class AlertObject {
@@ -50,6 +51,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final DatabaseServices _dbServices = DatabaseServices();
   final BackgroundTheme _background = BackgroundTheme(Screen.MY_ALERTS_SCREEN);
+  final LanguageServices _languageServices = LanguageServices();
 
   double _screenHeight = 0;
   double _screenWidth = 0;
@@ -87,7 +89,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
       title: 'My Alerts Screen',
       home: Scaffold(
         appBar: AppBar(
-          title: myAlertsScreenTitle('My Alerts'),
+          title: myAlertsScreenTitle(),
           backgroundColor: const Color(s_darkSalmon),
           centerTitle: true,
         ),
@@ -121,25 +123,6 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
         ]));
   }
 
-  // Widget myAlertsScreenBody() {
-  //   return SingleChildScrollView(
-  //       child: Container(
-  //           decoration: _background.getBackground(),
-  //           child: ConstrainedBox(
-  //               constraints: BoxConstraints(minHeight: _screenHeight),
-  //               child: Column(children: [
-  //                 listViewReminderBuilder(),
-  //                 SizedBox(height: _buttonSpacing),
-  //                 Container(
-  //                     padding: EdgeInsets.fromLTRB(
-  //                         _explainerTextPadding, 0, _explainerTextPadding, 0),
-  //                     child: explainerText()),
-  //                 SizedBox(height: _bottomPadding),
-  //                 // backButton(_buttonWidth, _buttonHeight),
-  //                 // SizedBox(height: _bottomPadding)
-  //               ]))));
-  // }
-
   Widget listViewReminderBuilder() {
     return StreamBuilder(
         stream: retrieveReminders(),
@@ -151,7 +134,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
               return listViewReminders(
                   createReminderObjects(snapshotReminders));
             } else {
-              return Center(child: noAlertsYetText('No alerts created yet!'));
+              return Center(child: noAlertsYetText());
             }
           } else {
             return const Center(
@@ -225,9 +208,10 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
             title: reminderCardTitleText(AlertObject.reminder),
             subtitle:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              reminderCardLocationText('at: ${AlertObject.location}'),
+              reminderCardLocationText(
+                  '${_languageServices.myAlertsTileLocation}: ${AlertObject.location}'),
               reminderCardDateText(
-                  'Date Created: ${AlertObject.dateTimeCreated}')
+                  '${_languageServices.myAlertsTileDate}: ${AlertObject.dateTimeCreated}')
             ]),
             trailing: Icon(
               Icons.edit,
@@ -264,19 +248,6 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
         _mapButtonIconSize);
   }
 
-  // This was the old back button at the bottom of the list instead of the current FAB
-  Widget backButton(double buttonWidth, double buttonHeight) {
-    return GoBackButton().back(
-        'Back',
-        buttonWidth,
-        buttonHeight,
-        _backButtonFontSize,
-        _backButtonIconSize,
-        _backButtonCornerRadius,
-        context,
-        Color(s_darkSalmon));
-  }
-
   Widget reminderCardTitleText(String text) {
     return FormattedText(
       text: text,
@@ -309,9 +280,9 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     );
   }
 
-  Widget myAlertsScreenTitle(String title) {
+  Widget myAlertsScreenTitle() {
     return FormattedText(
-      text: title,
+      text: _languageServices.myAlertsTitle,
       size: _titleTextFontSize,
       color: Colors.white,
       font: s_font_BerkshireSwash,
@@ -320,8 +291,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
 
   Widget explainerText() {
     return FormattedText(
-      text:
-          'These are your current active location alerts.\n Once an alert is marked as complete it will be removed.\n Tap an alert to edit it.',
+      text: _languageServices.myAlertsExplainer,
       size: _explainerTextFontSize,
       color: Color(s_darkSalmon),
       align: TextAlign.center,
@@ -329,13 +299,14 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     );
   }
 
-  Widget noAlertsYetText(String text) {
+  Widget noAlertsYetText() {
     return FormattedText(
-      text: text,
+      text: _languageServices.myAlertsNoneYet,
       size: _noAlertsYetText,
       color: Color(s_darkSalmon),
       font: s_font_BonaNova,
       weight: FontWeight.bold,
+      align: TextAlign.center,
     );
   }
 

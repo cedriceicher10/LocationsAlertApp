@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:locationalertsapp/map_screen.dart';
 import 'package:locationalertsapp/my_alerts_screen.dart';
+import 'language_services.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
 
 enum FAB { LIST, MAP }
+
+final LanguageServices _languageServices = LanguageServices();
 
 Widget fabBar(
     BuildContext context,
@@ -18,10 +21,10 @@ Widget fabBar(
     double iconWidth,
     double iconSize) {
   IconData iconSelection = Icons.map;
-  String fabToggleText = 'Map View';
+  String fabToggleText = _languageServices.myAlertsMapView;
   if (fabSelection == FAB.LIST) {
     iconSelection = Icons.list;
-    fabToggleText = 'List View';
+    fabToggleText = _languageServices.myAlertsListView;
   }
   return Column(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -57,7 +60,7 @@ Widget fabBar(
                   SizedBox(
                     width: 8,
                   ),
-                  buttonText('Back', buttonFontSize)
+                  buttonText(buttonFontSize)
                 ])),
           ),
           SizedBox(width: iconSpacing),
@@ -111,14 +114,14 @@ Widget fabBar(
 
 Widget osmDisclosure(FAB fabSelection) {
   if (fabSelection == FAB.LIST) {
-    return Text('Maps courtesy of OpenStreetMap');
+    return Text(_languageServices.mapViewOSM);
   }
   return Container();
 }
 
-Widget buttonText(String text, double fontSize) {
+Widget buttonText(double fontSize) {
   return FormattedText(
-    text: text,
+    text: _languageServices.myAlertsBackButton,
     size: fontSize,
     color: Colors.white,
     font: s_font_BonaNova,

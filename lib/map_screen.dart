@@ -14,6 +14,7 @@ import 'background_theme.dart';
 import 'styles.dart';
 import 'fab_bar.dart';
 import 'start_screen.dart';
+import 'language_services.dart';
 import 'edit_alert_screen.dart';
 import 'my_alerts_screen.dart';
 
@@ -28,6 +29,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   final DatabaseServices _dbServices = DatabaseServices();
   final BackgroundTheme _background = BackgroundTheme(Screen.MY_ALERTS_SCREEN);
   final LocationServices _locationServices = LocationServices();
+  final LanguageServices _languageServices = LanguageServices();
   List<AlertObject> _alertObjs = [];
   MapController _mapController = MapController();
   PopupController _popupController = PopupController();
@@ -78,7 +80,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       title: 'Map Screen',
       home: Scaffold(
         appBar: AppBar(
-          title: myAlertsScreenTitle('My Alerts'),
+          title: myAlertsScreenTitle(),
           backgroundColor: Color(s_darkSalmon),
           centerTitle: true,
         ),
@@ -188,8 +190,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               return Container(
                   decoration: _background.getBackground(),
                   child: Center(
-                      child: noAlertsYetText(
-                          'Create an alert to see it \non the map!')));
+                      child:
+                          noAlertsYetText(_languageServices.mapViewNoneYet)));
             }
           } else {
             return const Center(
@@ -566,7 +568,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     AlertObject alertObj = findMarkerAlertObj(marker);
     if (alertObj.id == 'USER_LOCATION') {
       return FormattedText(
-        text: 'Your Location!',
+        text: _languageServices.mapViewYourLocation,
         size: _popupErrorFontSize,
         color: Colors.red,
         font: s_font_IBMPlexSans,
@@ -575,7 +577,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       );
     } else if (alertObj.id == 'NOT_FOUND') {
       return FormattedText(
-          text: 'Alert Information Could Not Be Found!',
+          text: _languageServices.mapViewNoAlertInformation,
           size: _popupErrorFontSize,
           color: Colors.red,
           font: s_font_IBMPlexSans,
@@ -584,8 +586,10 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     }
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       reminderCardTitleText(alertObj.reminder),
-      reminderCardLocationText('at: ${alertObj.location}'),
-      reminderCardDateText('Date Created: ${alertObj.dateTimeCreated}'),
+      reminderCardLocationText(
+          '${_languageServices.mapViewTileLocation}: ${alertObj.location}'),
+      reminderCardDateText(
+          '${_languageServices.mapViewTileDate}: ${alertObj.dateTimeCreated}'),
       Center(
           child: Icon(
         Icons.edit,
@@ -677,9 +681,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         triggerUnits: '');
   }
 
-  Widget myAlertsScreenTitle(String title) {
+  Widget myAlertsScreenTitle() {
     return FormattedText(
-      text: title,
+      text: _languageServices.mapViewTitle,
       size: _titleTextFontSize,
       color: Colors.white,
       font: s_font_BerkshireSwash,

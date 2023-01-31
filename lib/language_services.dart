@@ -90,10 +90,26 @@ class LanguageServices {
   List<String> _createAlertList = [];
 
   // My Alerts Screen
-  //String myAlertsNoneYet = 'No alerts created yet!';
-  //String myAlertsExplainer =
+  String myAlertsTitle = 'My Alerts';
+  String myAlertsNoneYet = 'No alerts created yet!';
+  String myAlertsExplainer =
+      'These are your current active location alerts.\n Once an alert is marked as complete it will be removed.\n Tap an alert to edit it.';
+  String myAlertsMapView = 'Map View';
+  String myAlertsListView = 'List View';
+  String myAlertsBackButton = 'Back';
+  String myAlertsTileLocation = 'at';
+  String myAlertsTileDate = 'Date Created';
+  List<String> _myAlertsList = [];
 
   // Map View Screen
+  String mapViewTitle = 'My Alerts';
+  String mapViewOSM = 'Maps courtesy of OpenStreetMap';
+  String mapViewNoneYet = 'Create an alert to see it \non the map!';
+  String mapViewNoAlertInformation = 'Alert Information Could Not Be Found!';
+  String mapViewYourLocation = 'Your Location!';
+  String mapViewTileLocation = 'at';
+  String mapViewTileDate = 'Date Created';
+  List<String> _mapView = [];
 
   // Edit Alert Screen
 
@@ -154,8 +170,13 @@ class LanguageServices {
     resetGettersCreateAlert(_createAlertList);
 
     // My Alerts Screen
+    _myAlertsList =
+        prefs.getStringList(_currentLanguageCode + '-myAlertsList')!;
+    resetGettersMyAlerts(_myAlertsList);
 
     // Map View Screen
+    _mapView = prefs.getStringList(_currentLanguageCode + '-mapView')!;
+    resetGettersMapView(_mapView);
 
     // Edit Alert Screen
 
@@ -211,8 +232,27 @@ class LanguageServices {
     ];
 
     // My Alerts Screen
+    _myAlertsList = [
+      myAlertsTitle,
+      myAlertsNoneYet,
+      myAlertsExplainer,
+      myAlertsMapView,
+      myAlertsListView,
+      myAlertsBackButton,
+      myAlertsTileLocation,
+      myAlertsTileDate,
+    ];
 
     // Map View Screen
+    _mapView = [
+      mapViewTitle,
+      mapViewOSM,
+      mapViewNoneYet,
+      mapViewNoAlertInformation,
+      mapViewYourLocation,
+      mapViewTileLocation,
+      mapViewTileDate,
+    ];
 
     // Edit Alert Screen
 
@@ -260,8 +300,22 @@ class LanguageServices {
         _currentLanguageCode + '-createAlertList', _createAlertList);
 
     // My Alerts Screen
+    for (int index = 0; index < _myAlertsList.length; ++index) {
+      _myAlertsList[index] = (await _translator.translate(_myAlertsList[index],
+              to: _currentLanguageCode))
+          .text;
+    }
+    resetGettersMyAlerts(_myAlertsList);
+    prefs.setStringList(_currentLanguageCode + '-myAlertsList', _myAlertsList);
 
     // Map View Screen
+    for (int index = 0; index < _mapView.length; ++index) {
+      _mapView[index] = (await _translator.translate(_mapView[index],
+              to: _currentLanguageCode))
+          .text;
+    }
+    resetGettersMapView(_mapView);
+    prefs.setStringList(_currentLanguageCode + '-mapView', _mapView);
 
     // Edit Alert Screen
 
@@ -318,8 +372,27 @@ class LanguageServices {
   }
 
   // My Alerts Screen
+  void resetGettersMyAlerts(List<String> newVars) {
+    myAlertsTitle = newVars[0];
+    myAlertsNoneYet = newVars[1];
+    myAlertsExplainer = newVars[2];
+    myAlertsMapView = newVars[3];
+    myAlertsListView = newVars[4];
+    myAlertsBackButton = newVars[5];
+    myAlertsTileLocation = newVars[6];
+    myAlertsTileDate = newVars[7];
+  }
 
   // Map View Screen
+  void resetGettersMapView(List<String> newVars) {
+    mapViewTitle = newVars[0];
+    mapViewOSM = newVars[1];
+    mapViewNoneYet = newVars[2];
+    mapViewNoAlertInformation = newVars[3];
+    mapViewYourLocation = newVars[4];
+    mapViewTileLocation = newVars[5];
+    mapViewTileDate = newVars[6];
+  }
 
   // Edit Alert Screen
 

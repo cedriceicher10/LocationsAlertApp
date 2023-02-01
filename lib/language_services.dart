@@ -112,12 +112,35 @@ class LanguageServices {
   List<String> _mapView = [];
 
   // Edit Alert Screen
+  String editAlertTitle = 'Edit Alert';
+  String editAlertRemindMe = 'Remind me to...';
+  String editAlertAtLocation = 'At the location...';
+  String editAlertMyLocationButton = 'My Location';
+  String editAlertPickOnMapButton = 'Pick on Map';
+  String editAlertMarkDoneButton = 'Mark Done';
+  String editAlertDeleteButton = 'Delete Alert';
+  String editAlertAtTrigger = 'At the trigger distance...';
+  String editAlertCancelButton = 'Cancel';
+  String editAlertUpdateAlertButton = 'Update Alert';
+  String editAlertReminderFieldEmpty = 'Please enter a reminder';
+  String editAlertReminderTooLong =
+      'Please shorten the reminder to less than 200 characters';
+  String editAlertReminderHint = 'E.g. Pick up some limes';
+  String editAlertLocationHint = 'E.g. Sprouts, Redlands, CA';
+  String editAlertLocationEmpty = 'Please enter a location';
+  String editAlertLocationTooLong =
+      'Please shorten the reminder to less than 200 characters';
+  String editAlertLocationNotFound =
+      'Could not locate the location you entered. \nPlease be more specific.';
+  List<String> _editAlert = [];
 
   // Pick On Map Screen
 
   // Side Drawer
 
   // Disclosures
+
+  // Recent Locations
 
   // Units
   String unitsMi = 'mi';
@@ -179,12 +202,16 @@ class LanguageServices {
     resetGettersMapView(_mapView);
 
     // Edit Alert Screen
+    _editAlert = prefs.getStringList(_currentLanguageCode + '-editAlert')!;
+    resetGettersEditAlert(_editAlert);
 
     // Pick On Map Screen
 
     // Side Drawer
 
     // Disclosures
+
+    // Recent Locations
 
     // Units
     _unitsList = prefs.getStringList(_currentLanguageCode + '-unitsList')!;
@@ -255,12 +282,33 @@ class LanguageServices {
     ];
 
     // Edit Alert Screen
+    _editAlert = [
+      editAlertTitle,
+      editAlertRemindMe,
+      editAlertAtLocation,
+      editAlertMyLocationButton,
+      editAlertPickOnMapButton,
+      editAlertMarkDoneButton,
+      editAlertDeleteButton,
+      editAlertAtTrigger,
+      editAlertCancelButton,
+      editAlertUpdateAlertButton,
+      editAlertReminderFieldEmpty,
+      editAlertReminderTooLong,
+      editAlertReminderHint,
+      editAlertLocationHint,
+      editAlertLocationEmpty,
+      editAlertLocationTooLong,
+      editAlertLocationNotFound,
+    ];
 
     // Pick On Map Screen
 
     // Side Drawer
 
     // Disclosures
+
+    // Recent Locations
 
     // Units
     _unitsList = [unitsMi, unitsKm];
@@ -318,12 +366,21 @@ class LanguageServices {
     prefs.setStringList(_currentLanguageCode + '-mapView', _mapView);
 
     // Edit Alert Screen
+    for (int index = 0; index < _editAlert.length; ++index) {
+      _editAlert[index] = (await _translator.translate(_editAlert[index],
+              to: _currentLanguageCode))
+          .text;
+    }
+    resetGettersEditAlert(_editAlert);
+    prefs.setStringList(_currentLanguageCode + '-editAlert', _editAlert);
 
     // Pick On Map Screen
 
     // Side Drawer
 
     // Disclosures
+
+    // Recent Locations
 
     // Units
     for (int index = 0; index < _unitsList.length; ++index) {
@@ -395,12 +452,33 @@ class LanguageServices {
   }
 
   // Edit Alert Screen
+  void resetGettersEditAlert(List<String> newVars) {
+    editAlertTitle = newVars[0];
+    editAlertRemindMe = newVars[1];
+    editAlertAtLocation = newVars[2];
+    editAlertMyLocationButton = newVars[3];
+    editAlertPickOnMapButton = newVars[4];
+    editAlertMarkDoneButton = newVars[5];
+    editAlertDeleteButton = newVars[6];
+    editAlertAtTrigger = newVars[7];
+    editAlertCancelButton = newVars[8];
+    editAlertUpdateAlertButton = newVars[9];
+    editAlertReminderFieldEmpty = newVars[10];
+    editAlertReminderTooLong = newVars[11];
+    editAlertReminderHint = newVars[12];
+    editAlertLocationHint = newVars[13];
+    editAlertLocationEmpty = newVars[14];
+    editAlertLocationTooLong = newVars[15];
+    editAlertLocationNotFound = newVars[16];
+  }
 
   // Pick On Map Screen
 
   // Side Drawer
 
   // Disclosures
+
+  // Recent Locations
 
   // Units
   void resetGettersUnits(List<String> newVars) {

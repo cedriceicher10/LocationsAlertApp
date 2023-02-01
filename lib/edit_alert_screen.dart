@@ -13,6 +13,7 @@ import 'database_services.dart';
 import 'location_services.dart';
 import 'pick_on_map_screen.dart';
 import 'recent_locations.dart';
+import 'language_services.dart';
 import 'go_back_button.dart';
 import 'background_theme.dart';
 import 'trigger_slider.dart';
@@ -31,6 +32,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final LocationServices _locationServices = LocationServices();
   final DatabaseServices _dbServices = DatabaseServices();
+  final LanguageServices _languageServices = LanguageServices();
   RecentLocations _rl = RecentLocations();
   final TextEditingController _controllerRecentLocations =
       TextEditingController();
@@ -173,7 +175,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
           title: 'Edit Alert Screen',
           home: Scaffold(
             appBar: AppBar(
-              title: editAlertTitle('Edit Alert'),
+              title: editAlertTitle(),
               backgroundColor: const Color(s_aquarium),
               centerTitle: true,
             ),
@@ -235,7 +237,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          titleText('Remind me to...'),
+                          titleText(_languageServices.editAlertRemindMe),
                           SizedBox(width: _textWidth, child: reminderEntry()),
                         ],
                       ),
@@ -243,7 +245,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            titleText('At the location...'),
+                            titleText(_languageServices.editAlertAtLocation),
                             SizedBox(width: _textWidth, child: locationEntry()),
                           ]),
                       SizedBox(height: _buttonSpacing),
@@ -337,9 +339,9 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
 
   String determineUnits() {
     if (!_isMiles) {
-      return unitStrings[1];
+      return _languageServices.unitsKm;
     } else {
-      return unitStrings[0];
+      return _languageServices.unitsMi;
     }
   }
 
@@ -353,7 +355,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
-        child: triggerUnitsText(unitStrings[0], unitsMiTextColor),
+        child: triggerUnitsText(_languageServices.unitsMi, unitsMiTextColor),
         onPressed: () async {
           setState(() {
             swapColors();
@@ -368,7 +370,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
-        child: triggerUnitsText(unitStrings[1], unitsKmTextColor),
+        child: triggerUnitsText(_languageServices.unitsKm, unitsKmTextColor),
         onPressed: () async {
           setState(() {
             swapColors();
@@ -448,9 +450,9 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
         },
         validator: (value) {
           if (value!.isEmpty) {
-            return 'Please enter a reminder';
+            return _languageServices.editAlertReminderFieldEmpty;
           } else if (value.length > 200) {
-            return 'Please shorten the reminder to less than 200 characters';
+            return _languageServices.editAlertReminderTooLong;
           } else {
             return null;
           }
@@ -531,11 +533,11 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                 },
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return 'Please enter a location';
+                    return _languageServices.editAlertReminderFieldEmpty;
                   } else if (value.length > 200) {
-                    return 'Please shorten the reminder to less than 200 characters';
+                    return _languageServices.editAlertReminderTooLong;
                   } else if (!_reverseGeolocateSuccess) {
-                    return 'Could not locate the location you entered. \nPlease be more specific.';
+                    return _languageServices.editAlertLocationNotFound;
                   } else {
                     return null;
                   }
@@ -660,7 +662,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
               SizedBox(
                 width: _iconGapWidth,
               ),
-              smallButtonText('My Location')
+              smallButtonText(_languageServices.editAlertMyLocationButton)
             ])));
   }
 
@@ -701,7 +703,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
               SizedBox(
                 width: _iconGapWidth,
               ),
-              smallButtonText('Pick on Map')
+              smallButtonText(_languageServices.editAlertPickOnMapButton)
             ])));
   }
 
@@ -732,7 +734,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
           SizedBox(
             width: _iconGapWidth,
           ),
-          smallButtonText('Mark Done')
+          smallButtonText(_languageServices.editAlertMarkDoneButton)
         ]));
   }
 
@@ -762,7 +764,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
           SizedBox(
             width: _iconGapWidth,
           ),
-          smallButtonText('Delete Alert')
+          smallButtonText(_languageServices.editAlertDeleteButton)
         ]));
   }
 
@@ -843,7 +845,7 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
                 width: _iconGapWidth,
               ),
               FormattedText(
-                text: 'Update Alert',
+                text: _languageServices.editAlertUpdateAlertButton,
                 size: _updateButtonFontSize,
                 color: Colors.white,
                 font: s_font_BonaNova,
@@ -913,13 +915,13 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
               SizedBox(
                 width: 8,
               ),
-              cancelButtonText('Cancel', _updateButtonFontSize)
+              cancelButtonText(_updateButtonFontSize)
             ])));
   }
 
-  Widget cancelButtonText(String text, double fontSize) {
+  Widget cancelButtonText(double fontSize) {
     return FormattedText(
-      text: text,
+      text: _languageServices.editAlertCancelButton,
       size: fontSize,
       color: Colors.white,
       font: s_font_BonaNova,
@@ -944,9 +946,9 @@ class _EditAlertScreenState extends State<EditAlertScreen> {
     );
   }
 
-  Widget editAlertTitle(String title) {
+  Widget editAlertTitle() {
     return FormattedText(
-      text: title,
+      text: _languageServices.editAlertTitle,
       size: _titleTextFontSize,
       color: Colors.white,
       font: s_font_BerkshireSwash,

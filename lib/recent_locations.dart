@@ -1,7 +1,9 @@
+import 'package:locationalertsapp/language_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'language_services.dart';
 
 class RecentLocations {
-  var recentLocations = ['Make a few reminders to see their locations here!'];
+  var recentLocations = [LanguageServices().recentLocationEmpty];
   Map recentLocationsMap = new Map();
 
   Future<void> retrieveRecentLocations() async {

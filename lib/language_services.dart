@@ -184,6 +184,9 @@ class LanguageServices {
   List<String> _disclosure = [];
 
   // Recent Locations
+  String recentLocationEmpty =
+      'Make a few reminders to see their locations here!';
+  List<String> _recentLocations = [];
 
   // Units
   String unitsMi = 'mi';
@@ -261,6 +264,9 @@ class LanguageServices {
     resetGettersDisclosure(_disclosure);
 
     // Recent Locations
+    _recentLocations =
+        prefs.getStringList(_currentLanguageCode + '-recentLocations')!;
+    resetGettersRecentLocations(_recentLocations);
 
     // Units
     _unitsList = prefs.getStringList(_currentLanguageCode + '-unitsList')!;
@@ -400,6 +406,9 @@ class LanguageServices {
     ];
 
     // Recent Locations
+    _recentLocations = [
+      recentLocationEmpty,
+    ];
 
     // Units
     _unitsList = [unitsMi, unitsKm];
@@ -493,6 +502,14 @@ class LanguageServices {
     prefs.setStringList(_currentLanguageCode + '-disclosure', _disclosure);
 
     // Recent Locations
+    for (int index = 0; index < _recentLocations.length; ++index) {
+      _recentLocations[index] = (await _translator
+              .translate(_recentLocations[index], to: _currentLanguageCode))
+          .text;
+    }
+    resetGettersRecentLocations(_recentLocations);
+    prefs.setStringList(
+        _currentLanguageCode + '-recentLocations', _recentLocations);
 
     // Units
     for (int index = 0; index < _unitsList.length; ++index) {
@@ -633,6 +650,9 @@ class LanguageServices {
   }
 
   // Recent Locations
+  void resetGettersRecentLocations(List<String> newVars) {
+    recentLocationEmpty = newVars[0];
+  }
 
   // Units
   void resetGettersUnits(List<String> newVars) {

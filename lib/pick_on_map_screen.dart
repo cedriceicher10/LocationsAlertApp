@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:locationalertsapp/language_services.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
 import 'package:location_picker_flutter_map/location_picker_flutter_map.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'language_services.dart';
 import 'location_services.dart';
 
 // General knowledge
@@ -36,6 +38,7 @@ class PickOnMapScreen extends StatefulWidget {
 
 class _PickOnMapScreenState extends State<PickOnMapScreen> {
   final LocationServices _locationServices = LocationServices();
+  final LanguageServices _languageServices = LanguageServices();
   bool _initUserLocation = false;
 
   double _titleTextFontSize = 0;
@@ -58,7 +61,7 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
           title: 'Pick on Map',
           home: Scaffold(
             appBar: AppBar(
-              title: pickOnMapTitle('Pick on Map'),
+              title: pickOnMapTitle(),
               backgroundColor: const Color(s_aquariumLighter),
               centerTitle: true,
             ),
@@ -85,7 +88,7 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
   Widget osmDisclosure() {
     return Padding(
         padding: EdgeInsets.fromLTRB(0, 0, 0, 45),
-        child: Text('Maps courtesy of OpenStreetMap'));
+        child: Text(_languageServices.pickOnMapOSM));
   }
 
   Future<bool> locationOnCheck() async {
@@ -128,7 +131,7 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
         zoomButtonsBackgroundColor: Color(s_aquariumLighter),
         markerIconColor: Color(s_declineRed),
         markerIcon: Icons.location_on_sharp,
-        selectLocationButtonText: 'Set Alert Location',
+        selectLocationButtonText: _languageServices.pickOnMapSetAlertButton,
         initZoom: 15,
         trackMyPosition: _initUserLocation,
         onPicked: (pickedData) {
@@ -144,9 +147,9 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
         });
   }
 
-  Widget pickOnMapTitle(String title) {
+  Widget pickOnMapTitle() {
     return FormattedText(
-      text: title,
+      text: _languageServices.pickOnMapTitle,
       size: _titleTextFontSize,
       color: Colors.white,
       font: s_font_BerkshireSwash,

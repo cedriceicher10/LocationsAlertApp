@@ -135,6 +135,10 @@ class LanguageServices {
   List<String> _editAlert = [];
 
   // Pick On Map Screen
+  String pickOnMapTitle = 'Pick On Map';
+  String pickOnMapSetAlertButton = 'Set Alert Location';
+  String pickOnMapOSM = 'Maps courtesy of OpenStreetMap';
+  List<String> _pickOnMap = [];
 
   // Side Drawer
 
@@ -206,6 +210,8 @@ class LanguageServices {
     resetGettersEditAlert(_editAlert);
 
     // Pick On Map Screen
+    _pickOnMap = prefs.getStringList(_currentLanguageCode + '-pickOnMap')!;
+    resetGettersPickOnMap(_pickOnMap);
 
     // Side Drawer
 
@@ -303,6 +309,11 @@ class LanguageServices {
     ];
 
     // Pick On Map Screen
+    _pickOnMap = [
+      pickOnMapTitle,
+      pickOnMapSetAlertButton,
+      pickOnMapOSM,
+    ];
 
     // Side Drawer
 
@@ -375,6 +386,13 @@ class LanguageServices {
     prefs.setStringList(_currentLanguageCode + '-editAlert', _editAlert);
 
     // Pick On Map Screen
+    for (int index = 0; index < _pickOnMap.length; ++index) {
+      _pickOnMap[index] = (await _translator.translate(_pickOnMap[index],
+              to: _currentLanguageCode))
+          .text;
+    }
+    resetGettersPickOnMap(_pickOnMap);
+    prefs.setStringList(_currentLanguageCode + '-pickOnMap', _pickOnMap);
 
     // Side Drawer
 
@@ -473,6 +491,11 @@ class LanguageServices {
   }
 
   // Pick On Map Screen
+  void resetGettersPickOnMap(List<String> newVars) {
+    pickOnMapTitle = newVars[0];
+    pickOnMapSetAlertButton = newVars[1];
+    pickOnMapOSM = newVars[2];
+  }
 
   // Side Drawer
 

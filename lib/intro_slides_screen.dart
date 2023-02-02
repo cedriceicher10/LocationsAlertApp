@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:locationalertsapp/start_screen.dart';
+import 'language_services.dart';
 import 'styles.dart';
 
 class IntroSlidesScreen extends StatefulWidget {
@@ -17,6 +18,8 @@ class IntroSlidesScreen extends StatefulWidget {
 }
 
 class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
+  LanguageServices _languageServices = LanguageServices();
+
   List<ContentConfig> listContentConfig = [];
 
   double _titleFontSize = 0;
@@ -29,9 +32,9 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
     generateLayout();
     listContentConfig.add(
       ContentConfig(
-        title: "Getting Started",
+        title: _languageServices.introSlidesGettingStartedTitle,
         styleTitle: titleTextStyleDark(),
-        description: "Start by tapping Create Alert",
+        description: _languageServices.introSlidesGettingStartedDesc,
         styleDescription: textStyleDark(),
         pathImage: "assets/images/IntroSlide_CreateAlert.png",
         widthImage: _imageWidth,
@@ -42,10 +45,9 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
     );
     listContentConfig.add(
       ContentConfig(
-        title: "Creating an Alert",
+        title: _languageServices.introSlidesCreatingAlertTitle,
         styleTitle: titleTextStyleLight(),
-        description:
-            "\nEnter what you want to be reminded about and where. Such as:\n\nGrab more sugar next time I'm at my grocery store.",
+        description: _languageServices.introSlidesCreatingAlertDesc,
         styleDescription: textStyleLight(),
         pathImage: "assets/images/IntroSlide_WriteAlert.png",
         widthImage: _imageWidth,
@@ -55,10 +57,9 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
     );
     listContentConfig.add(
       ContentConfig(
-        title: "Alert Triggers",
+        title: _languageServices.introSlidesAlertTriggersTitle,
         styleTitle: titleTextStyleDark(),
-        description:
-            "After your alert is created, make sure the location toggle is ON and your location service is ACTIVE.\n\nLeave the app open in the background and just wait until you arrive at one of your specified locations for an alert to trigger!",
+        description: _languageServices.introSlidesAlertTriggersDesc,
         styleDescription: textStyleDark(),
         pathImage: "assets/images/IntroSlide_LocationOn.png",
         widthImage: _imageWidth,
@@ -68,10 +69,9 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
     );
     listContentConfig.add(
       ContentConfig(
-        title: "Your Alerts",
+        title: _languageServices.introSlidesYourAlertsTitle,
         styleTitle: titleTextStyleLight(),
-        description:
-            "You can set multiple alerts for multiple locations! Tap View my Alerts at any time to look at your current alerts, edit them, or delete them.\n\nLet's get started!",
+        description: _languageServices.introSlidesYourAlertsDesc,
         styleDescription: textStyleLight(),
         pathImage: "assets/images/IntroSlide_ManyAlerts.png",
         widthImage: _imageWidth,

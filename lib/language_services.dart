@@ -193,6 +193,20 @@ class LanguageServices {
   String unitsKm = 'km';
   List<String> _unitsList = [];
 
+  // Intro Slides
+  String introSlidesGettingStartedTitle = 'Getting Started';
+  String introSlidesGettingStartedDesc = 'Start by tapping Create Alert';
+  String introSlidesCreatingAlertTitle = 'Creating an Alert';
+  String introSlidesCreatingAlertDesc =
+      '\nEnter what you want to be reminded about and where. Such as:\n\nGrab more sugar next time I\'m at my grocery store.';
+  String introSlidesAlertTriggersTitle = 'Alert Triggers';
+  String introSlidesAlertTriggersDesc =
+      'After your alert is created, make sure the location toggle is ON and your location service is ACTIVE.\n\nLeave the app open in the background and just wait until you arrive at one of your specified locations for an alert to trigger!';
+  String introSlidesYourAlertsTitle = 'Your Alerts';
+  String introSlidesYourAlertsDesc =
+      'You can set multiple alerts for multiple locations! Tap View my Alerts at any time to look at your current alerts, edit them, or delete them.\n\nLet\'s get started!';
+  List<String> _introSlides = [];
+
   Future<bool> checkTranslationStatus() async {
     formLists();
     await fetchCurrentLanguage();
@@ -271,6 +285,10 @@ class LanguageServices {
     // Units
     _unitsList = prefs.getStringList(_currentLanguageCode + '-unitsList')!;
     resetGettersUnits(_unitsList);
+
+    // Intro Slides
+    _introSlides = prefs.getStringList(_currentLanguageCode + '-introSlides')!;
+    resetGettersIntroSlides(_introSlides);
 
     return true;
   }
@@ -412,6 +430,18 @@ class LanguageServices {
 
     // Units
     _unitsList = [unitsMi, unitsKm];
+
+    // Intro Slides
+    _introSlides = [
+      introSlidesGettingStartedTitle,
+      introSlidesGettingStartedDesc,
+      introSlidesCreatingAlertTitle,
+      introSlidesCreatingAlertDesc,
+      introSlidesAlertTriggersTitle,
+      introSlidesAlertTriggersDesc,
+      introSlidesYourAlertsTitle,
+      introSlidesYourAlertsDesc,
+    ];
   }
 
   Future<bool> fetchCurrentLanguage() async {
@@ -519,6 +549,15 @@ class LanguageServices {
     }
     resetGettersUnits(_unitsList);
     prefs.setStringList(_currentLanguageCode + '-unitsList', _unitsList);
+
+    // Intro Slides
+    for (int index = 0; index < _introSlides.length; ++index) {
+      _introSlides[index] = (await _translator.translate(_introSlides[index],
+              to: _currentLanguageCode))
+          .text;
+    }
+    resetGettersIntroSlides(_introSlides);
+    prefs.setStringList(_currentLanguageCode + '-introSlides', _introSlides);
 
     // Reset translation flag
     prefs = await SharedPreferences.getInstance();
@@ -658,6 +697,18 @@ class LanguageServices {
   void resetGettersUnits(List<String> newVars) {
     unitsMi = newVars[0];
     unitsKm = newVars[1];
+  }
+
+  // Intro Slides
+  void resetGettersIntroSlides(List<String> newVars) {
+    introSlidesGettingStartedTitle = newVars[0];
+    introSlidesGettingStartedDesc = newVars[1];
+    introSlidesCreatingAlertTitle = newVars[2];
+    introSlidesCreatingAlertDesc = newVars[3];
+    introSlidesAlertTriggersTitle = newVars[4];
+    introSlidesAlertTriggersDesc = newVars[5];
+    introSlidesYourAlertsTitle = newVars[6];
+    introSlidesYourAlertsDesc = newVars[7];
   }
 
   void setNewLanguage(String newLanguage) async {

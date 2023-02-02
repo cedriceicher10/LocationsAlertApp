@@ -141,8 +141,47 @@ class LanguageServices {
   List<String> _pickOnMap = [];
 
   // Side Drawer
+  String sideDrawerTitle = 'Location Alerts';
+  String sideDrawerDisclosureTitle = 'Disclosure';
+  String sideDrawerDataDisclosureTitle = 'Data Disclosure';
+  String sideDrawerAdsDisclosureTitle = 'Ads Disclosure';
+  String sideDrawerAppTitle = 'App';
+  String sideDrawerHowToUseTitle = 'How To Use This App';
+  String sideDrawerPrivacyPolicyTitle = 'Privacy Policy';
+  String sideDrawerAboutTitle = 'About';
+  String sideDrawerCommunicateTitle = 'Communicate';
+  String sideDrawerSendFeedbackTitle = 'Send Feedback';
+  String sideDrawerRequestUserDataTitle = 'Request User Data';
+  String sideDrawerLanguageTitle = 'Language';
+  String sideDrawerChangeLanguageTitle = 'Change Language';
+  String sideDrawerUserStatisticsTitle = 'User Statistics';
+  String sideDrawerFirstLogin = 'First Login';
+  String sideDrawerLastLogin = 'Last Login';
+  String sideDrawerAlertsCreated = 'Alerts Created';
+  String sideDrawerAlertsCompleted = 'Alerts Completed';
+  String sideDrawerAlertsCompletion = 'Alerts Completion';
+  String sideDrawerUserNo = 'User';
+  String sideDrawerUuid = 'UUID';
+  List<String> _sideDrawer = [];
 
   // Disclosures
+  String disclosureDataTitle = 'Data Disclosure';
+  String disclosureDataBody =
+      'This app uses an encrypted cloud-based database (Google Firebase Cloud Firestore) to store your alerts and usage information. All data is strictly ANONYMOUS. No location or user data is tracked AT ANY TIME. \n\nA full user data dump may be requested at any time by contacting the app\'s maker in the Google Play store.';
+  String disclosureAdsTitle = 'Ad Disclosure';
+  String disclosureAdsBody =
+      'This app uses Google Admob to serve interstitial ads between defined events in the app\'s use. These ads help fund the app\'s continued development and deployment.';
+  String disclosureAboutTitle = 'About';
+  String disclosureAboutBody =
+      'Hello! My name is Cedric Eicher and I am the creator of this app. I love mobile development and this is one of my projects.\n\nIf you are enjoying this app, please consider leaving a review and feedback. Additionally, check out other CE Ventures apps like Simple Weather in the Google Play store.';
+  String disclosureChangeLanguageTitle = 'Select Language';
+  String disclosureChangeLanguageBody = 'Language';
+  String disclosureChangeLanguageButton = 'Change Language';
+  String dislcosureRestartRequired =
+      'Please RESTART the app for the language change to take effect.';
+  String disclosureLinkedinButton = 'Visit my LinkedIn Page';
+  String disclosureCloseButton = 'Close';
+  List<String> _disclosure = [];
 
   // Recent Locations
 
@@ -214,8 +253,12 @@ class LanguageServices {
     resetGettersPickOnMap(_pickOnMap);
 
     // Side Drawer
+    _sideDrawer = prefs.getStringList(_currentLanguageCode + '-sideDrawer')!;
+    resetGettersSideDrawer(_sideDrawer);
 
     // Disclosures
+    _disclosure = prefs.getStringList(_currentLanguageCode + '-disclosure')!;
+    resetGettersDisclosure(_disclosure);
 
     // Recent Locations
 
@@ -316,8 +359,45 @@ class LanguageServices {
     ];
 
     // Side Drawer
+    _sideDrawer = [
+      sideDrawerTitle,
+      sideDrawerDisclosureTitle,
+      sideDrawerDataDisclosureTitle,
+      sideDrawerAdsDisclosureTitle,
+      sideDrawerAppTitle,
+      sideDrawerHowToUseTitle,
+      sideDrawerPrivacyPolicyTitle,
+      sideDrawerAboutTitle,
+      sideDrawerCommunicateTitle,
+      sideDrawerSendFeedbackTitle,
+      sideDrawerRequestUserDataTitle,
+      sideDrawerLanguageTitle,
+      sideDrawerChangeLanguageTitle,
+      sideDrawerUserStatisticsTitle,
+      sideDrawerFirstLogin,
+      sideDrawerLastLogin,
+      sideDrawerAlertsCreated,
+      sideDrawerAlertsCompleted,
+      sideDrawerAlertsCompletion,
+      sideDrawerUserNo,
+      sideDrawerUuid,
+    ];
 
     // Disclosures
+    _disclosure = [
+      disclosureDataTitle,
+      disclosureDataBody,
+      disclosureAdsTitle,
+      disclosureAdsBody,
+      disclosureAboutTitle,
+      disclosureAboutBody,
+      disclosureChangeLanguageTitle,
+      disclosureChangeLanguageBody,
+      disclosureChangeLanguageButton,
+      dislcosureRestartRequired,
+      disclosureLinkedinButton,
+      disclosureCloseButton,
+    ];
 
     // Recent Locations
 
@@ -395,8 +475,22 @@ class LanguageServices {
     prefs.setStringList(_currentLanguageCode + '-pickOnMap', _pickOnMap);
 
     // Side Drawer
+    for (int index = 0; index < _sideDrawer.length; ++index) {
+      _sideDrawer[index] = (await _translator.translate(_sideDrawer[index],
+              to: _currentLanguageCode))
+          .text;
+    }
+    resetGettersSideDrawer(_sideDrawer);
+    prefs.setStringList(_currentLanguageCode + '-sideDrawer', _sideDrawer);
 
     // Disclosures
+    for (int index = 0; index < _disclosure.length; ++index) {
+      _disclosure[index] = (await _translator.translate(_disclosure[index],
+              to: _currentLanguageCode))
+          .text;
+    }
+    resetGettersDisclosure(_disclosure);
+    prefs.setStringList(_currentLanguageCode + '-disclosure', _disclosure);
 
     // Recent Locations
 
@@ -498,8 +592,45 @@ class LanguageServices {
   }
 
   // Side Drawer
+  void resetGettersSideDrawer(List<String> newVars) {
+    sideDrawerTitle = newVars[0];
+    sideDrawerDisclosureTitle = newVars[1];
+    sideDrawerDataDisclosureTitle = newVars[2];
+    sideDrawerAdsDisclosureTitle = newVars[3];
+    sideDrawerAppTitle = newVars[4];
+    sideDrawerHowToUseTitle = newVars[5];
+    sideDrawerPrivacyPolicyTitle = newVars[6];
+    sideDrawerAboutTitle = newVars[7];
+    sideDrawerCommunicateTitle = newVars[8];
+    sideDrawerSendFeedbackTitle = newVars[9];
+    sideDrawerRequestUserDataTitle = newVars[10];
+    sideDrawerLanguageTitle = newVars[11];
+    sideDrawerChangeLanguageTitle = newVars[12];
+    sideDrawerUserStatisticsTitle = newVars[13];
+    sideDrawerFirstLogin = newVars[14];
+    sideDrawerLastLogin = newVars[15];
+    sideDrawerAlertsCreated = newVars[16];
+    sideDrawerAlertsCompleted = newVars[17];
+    sideDrawerAlertsCompletion = newVars[18];
+    sideDrawerUserNo = newVars[19];
+    sideDrawerUuid = newVars[20];
+  }
 
   // Disclosures
+  void resetGettersDisclosure(List<String> newVars) {
+    disclosureDataTitle = newVars[0];
+    disclosureDataBody = newVars[1];
+    disclosureAdsTitle = newVars[2];
+    disclosureAdsBody = newVars[3];
+    disclosureAboutTitle = newVars[4];
+    disclosureAboutBody = newVars[5];
+    disclosureChangeLanguageTitle = newVars[6];
+    disclosureChangeLanguageBody = newVars[7];
+    disclosureChangeLanguageButton = newVars[8];
+    dislcosureRestartRequired = newVars[9];
+    disclosureLinkedinButton = newVars[10];
+    disclosureCloseButton = newVars[11];
+  }
 
   // Recent Locations
 

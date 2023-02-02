@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'exception_services.dart';
 import 'intro_slides_screen.dart';
 import 'database_services.dart';
+import 'language_services.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
 
@@ -15,6 +16,7 @@ class SideDrawer extends StatelessWidget {
 
   // Services
   final DatabaseServices _dbServices = DatabaseServices();
+  final LanguageServices _languageServices = LanguageServices();
   userInfo userSideDrawerInfo = userInfo.init();
 
   // Exceptions
@@ -79,7 +81,7 @@ class SideDrawer extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Color(s_darkSalmon),
                     ),
-                    child: sideDrawerTitle('Location Alerts'),
+                    child: sideDrawerTitle(),
                   )),
               Padding(
                   padding: EdgeInsets.fromLTRB(
@@ -87,7 +89,8 @@ class SideDrawer extends StatelessWidget {
                       _sideDrawerDividerTextPaddingTop,
                       0,
                       _sideDrawerDividerTextPaddingBottom),
-                  child: dividerText('Disclosure')),
+                  child:
+                      dividerText(_languageServices.sideDrawerDisclosureTitle)),
               ListTile(
                 dense: true,
                 title: dataDisclosure(context),
@@ -110,7 +113,7 @@ class SideDrawer extends StatelessWidget {
                       _sideDrawerDividerTextPaddingTop,
                       0,
                       _sideDrawerDividerTextPaddingBottom),
-                  child: dividerText('App')),
+                  child: dividerText(_languageServices.sideDrawerAppTitle)),
               ListTile(
                 dense: true,
                 title: howToUse(context),
@@ -147,7 +150,8 @@ class SideDrawer extends StatelessWidget {
                       _sideDrawerDividerTextPaddingTop,
                       0,
                       _sideDrawerDividerTextPaddingBottom),
-                  child: dividerText('Communicate')),
+                  child: dividerText(
+                      _languageServices.sideDrawerCommunicateTitle)),
               ListTile(
                 dense: true,
                 title: sendFeedback(context),
@@ -183,7 +187,8 @@ class SideDrawer extends StatelessWidget {
                       _sideDrawerDividerTextPaddingTop,
                       0,
                       _sideDrawerDividerTextPaddingBottom),
-                  child: dividerText('Language')),
+                  child:
+                      dividerText(_languageServices.sideDrawerLanguageTitle)),
               ListTile(
                 dense: true,
                 title: language(context),
@@ -199,15 +204,18 @@ class SideDrawer extends StatelessWidget {
                       _sideDrawerDividerTextPaddingTop,
                       0,
                       _sideDrawerDividerTextPaddingBottom),
-                  child: dividerText('User Statistics')),
-              listTileDate('First Login:', userSideDrawerInfo.firstLogin),
-              listTileDate('Last Login:', userSideDrawerInfo.lastLogin),
+                  child: dividerText(
+                      _languageServices.sideDrawerUserStatisticsTitle)),
+              listTileDate('${_languageServices.sideDrawerFirstLogin}:',
+                  userSideDrawerInfo.firstLogin),
+              listTileDate('${_languageServices.sideDrawerLastLogin}:',
+                  userSideDrawerInfo.lastLogin),
               listTileNoAction(
-                  'Alerts Created: ${userSideDrawerInfo.remindersCreated}'),
+                  '${_languageServices.sideDrawerAlertsCreated}: ${userSideDrawerInfo.remindersCreated}'),
               listTileNoAction(
-                  'Alerts Completed: ${userSideDrawerInfo.remindersCompleted}'),
+                  '${_languageServices.sideDrawerAlertsCompleted}: ${userSideDrawerInfo.remindersCompleted}'),
               listTileNoAction(
-                  'Alerts Completion: ${alertCompletion(userSideDrawerInfo.remindersCompleted, userSideDrawerInfo.remindersCreated)}%'),
+                  '${_languageServices.sideDrawerAlertsCompletion}: ${alertCompletion(userSideDrawerInfo.remindersCompleted, userSideDrawerInfo.remindersCreated)}%'),
               ListTile(
                 dense: true,
                 title: userNo(userSideDrawerInfo.userNo),
@@ -262,8 +270,8 @@ class SideDrawer extends StatelessWidget {
 
   AlertDialog showDataDisclosureAlert(BuildContext context) {
     return AlertDialog(
-      title: const Text(
-        "Data Disclosure",
+      title: Text(
+        _languageServices.disclosureDataTitle,
         style: TextStyle(
             color: Colors.transparent,
             fontWeight: FontWeight.bold,
@@ -272,13 +280,12 @@ class SideDrawer extends StatelessWidget {
             decorationColor: Colors.black,
             decorationThickness: 1),
       ),
-      content: const Text(
-          "This app uses an encrypted cloud-based database (Google Firebase Cloud Firestore) to store your alerts and usage information. All data is strictly ANONYMOUS. No location or user data is tracked AT ANY TIME. \n\nA full user data dump may be requested at any time by contacting the app's maker in the Google Play store."),
+      content: Text(_languageServices.disclosureDataBody),
       actions: <Widget>[
         Padding(
             padding: EdgeInsets.fromLTRB(0, 0, _alertPaddingRight, 0),
             child: TextButton(
-              child: const Text("Close",
+              child: Text(_languageServices.disclosureCloseButton,
                   style: TextStyle(fontWeight: FontWeight.bold)),
               style: TextButton.styleFrom(
                   backgroundColor: Color(s_aquarium),
@@ -293,8 +300,8 @@ class SideDrawer extends StatelessWidget {
 
   AlertDialog showAdDisclosureAlert(BuildContext context) {
     return AlertDialog(
-      title: const Text(
-        "Ad Disclosure",
+      title: Text(
+        _languageServices.disclosureAdsTitle,
         style: TextStyle(
             color: Colors.transparent,
             fontWeight: FontWeight.bold,
@@ -303,13 +310,12 @@ class SideDrawer extends StatelessWidget {
             decorationColor: Colors.black,
             decorationThickness: 1),
       ),
-      content: const Text(
-          "This app uses Google Admob to serve interstitial ads between defined events in the app's use. These ads help fund the app's continued development and deployment."),
+      content: Text(_languageServices.disclosureAdsBody),
       actions: <Widget>[
         Padding(
             padding: EdgeInsets.fromLTRB(0, 0, _alertPaddingRight, 0),
             child: TextButton(
-              child: const Text("Close",
+              child: Text(_languageServices.disclosureCloseButton,
                   style: TextStyle(fontWeight: FontWeight.bold)),
               style: TextButton.styleFrom(
                   backgroundColor: Color(s_aquarium),
@@ -324,8 +330,8 @@ class SideDrawer extends StatelessWidget {
 
   AlertDialog showAboutMeAlert(BuildContext context) {
     return AlertDialog(
-      title: const Text(
-        "About",
+      title: Text(
+        _languageServices.disclosureAboutTitle,
         style: TextStyle(
             color: Colors.transparent,
             fontWeight: FontWeight.bold,
@@ -334,11 +340,10 @@ class SideDrawer extends StatelessWidget {
             decorationColor: Colors.black,
             decorationThickness: 1),
       ),
-      content: Text(
-          "Hello! My name is Cedric Eicher and I am the creator of this app. I love mobile development and this is one of my projects.\n\nIf you are enjoying this app, please consider leaving a review and feedback. Additionally, check out other CE Ventures apps like Simple Weather in the Google Play store."),
+      content: Text(_languageServices.disclosureAboutBody),
       actions: <Widget>[
         TextButton(
-            child: const Text("Visit my LinkedIn Page"),
+            child: Text(_languageServices.disclosureLinkedinButton),
             style: TextButton.styleFrom(
                 backgroundColor: Color(s_linkedin),
                 foregroundColor: Colors.white),
@@ -353,7 +358,7 @@ class SideDrawer extends StatelessWidget {
         Padding(
             padding: EdgeInsets.fromLTRB(0, 0, _alertPaddingRight, 0),
             child: TextButton(
-              child: const Text("Close",
+              child: Text(_languageServices.disclosureCloseButton,
                   style: TextStyle(fontWeight: FontWeight.bold)),
               style: TextButton.styleFrom(
                   backgroundColor: Color(s_aquarium),
@@ -374,7 +379,7 @@ class SideDrawer extends StatelessWidget {
           Icon(Icons.dashboard_outlined,
               size: _dataDisclosureIconSize, color: Color(s_blackBlue)),
           SizedBox(width: _dataIconSpacer),
-          listText('Data Disclosure')
+          listText(_languageServices.sideDrawerDataDisclosureTitle)
         ]);
   }
 
@@ -386,7 +391,7 @@ class SideDrawer extends StatelessWidget {
           Icon(Icons.attach_money_outlined,
               size: _adDisclosureIconSize, color: Color(s_blackBlue)),
           SizedBox(width: _adIconSpacer),
-          listText('Ads Disclosure')
+          listText(_languageServices.sideDrawerAdsDisclosureTitle)
         ]);
   }
 
@@ -398,7 +403,7 @@ class SideDrawer extends StatelessWidget {
           Icon(Icons.question_mark,
               size: _howToUseIconSize, color: Color(s_blackBlue)),
           SizedBox(width: _howToUseIconSpacer),
-          listText('How to Use This App')
+          listText(_languageServices.sideDrawerHowToUseTitle)
         ]);
   }
 
@@ -410,7 +415,7 @@ class SideDrawer extends StatelessWidget {
           Icon(Icons.email_outlined,
               size: _dataDisclosureIconSize, color: Color(s_blackBlue)),
           SizedBox(width: _dataIconSpacer),
-          listText('Send Feedback')
+          listText(_languageServices.sideDrawerSendFeedbackTitle)
         ]);
   }
 
@@ -422,7 +427,7 @@ class SideDrawer extends StatelessWidget {
           Icon(Icons.perm_device_information_rounded,
               size: _dataDisclosureIconSize, color: Color(s_blackBlue)),
           SizedBox(width: _dataIconSpacer),
-          listText('Request User Data')
+          listText(_languageServices.sideDrawerRequestUserDataTitle)
         ]);
   }
 
@@ -434,7 +439,7 @@ class SideDrawer extends StatelessWidget {
           Icon(Icons.privacy_tip_outlined,
               size: _adDisclosureIconSize, color: Color(s_blackBlue)),
           SizedBox(width: _adIconSpacer),
-          listText('Privacy Policy')
+          listText(_languageServices.sideDrawerPrivacyPolicyTitle)
         ]);
   }
 
@@ -446,7 +451,7 @@ class SideDrawer extends StatelessWidget {
           Icon(Icons.info_outline,
               size: _adDisclosureIconSize, color: Color(s_blackBlue)),
           SizedBox(width: _adIconSpacer),
-          listText('About')
+          listText(_languageServices.sideDrawerAboutTitle)
         ]);
   }
 
@@ -458,7 +463,7 @@ class SideDrawer extends StatelessWidget {
           Icon(Icons.language,
               size: _adDisclosureIconSize, color: Color(s_blackBlue)),
           SizedBox(width: _adIconSpacer),
-          listText('Change Language')
+          listText(_languageServices.sideDrawerChangeLanguageTitle)
         ]);
   }
 
@@ -471,7 +476,7 @@ class SideDrawer extends StatelessWidget {
           Icon(Icons.numbers_rounded,
               size: _adDisclosureIconSize, color: Color(s_blackBlue)),
           SizedBox(width: _adIconSpacer),
-          listText('User: $userNoString')
+          listText('${_languageServices.sideDrawerUserNo}: $userNoString')
         ]);
   }
 
@@ -483,7 +488,7 @@ class SideDrawer extends StatelessWidget {
           Icon(Icons.person,
               size: _adDisclosureIconSize, color: Color(s_blackBlue)),
           SizedBox(width: _adIconSpacer),
-          listText('UUID: $UUID_GLOBAL')
+          listText('${_languageServices.sideDrawerUuid}: $UUID_GLOBAL')
         ]);
   }
 
@@ -539,7 +544,7 @@ class SideDrawer extends StatelessWidget {
     );
   }
 
-  Widget sideDrawerTitle(String text) {
+  Widget sideDrawerTitle() {
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -551,7 +556,7 @@ class SideDrawer extends StatelessWidget {
           ),
           SizedBox(width: 2),
           FormattedText(
-              text: text,
+              text: _languageServices.sideDrawerTitle,
               size: _sideDrawerTitleFontSize,
               color: Colors.white,
               font: s_font_IBMPlexSans,

@@ -37,8 +37,8 @@ class _LanguageSelectionAlertDialogueState
   Widget build(BuildContext context) {
     generateLayout();
     return AlertDialog(
-      title: const Text(
-        "Select Language",
+      title: Text(
+        _languageServices.disclosureChangeLanguageTitle,
         style: TextStyle(
             color: Colors.transparent,
             fontWeight: FontWeight.bold,
@@ -52,7 +52,7 @@ class _LanguageSelectionAlertDialogueState
           height: _languageDropDownRowHeight,
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             Row(children: [
-              Text('Language:'),
+              Text('${_languageServices.disclosureChangeLanguageBody}:'),
               Expanded(child: SizedBox()),
               DropdownButton<String>(
                 value: dropDownValue,
@@ -81,7 +81,7 @@ class _LanguageSelectionAlertDialogueState
             (_firstTimePressed) ? SizedBox(height: _spacer) : Container(),
             (_firstTimePressed)
                 ? Text(
-                    'Please RESTART the app for the language change to take effect.',
+                    _languageServices.dislcosureRestartRequired,
                     style: TextStyle(
                         color: Color(s_declineRed),
                         fontWeight: FontWeight.bold),
@@ -92,7 +92,7 @@ class _LanguageSelectionAlertDialogueState
         Padding(
             padding: EdgeInsets.fromLTRB(0, 0, this.widget.padding, 0),
             child: TextButton(
-              child: const Text("Change Language",
+              child: Text(_languageServices.disclosureChangeLanguageButton,
                   style: TextStyle(fontWeight: FontWeight.bold)),
               style: TextButton.styleFrom(
                   backgroundColor: _buttonColor, foregroundColor: Colors.white),
@@ -114,7 +114,7 @@ class _LanguageSelectionAlertDialogueState
         Padding(
             padding: EdgeInsets.fromLTRB(0, 0, this.widget.padding, 0),
             child: TextButton(
-              child: const Text('Close',
+              child: Text(_languageServices.disclosureCloseButton,
                   style: TextStyle(fontWeight: FontWeight.bold)),
               style: TextButton.styleFrom(
                   backgroundColor: Color(s_aquarium),
@@ -140,7 +140,7 @@ class _LanguageSelectionAlertDialogueState
     if (!_firstTimePressed) {
       _languageDropDownRowHeight = (50 / _screenHeight) * _screenHeight;
     } else {
-      _languageDropDownRowHeight = (105 / _screenHeight) * _screenHeight;
+      _languageDropDownRowHeight = (120 / _screenHeight) * _screenHeight;
     }
     _spacer = (10 / _screenHeight) * _screenHeight;
 

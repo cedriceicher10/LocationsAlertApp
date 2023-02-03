@@ -16,40 +16,109 @@ class LanguageServices {
   // [language]:[key]
   final Map<String, String> _masterLanguageMap = {
     'en': 'English',
-    'es': 'Spanish',
-    'fr': 'French',
-    'de': 'German',
-    'nl': 'Dutch',
-    'haw': 'Hawaiian',
-    'pt': 'Portuguese',
-    'el': 'Greek',
-    'it': 'Italian',
-    'ga': 'Irish',
-    'ja': 'Japanese',
-    'hi': 'Hindi',
-    'ar': 'Arabic',
-    'hr': 'Croatian',
-    'pl': 'Polish',
-    'sv': 'Swedish',
-    'no': 'Norwegian',
-    'fi': 'Finnish',
-    'id': 'Indonesian',
-    'th': 'Thai',
-    'vi': 'Vietnamese',
-    'ko': 'Korean',
-    'cy': 'Welsh',
-    'yi': 'Yiddish',
-    'ru': 'Russian',
-    'sr': 'Serbian',
-    'ur': 'Urdu',
-    'tr': 'Turkish',
     'af': 'Afrikaans',
+    'sq': 'Albanian',
+    'am': 'Amharic',
+    'ar': 'Arabic',
     'hy': 'Armenian',
+    'az': 'Azerbaijani',
+    'eu': 'Basque',
+    'be': 'Belarusian',
+    'bn': 'Bengali',
+    'bs': 'Bosnian',
     'bg': 'Bulgarian',
+    'ca': 'Catalan',
+    'ceb': 'Cebuano',
+    'ny': 'Chichewa',
+    'zh-cn': 'Chinese Simplified',
+    'zh-tw': 'Chinese Traditional',
+    'co': 'Corsican',
+    'hr': 'Croatian',
+    'cs': 'Czech',
+    'da': 'Danish',
+    'nl': 'Dutch',
+    'eo': 'Esperanto',
+    'et': 'Estonian',
+    'tl': 'Filipino',
+    'fi': 'Finnish',
+    'fr': 'French',
+    'fy': 'Frisian',
+    'gl': 'Galician',
+    'ka': 'Georgian',
+    'de': 'German',
+    'el': 'Greek',
+    'gu': 'Gujarati',
+    'ht': 'Haitian Creole',
+    'ha': 'Hausa',
+    'haw': 'Hawaiian',
+    'iw': 'Hebrew',
+    'hi': 'Hindi',
+    'hmn': 'Hmong',
+    'hu': 'Hungarian',
+    'is': 'Icelandic',
+    'ig': 'Igbo',
+    'id': 'Indonesian',
+    'ga': 'Irish',
+    'it': 'Italian',
+    'ja': 'Japanese',
+    'jw': 'Javanese',
+    'kn': 'Kannada',
+    'kk': 'Kazakh',
+    'km': 'Khmer',
+    'ko': 'Korean',
+    'ku': 'Kurdish (Kurmanji)',
+    'ky': 'Kyrgyz',
+    'lo': 'Lao',
     'la': 'Latin',
+    'lv': 'Latvian',
+    'lt': 'Lithuanian',
+    'lb': 'Luxembourgish',
+    'mk': 'Macedonian',
+    'mg': 'Malagasy',
+    'ms': 'Malay',
+    'ml': 'Malayalam',
+    'mt': 'Maltese',
+    'mi': 'Maori',
+    'mr': 'Marathi',
+    'mn': 'Mongolian',
+    'my': 'Myanmar (Burmese)',
     'ne': 'Nepali',
+    'no': 'Norwegian',
+    'ps': 'Pashto',
+    'fa': 'Persian',
+    'pl': 'Polish',
+    'pt': 'Portuguese',
+    'pa': 'Punjabi',
+    'ro': 'Romanian',
+    'ru': 'Russian',
     'sm': 'Samoan',
+    'gd': 'Scots Gaelic',
+    'sr': 'Serbian',
+    'st': 'Sesotho',
+    'sn': 'Shona',
+    'sd': 'Sindhi',
+    'si': 'Sinhala',
+    'sk': 'Slovak',
+    'sl': 'Slovenian',
     'so': 'Somali',
+    'es': 'Spanish',
+    'su': 'Sundanese',
+    'sw': 'Swahili',
+    'sv': 'Swedish',
+    'tg': 'Tajik',
+    'ta': 'Tamil',
+    'te': 'Telugu',
+    'th': 'Thai',
+    'tr': 'Turkish',
+    'uk': 'Ukrainian',
+    'ur': 'Urdu',
+    'uz': 'Uzbek',
+    'ug': 'Uyghur',
+    'vi': 'Vietnamese',
+    'cy': 'Welsh',
+    'xh': 'Xhosa',
+    'yi': 'Yiddish',
+    'yo': 'Yoruba',
     'zu': 'Zulu',
   };
 
@@ -57,6 +126,10 @@ class LanguageServices {
   String _currentLanguageCode = 'en';
   String _currentLanguage = 'English';
   bool _translationNeeded = false;
+  String _loading = 'Loading...';
+  String _changingLanguageTitle = 'Changing Language to';
+  String _changingLanguageBody =
+      'This may take 2-3 minutes the first time, \nif this is a new language';
 
   // Start Screen
   String startScreenTitle = 'Location Alerts';
@@ -214,9 +287,22 @@ class LanguageServices {
       'You can set multiple alerts for multiple locations! Tap View my Alerts at any time to look at your current alerts, edit them, or delete them.\n\nLet\'s get started!';
   List<String> _introSlides = [];
 
+  Future<bool> init() async {
+    await fetchCurrentLanguage();
+    _loading =
+        (await _translator.translate(_loading, to: _currentLanguageCode)).text;
+    return true;
+  }
+
   Future<bool> checkTranslationStatus() async {
     formLists();
-    await fetchCurrentLanguage();
+    // Changing language screen translations
+    _changingLanguageTitle = (await _translator
+            .translate(_changingLanguageTitle, to: _currentLanguageCode))
+        .text;
+    _changingLanguageBody = (await _translator.translate(_changingLanguageBody,
+            to: _currentLanguageCode))
+        .text;
     // Do this here since initLanguage bypasses with 'en' selected
     // Translate master language list
     _currentLanguage = (await _translator.translate(_currentLanguage,
@@ -233,7 +319,6 @@ class LanguageServices {
     } else {
       _translationNeeded = prefs.getBool('translationNeeded')!;
     }
-    return true;
     // Check for cached language translations
     if ((_translationNeeded) || (_currentLanguageCode != 'en')) {
       if (prefs.getStringList(_currentLanguageCode + '-startScreenList') ==
@@ -788,5 +873,17 @@ class LanguageServices {
     // Query map
     return _masterLanguageMap.keys
         .firstWhere((code) => _masterLanguageMap[code] == language);
+  }
+
+  String getLoading() {
+    return _loading;
+  }
+
+  String getChangingLanguageTitle() {
+    return _changingLanguageTitle + ' ' + _currentLanguage + '...';
+  }
+
+  String getChangingLanguageBody() {
+    return _changingLanguageBody;
   }
 }

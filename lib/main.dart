@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'notification_services.dart';
+import 'language_services.dart';
 import 'app.dart';
 
 void main() async {
@@ -12,7 +13,7 @@ void main() async {
   await Firebase.initializeApp();
   NotificationServices().initNotifications();
 
-  //await LanguageServices().initLanguage();
+  await LanguageServices().init();
 
   runApp(App());
 }

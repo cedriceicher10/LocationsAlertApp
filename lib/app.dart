@@ -26,7 +26,9 @@ class App extends StatelessWidget {
                           debugShowCheckedModeBanner: false);
                     } else {
                       return MaterialApp(
-                          home: loadingScreen('Changing Language...'),
+                          home: changingLanguageScreen(
+                              _languageServices.getChangingLanguageTitle(),
+                              _languageServices.getChangingLanguageBody()),
                           debugShowCheckedModeBanner: false);
                     }
                   });
@@ -36,7 +38,7 @@ class App extends StatelessWidget {
             }
           } else {
             return MaterialApp(
-                home: loadingScreen('Loading...'),
+                home: loadingScreen(_languageServices.getLoading()),
                 debugShowCheckedModeBanner: false);
           }
         });
@@ -58,22 +60,61 @@ class App extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-              loadingText(text),
-              SizedBox(height: 10),
+              titleText(text),
+              SizedBox(height: 20),
               CircularProgressIndicator(
                 color: Colors.white,
               )
             ])));
   }
 
-  Widget loadingText(String text) {
+  Widget changingLanguageScreen(String title, String body) {
+    return Container(
+        decoration: const BoxDecoration(
+            gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [
+            Colors.lightBlue,
+            Colors.pink,
+          ],
+        )),
+        child: Center(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+              titleText(title),
+              SizedBox(height: 10),
+              bodyText(body),
+              SizedBox(height: 20),
+              CircularProgressIndicator(
+                color: Colors.white,
+              )
+            ])));
+  }
+
+  Widget titleText(String text) {
     return FormattedText(
       text: text,
-      size: 24,
+      size: 28,
       color: Colors.white,
       font: s_font_IBMPlexSans,
       weight: FontWeight.bold,
       decoration: TextDecoration.none,
+      align: TextAlign.center,
+    );
+  }
+
+  Widget bodyText(String text) {
+    return FormattedText(
+      text: text,
+      size: 18,
+      color: Colors.white,
+      font: s_font_IBMPlexSans,
+      weight: FontWeight.bold,
+      decoration: TextDecoration.none,
+      align: TextAlign.center,
     );
   }
 }

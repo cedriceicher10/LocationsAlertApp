@@ -1,10 +1,12 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:locationalertsapp/language_services.dart';
 import 'package:locationalertsapp/styles.dart';
 import 'database_services.dart';
 import 'dart:math';
 
 class NotificationServices {
+  LanguageServices _languageServices = LanguageServices();
   int _notificationId = 0;
   Map _activeNotificationsMap = new Map();
   static final NotificationServices _notificationService =
@@ -61,10 +63,12 @@ class NotificationServices {
           body: body),
       actionButtons: <NotificationActionButton>[
         NotificationActionButton(
-            key: 'Completed', label: 'Mark Complete', color: Color(s_aquarium)),
+            key: 'Completed',
+            label: _languageServices.notificationsMarkComplete,
+            color: Color(s_aquarium)),
         NotificationActionButton(
             key: 'Dismissed',
-            label: 'Dismiss (next time)',
+            label: _languageServices.notificationsDismiss,
             color: Color(s_disabledGray),
             buttonType: ActionButtonType.DisabledAction),
       ],

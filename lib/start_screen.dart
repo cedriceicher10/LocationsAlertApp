@@ -254,8 +254,8 @@ class _StartScreenState extends State<StartScreen> {
     if ((masterLocationToggle == true) && (masterLocationToggle != null)) {
       // Background location service
       await BackgroundLocation.setAndroidNotification(
-        title: 'Location Alerts',
-        message: 'Background services currently in progress',
+        title: _languageServices.notificationsTitle,
+        message: _languageServices.notificationsBody,
         icon: '@mipmap/ic_launcher',
       );
       await BackgroundLocation.setAndroidConfiguration(1000);

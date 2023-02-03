@@ -188,6 +188,13 @@ class LanguageServices {
       'Make a few reminders to see their locations here!';
   List<String> _recentLocations = [];
 
+  // Notifications
+  String notificationsTitle = 'Location Alerts';
+  String notificationsBody = 'Background services currently in progress';
+  String notificationsMarkComplete = 'Mark Complete';
+  String notificationsDismiss = 'Dismiss (next time)';
+  List<String> _notifications = [];
+
   // Units
   String unitsMi = 'mi';
   String unitsKm = 'km';
@@ -226,6 +233,7 @@ class LanguageServices {
     } else {
       _translationNeeded = prefs.getBool('translationNeeded')!;
     }
+    return true;
     // Check for cached language translations
     if ((_translationNeeded) || (_currentLanguageCode != 'en')) {
       if (prefs.getStringList(_currentLanguageCode + '-startScreenList') ==
@@ -281,6 +289,11 @@ class LanguageServices {
     _recentLocations =
         prefs.getStringList(_currentLanguageCode + '-recentLocations')!;
     resetGettersRecentLocations(_recentLocations);
+
+    // Notifications
+    _notifications =
+        prefs.getStringList(_currentLanguageCode + '-notifications')!;
+    resetGettersNotifications(_notifications);
 
     // Units
     _unitsList = prefs.getStringList(_currentLanguageCode + '-unitsList')!;
@@ -428,6 +441,14 @@ class LanguageServices {
       recentLocationEmpty,
     ];
 
+    // Notifications
+    _notifications = [
+      notificationsTitle,
+      notificationsBody,
+      notificationsMarkComplete,
+      notificationsDismiss,
+    ];
+
     // Units
     _unitsList = [unitsMi, unitsKm];
 
@@ -540,6 +561,16 @@ class LanguageServices {
     resetGettersRecentLocations(_recentLocations);
     prefs.setStringList(
         _currentLanguageCode + '-recentLocations', _recentLocations);
+
+    // Notifications
+    for (int index = 0; index < _notifications.length; ++index) {
+      _notifications[index] = (await _translator
+              .translate(_notifications[index], to: _currentLanguageCode))
+          .text;
+    }
+    resetGettersNotifications(_notifications);
+    prefs.setStringList(
+        _currentLanguageCode + '-notifications', _notifications);
 
     // Units
     for (int index = 0; index < _unitsList.length; ++index) {
@@ -691,6 +722,14 @@ class LanguageServices {
   // Recent Locations
   void resetGettersRecentLocations(List<String> newVars) {
     recentLocationEmpty = newVars[0];
+  }
+
+  // Notifications
+  void resetGettersNotifications(List<String> newVars) {
+    notificationsTitle = newVars[0];
+    notificationsBody = newVars[1];
+    notificationsMarkComplete = newVars[2];
+    notificationsDismiss = newVars[3];
   }
 
   // Units

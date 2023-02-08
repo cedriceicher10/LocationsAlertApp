@@ -156,7 +156,7 @@ class SideDrawer extends StatelessWidget {
                 dense: true,
                 title: sendFeedback(context),
                 onTap: () async {
-                  String email = 'cedriceicher10@gmail.com';
+                  String email = 'locationalertsapp@gmail.com';
                   String subject =
                       'Feedback for Location Alerts (UUID #$UUID_GLOBAL)';
                   if (!(await launch('mailto:$email?subject=$subject'))) {
@@ -170,7 +170,7 @@ class SideDrawer extends StatelessWidget {
                 dense: true,
                 title: requestUserData(context),
                 onTap: () async {
-                  String email = 'cedriceicher10@gmail.com';
+                  String email = 'locationalertsapp@gmail.com';
                   String subject = 'Request User Data for UUID #$UUID_GLOBAL';
                   if (!(await launch('mailto:$email?subject=$subject'))) {
                     _exception.popUp(

@@ -133,8 +133,10 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
   }
 
   void generateLayout() {
-    _titleFontSize = (32 / 781) * this.widget.screenHeight;
-    _textFontSize = (15 / 781) * this.widget.screenHeight;
+    double langScale = _languageServices.getLanguageScale();
+
+    _titleFontSize = (32 / 781) * this.widget.screenHeight * langScale;
+    _textFontSize = (15 / 781) * this.widget.screenHeight * langScale;
     _imageWidth = (300 / 392) * this.widget.screenWidth;
     _imageHeight = (300 / 392) * this.widget.screenWidth;
   }

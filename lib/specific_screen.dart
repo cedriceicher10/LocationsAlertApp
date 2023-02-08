@@ -720,6 +720,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
   void generateLayout() {
     double _screenWidth = MediaQuery.of(context).size.width;
     double _screenHeight = MediaQuery.of(context).size.height;
+    double langScale = _languageServices.getLanguageScale();
 
     // Original ratios based on a Google Pixel 5 (392 x 781) screen
     // and a 56 height appBar
@@ -741,13 +742,13 @@ class _SpecificScreenState extends State<SpecificScreen> {
     _radioButtonsSpacerWidth = (40 / 392) * _screenWidth;
 
     // Font
-    _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height;
-    _guideTextFontSize = (26 / 781) * _screenHeight;
-    _formFontSize = (16 / 60) * _buttonHeight;
-    _locationButtonTextFontSize = (16 / 30) * _locationButtonHeight;
-    _submitButtonFontSize = (20 / 60) * _buttonHeight;
-    _formErrorFontSize = (12 / 60) * _buttonHeight;
-    _triggerUnitsFontSize = (16 / 60) * _buttonHeight;
+    _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height * langScale;
+    _guideTextFontSize = (26 / 781) * _screenHeight * langScale;
+    _formFontSize = (16 / 60) * _buttonHeight * langScale;
+    _locationButtonTextFontSize = (16 / 30) * _locationButtonHeight * langScale;
+    _submitButtonFontSize = (20 / 60) * _buttonHeight * langScale;
+    _formErrorFontSize = (12 / 60) * _buttonHeight * langScale;
+    _triggerUnitsFontSize = (16 / 60) * _buttonHeight * langScale;
 
     // Icons
     _atMyLocationIconSize = (16 / 30) * _locationButtonHeight;

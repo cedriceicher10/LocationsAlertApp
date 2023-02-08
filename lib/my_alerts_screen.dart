@@ -313,6 +313,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   void generateLayout() {
     _screenWidth = MediaQuery.of(context).size.width;
     _screenHeight = MediaQuery.of(context).size.height;
+    double langScale = _languageServices.getLanguageScale();
 
     // Original ratios based on a Google Pixel 5 (392 x 781) screen
     // and a 56 height appBar
@@ -335,13 +336,13 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     _cardPaddingRightLeft = (5 / 392) * _screenWidth;
 
     // Font
-    _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height;
-    _cardTitleFontSize = (20 / 60) * _buttonHeight;
-    _cardBodyFontSize = (14 / 60) * _buttonHeight;
-    _cardSubtitleFontSize = (12 / 60) * _buttonHeight;
-    _explainerTextFontSize = (14 / 781) * _screenHeight;
-    _backButtonFontSize = (20 / 60) * _buttonHeight;
-    _noAlertsYetText = (26 / 781) * _screenHeight;
+    _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height * langScale;
+    _cardTitleFontSize = (20 / 60) * _buttonHeight * langScale;
+    _cardBodyFontSize = (14 / 60) * _buttonHeight * langScale;
+    _cardSubtitleFontSize = (12 / 60) * _buttonHeight * langScale;
+    _explainerTextFontSize = (14 / 781) * _screenHeight * langScale;
+    _backButtonFontSize = (20 / 60) * _buttonHeight * langScale;
+    _noAlertsYetText = (26 / 781) * _screenHeight * langScale;
 
     // Icons
     _cardIconSize = (30 / 60) * _buttonHeight;

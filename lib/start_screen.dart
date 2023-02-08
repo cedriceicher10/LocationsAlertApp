@@ -883,6 +883,7 @@ class _StartScreenState extends State<StartScreen> {
   void generateLayout() {
     double _screenWidth = MediaQuery.of(context).size.width;
     double _screenHeight = MediaQuery.of(context).size.height;
+    double langScale = _languageServices.getLanguageScale();
 
     // Original ratios based on a Google Pixel 5 (392 x 781) screen
     // and a 56 height appBar
@@ -907,13 +908,14 @@ class _StartScreenState extends State<StartScreen> {
     _alertPaddingRight = (10 / 392) * _screenWidth;
 
     // Font
-    _submitButtonFontSize = (20 / 60) * _buttonHeight;
-    _locationDisclosureFontSize = (10 / 30) * _locationDisclosureButtonHeight;
-    _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height;
-    _explainerFontSize = (26 / 781) * _screenHeight;
-    _helpFontSize = (16 / 781) * _screenHeight;
-    _signatureFontSize = (12 / 781) * _screenHeight;
-    _locationToggleFontSize = (14 / 781) * _screenHeight;
+    _submitButtonFontSize = (20 / 60) * _buttonHeight * langScale;
+    _locationDisclosureFontSize =
+        (10 / 30) * _locationDisclosureButtonHeight * langScale;
+    _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height * langScale;
+    _explainerFontSize = (26 / 781) * _screenHeight * langScale;
+    _helpFontSize = (16 / 781) * _screenHeight * langScale;
+    _signatureFontSize = (12 / 781) * _screenHeight * langScale;
+    _locationToggleFontSize = (14 / 781) * _screenHeight * langScale;
 
     // Icons
     _titleIconSize = (175 / 781) * _screenHeight;

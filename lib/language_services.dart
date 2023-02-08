@@ -123,13 +123,14 @@ class LanguageServices {
   };
 
   // Default
+  double _languageScale = 1.0;
   String _currentLanguageCode = 'en';
   String _currentLanguage = 'English';
   bool _translationNeeded = false;
   String _loading = 'Loading...';
-  String _changingLanguageTitle = 'Changing Language to';
+  String _changingLanguageTitle = 'Changing Language\n to';
   String _changingLanguageBody =
-      'This may take 2-3 minutes the first time, \nif this is a new language';
+      'This may take 2-3 minutes\nthe first time, if this\nis a new language';
 
   // Start Screen
   String startScreenTitle = 'Location Alerts';
@@ -291,6 +292,9 @@ class LanguageServices {
     await fetchCurrentLanguage();
     _loading =
         (await _translator.translate(_loading, to: _currentLanguageCode)).text;
+    if (_currentLanguageCode != 'en') {
+      _languageScale = 0.85;
+    }
     return true;
   }
 
@@ -885,5 +889,9 @@ class LanguageServices {
 
   String getChangingLanguageBody() {
     return _changingLanguageBody;
+  }
+
+  double getLanguageScale() {
+    return _languageScale;
   }
 }

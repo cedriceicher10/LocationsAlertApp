@@ -714,6 +714,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   void generateLayout() {
     _screenWidth = MediaQuery.of(context).size.width;
     _screenHeight = MediaQuery.of(context).size.height;
+    double langScale = _languageServices.getLanguageScale();
 
     // Original ratios based on a Google Pixel 5 (392 x 781) screen
     // and a 56 height appBar
@@ -730,14 +731,14 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     _popupUserLocationWidth = (150 / 392) * _screenWidth;
 
     // Font
-    _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height;
-    _backButtonFontSize = (20 / 60) * _buttonHeight;
-    _noAlertsYetText = (26 / 781) * _screenHeight;
-    _popupTitleFontSize = (20 / 781) * _screenHeight;
-    _popupLocationFontSize = (14 / 781) * _screenHeight;
-    _popupDateFontSize = (12 / 781) * _screenHeight;
-    _popupErrorFontSize = (16 / 781) * _screenHeight;
-    _clusterAlertNumFontSize = (20 / 781) * _screenHeight;
+    _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height * langScale;
+    _backButtonFontSize = (20 / 60) * _buttonHeight * langScale;
+    _noAlertsYetText = (26 / 781) * _screenHeight * langScale;
+    _popupTitleFontSize = (20 / 781) * _screenHeight * langScale;
+    _popupLocationFontSize = (14 / 781) * _screenHeight * langScale;
+    _popupDateFontSize = (12 / 781) * _screenHeight * langScale;
+    _popupErrorFontSize = (16 / 781) * _screenHeight * langScale;
+    _clusterAlertNumFontSize = (20 / 781) * _screenHeight * langScale;
 
     // Icons
     _backButtonIconSize = (24 / 60) * _buttonHeight;

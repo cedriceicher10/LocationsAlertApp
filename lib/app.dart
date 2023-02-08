@@ -85,12 +85,12 @@ class App extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
               titleText(title),
-              SizedBox(height: 10),
-              bodyText(body),
               SizedBox(height: 20),
               CircularProgressIndicator(
                 color: Colors.white,
-              )
+              ),
+              SizedBox(height: 20),
+              bodyText(body),
             ])));
   }
 

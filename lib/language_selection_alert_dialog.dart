@@ -135,6 +135,7 @@ class _LanguageSelectionAlertDialogueState
   void generateLayout() {
     double _screenWidth = MediaQuery.of(context).size.width;
     double _screenHeight = MediaQuery.of(context).size.height;
+    double langScale = _languageServices.getLanguageScale();
 
     // Height
     if (!_firstTimePressed) {
@@ -145,6 +146,6 @@ class _LanguageSelectionAlertDialogueState
     _spacer = (10 / _screenHeight) * _screenHeight;
 
     // Width
-    _languageDropDownRowWidth = (100 / _screenWidth) * _screenWidth;
+    _languageDropDownRowWidth = (100 / _screenWidth) * _screenWidth * langScale;
   }
 }

@@ -158,6 +158,7 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
 
   void generateLayout() {
     double _screenHeight = MediaQuery.of(context).size.height;
+    double langScale = _languageServices.getLanguageScale();
 
     // Original ratios based on a Google Pixel 5 (392 x 781) screen
     // and a 56 height appBar
@@ -167,6 +168,6 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
     // Width
 
     // Font
-    _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height;
+    _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height * langScale;
   }
 }

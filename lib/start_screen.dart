@@ -134,6 +134,8 @@ class _StartScreenState extends State<StartScreen> {
   double _locationToggleGapWidth = 0;
   double _bottomPadding = 0;
   double _alertPaddingRight = 0;
+  double _logoSize = 0;
+  double _logoBorderRadius = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -515,11 +517,30 @@ class _StartScreenState extends State<StartScreen> {
                           child: explainerTitle(
                               'Phone alerts based on your current location!'))),
                   SizedBox(height: _gapBeforeTitleIcon),
-                  Icon(
-                    Icons.add_location_alt_outlined,
-                    color: Color(s_darkSalmon),
-                    size: _titleIconSize,
-                  ),
+                  // Icon(
+                  //   Icons.add_location_alt_outlined,
+                  //   color: Color(s_darkSalmon),
+                  //   size: _titleIconSize,
+                  // ),
+                  Container(
+                      decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(_logoBorderRadius),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.white,
+                              spreadRadius: 4,
+                              blurRadius: 8,
+                              offset: Offset(0, 0),
+                            ),
+                          ]),
+                      child: ClipRRect(
+                          borderRadius:
+                              BorderRadius.circular(_logoBorderRadius),
+                          child: Image(
+                              width: _logoSize,
+                              image:
+                                  AssetImage('assets/images/app_icon.png')))),
                   SizedBox(height: _gapAfterTitleIcon),
                   locationToggle(),
                   // Turning off generic alerts for first prod version
@@ -897,6 +918,7 @@ class _StartScreenState extends State<StartScreen> {
     _gapBeforeButtons = (5 / 781) * _screenHeight;
     _gapAfterButtons = (20 / 781) * _screenHeight;
     _bottomPadding = (20 / 781) * _screenHeight;
+    _logoSize = (190 / 781) * _screenHeight;
 
     // Width
     _buttonWidth = (325 / 392) * _screenWidth;
@@ -927,5 +949,6 @@ class _StartScreenState extends State<StartScreen> {
         (50 / 30) * _locationDisclosureButtonHeight;
     _submitButtonCornerRadius = (10 / 60) * _buttonHeight;
     _locationToggleScale = (_screenHeight / 781) * 1.15;
+    _logoBorderRadius = (10 / 250) * _logoSize;
   }
 }

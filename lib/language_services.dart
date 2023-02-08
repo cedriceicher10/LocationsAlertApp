@@ -252,7 +252,7 @@ class LanguageServices {
   String disclosureChangeLanguageBody = 'Language';
   String disclosureChangeLanguageButton = 'Change Language';
   String dislcosureRestartRequired =
-      'Please RESTART the app for the language change to take effect.';
+      'You must RESTART the app for this change to take effect.';
   String disclosureLinkedinButton = 'Visit my LinkedIn Page';
   String disclosureCloseButton = 'Close';
   List<String> _disclosure = [];

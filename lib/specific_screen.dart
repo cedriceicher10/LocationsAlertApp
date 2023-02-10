@@ -13,6 +13,7 @@ import 'go_back_button.dart';
 import 'background_theme.dart';
 import 'trigger_slider.dart';
 import 'language_services.dart';
+import 'my_alerts_screen.dart';
 
 class SpecificScreen extends StatefulWidget {
   const SpecificScreen({Key? key}) : super(key: key);
@@ -79,6 +80,8 @@ class _SpecificScreenState extends State<SpecificScreen> {
   double _triggerUnitsFontSize = 0;
   double _radioButtonWidth = 0;
   double _radioButtonsSpacerWidth = 0;
+  double _restoreAlertsButtonWidth = 0;
+  double _aboveRestoreAlertsSpacing = 0;
 
   List<String> unitStrings = ['mi', 'km'];
   List<double> triggerRangeMiList = [0.25, 0.5, 1.0, 5.0, 10.0];
@@ -187,7 +190,10 @@ class _SpecificScreenState extends State<SpecificScreen> {
                       Container(
                           width: _textWidth,
                           child: unitsRadioButtons(
-                              _radioButtonWidth, _locationButtonHeight))
+                              _radioButtonWidth, _locationButtonHeight)),
+                      SizedBox(height: _aboveRestoreAlertsSpacing),
+                      restoreAlertsButton(
+                          _restoreAlertsButtonWidth, _locationButtonHeight),
                     ]))));
   }
 
@@ -634,6 +640,41 @@ class _SpecificScreenState extends State<SpecificScreen> {
         ]));
   }
 
+  Widget restoreAlertsButton(double buttonWidth, double buttonHeight) {
+    return ElevatedButton(
+        onPressed: () {
+          // Remove keyboard
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+          // Pick on map screen
+          // Navigator.of(context)
+          //     .push(createRoute(PickOnMapScreen(), 'from_right'))
+          //     .then((value) => setState(() {
+          //           populateLocationFromPickOnMap(value);
+          //         }));
+          Navigator.of(context).push(createRoute(
+              MyAlertsScreen(alertList: AlertList.COMPLETED), 'from_right'));
+        },
+        style: ElevatedButton.styleFrom(
+            backgroundColor: s_restoreAlertsColor,
+            fixedSize: Size(buttonWidth, buttonHeight),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Icon(
+            Icons.restore,
+            color: Color(s_darkSalmon),
+            size: _pickOnMapIconSize,
+          ),
+          SizedBox(
+            width: _iconGapWidth,
+          ),
+          smallButtonText(_languageServices.restoreAlertsButton)
+        ]));
+  }
+
   Widget cancelButtonFAB(double buttonWidth, double buttonHeight) {
     return Container(
         width: buttonWidth,
@@ -732,6 +773,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
     _locationButtonHeight = (30 / 781) * _screenHeight;
     _bottomPadding = (20 / 781) * _screenHeight;
     _fabPadding = (_buttonHeight * 2.25) + _buttonSpacing;
+    _aboveRestoreAlertsSpacing = (20 / 781) * _screenHeight;
 
     // Width
     _textWidth = (325 / 392) * _screenWidth;
@@ -740,6 +782,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
     _iconGapWidth = 8;
     _radioButtonWidth = (60 / 392) * _screenWidth;
     _radioButtonsSpacerWidth = (40 / 392) * _screenWidth;
+    _restoreAlertsButtonWidth = _locationButtonWidth * 1.5;
 
     // Font
     _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height * langScale;

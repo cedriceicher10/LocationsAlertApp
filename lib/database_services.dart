@@ -288,6 +288,16 @@ class DatabaseServices {
         .snapshots();
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>>
+      getRemindersCompleteAlertsSnapshotCall() {
+    return FirebaseFirestore.instance
+        .collection(COLLECTION_REMINDERS)
+        .where('userId', isEqualTo: UUID_GLOBAL)
+        .where('isCompleted', isEqualTo: true)
+        .orderBy('dateTimeCreated', descending: true)
+        .snapshots();
+  }
+
   Future<QuerySnapshot<Map<String, dynamic>>>
       getRemindersIsCompleteAlertsGetCall(BuildContext context) async {
     return await FirebaseFirestore.instance
@@ -312,6 +322,21 @@ class DatabaseServices {
         .catchError((error) {
       _exception.popUp(context,
           'Delete in reminders database: Action failed\n error string: ${error.toString()}\nerror raw: $error');
+      throw ('Error: $error');
+    });
+  }
+
+  void updateRemindersSpecificAlertRestore(
+      BuildContext context, String id) async {
+    // Delete alert
+    await FirebaseFirestore.instance
+        .collection(COLLECTION_REMINDERS)
+        .doc(id)
+        .update({
+      'isCompleted': false,
+    }).catchError((error) {
+      _exception.popUp(context,
+          'Update in reminders database to restore reminder: Action failed\n error string: ${error.toString()}\nerror raw: $error');
       throw ('Error: $error');
     });
   }

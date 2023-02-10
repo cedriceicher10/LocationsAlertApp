@@ -86,7 +86,9 @@ Widget fabBar(
                         context,
                         PageRouteBuilder(
                           pageBuilder: (context, animation1, animation2) =>
-                              MyAlertsScreen(),
+                              MyAlertsScreen(
+                            alertList: AlertList.NOT_COMPLETED,
+                          ),
                           transitionDuration: Duration.zero,
                           reverseTransitionDuration: Duration.zero,
                         ),

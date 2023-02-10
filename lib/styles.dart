@@ -36,6 +36,7 @@ const Color s_myLocationColor = Color.fromARGB(255, 243, 245, 159);
 const Color s_pickOnMapColor = s_myLocationColor;
 const Color s_deleteButtonColor = Color.fromARGB(255, 248, 178, 178);
 const Color s_markCompleteButtonColor = Color.fromARGB(255, 178, 248, 184);
+const Color s_restoreAlertsColor = Color.fromARGB(255, 112, 210, 255);
 
 // Others
 const int s_jungleGreen = 0xFF2EAD65;

@@ -161,6 +161,7 @@ class LanguageServices {
       'Please shorten the reminder to less than 200 characters';
   String createAlertLocationNotFound =
       'Could not locate the location you entered. \nPlease be more specific.';
+  String restoreAlertsButton = 'Restore Previous Alerts';
   List<String> _createAlertList = [];
 
   // My Alerts Screen
@@ -173,6 +174,10 @@ class LanguageServices {
   String myAlertsBackButton = 'Back';
   String myAlertsTileLocation = 'at';
   String myAlertsTileDate = 'Date Created';
+  String myAlertsRestoreTitle = 'Completed Alerts';
+  String myAlertsRestoreExplainer =
+      'These are your previously completed alerts.\n Tap an alert to restore it.';
+  String myAlertsRestoreNoneYet = 'No completed alerts yet!';
   List<String> _myAlertsList = [];
 
   // Map View Screen
@@ -431,6 +436,7 @@ class LanguageServices {
       createAlertLocationEmpty,
       createAlertLocationTooLong,
       createAlertLocationNotFound,
+      restoreAlertsButton,
     ];
 
     // My Alerts Screen
@@ -443,6 +449,9 @@ class LanguageServices {
       myAlertsBackButton,
       myAlertsTileLocation,
       myAlertsTileDate,
+      myAlertsRestoreTitle,
+      myAlertsRestoreExplainer,
+      myAlertsRestoreNoneYet,
     ];
 
     // Map View Screen
@@ -714,6 +723,7 @@ class LanguageServices {
     createAlertLocationEmpty = newVars[12];
     createAlertLocationTooLong = newVars[13];
     createAlertLocationNotFound = newVars[14];
+    restoreAlertsButton = newVars[15];
   }
 
   // My Alerts Screen
@@ -726,6 +736,9 @@ class LanguageServices {
     myAlertsBackButton = newVars[5];
     myAlertsTileLocation = newVars[6];
     myAlertsTileDate = newVars[7];
+    myAlertsRestoreTitle = newVars[8];
+    myAlertsRestoreExplainer = newVars[9];
+    myAlertsRestoreNoneYet = newVars[10];
   }
 
   // Map View Screen

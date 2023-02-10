@@ -143,6 +143,7 @@ class _StartScreenState extends State<StartScreen> {
     generateLayout();
     return MaterialApp(
       title: 'Start Screen',
+      initialRoute: '/',
       // This Builder is here so that routes needing a up-the-tree context can
       // find it. See: https://stackoverflow.com/questions/44004451/navigator-operation-requested-with-a-context-that-does-not-include-a-navigator
       home: Builder(builder: (context) {
@@ -759,7 +760,9 @@ class _StartScreenState extends State<StartScreen> {
         onPressed: () {
           __on_this_page__ = false;
           Navigator.of(context)
-              .push(createRoute(const MyAlertsScreen(), 'from_right'))
+              .push(createRoute(
+                  MyAlertsScreen(alertList: AlertList.NOT_COMPLETED),
+                  'from_right'))
               .then((value) => setState(() {
                     __on_this_page__ = true;
                   }));

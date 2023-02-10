@@ -12,6 +12,11 @@ import 'go_back_button.dart';
 import 'language_services.dart';
 import 'fab_bar.dart';
 
+enum AlertList {
+  NOT_COMPLETED,
+  COMPLETED,
+}
+
 class AlertObject {
   String id;
   String dateTimeCreated;
@@ -41,7 +46,8 @@ class AlertObject {
 }
 
 class MyAlertsScreen extends StatefulWidget {
-  const MyAlertsScreen({Key? key}) : super(key: key);
+  final AlertList alertList;
+  const MyAlertsScreen({required this.alertList, Key? key}) : super(key: key);
 
   @override
   State<MyAlertsScreen> createState() => _MyAlertsScreenState();
@@ -86,7 +92,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   Widget build(BuildContext context) {
     generateLayout();
     return MaterialApp(
-      title: 'My Alerts Screen',
+      title: 'Alerts Screen',
       home: Scaffold(
         appBar: AppBar(
           title: myAlertsScreenTitle(),
@@ -146,7 +152,11 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> retrieveReminders() {
-    return _dbServices.getRemindersIncompleteAlertsSnapshotCall();
+    if (this.widget.alertList == AlertList.NOT_COMPLETED) {
+      return _dbServices.getRemindersIncompleteAlertsSnapshotCall();
+    } else {
+      return _dbServices.getRemindersCompleteAlertsSnapshotCall();
+    }
   }
 
   List<AlertObject> createReminderObjects(
@@ -190,6 +200,21 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   }
 
   Card reminderCard(AlertObject AlertObject) {
+    Icon icon;
+    if (this.widget.alertList == AlertList.NOT_COMPLETED) {
+      icon = Icon(
+        Icons.edit,
+        color: Color(s_darkSalmon),
+        size: _cardIconSize,
+      );
+    } else {
+      icon = Icon(
+        Icons.restore,
+        color: Color(s_darkSalmon),
+        size: _cardIconSize,
+      );
+    }
+
     return Card(
         elevation: 2,
         margin: EdgeInsets.fromLTRB(0, _cardGap, 0, _cardGap),
@@ -213,18 +238,22 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
               reminderCardDateText(
                   '${_languageServices.myAlertsTileDate}: ${AlertObject.dateTimeCreated}')
             ]),
-            trailing: Icon(
-              Icons.edit,
-              color: Color(s_darkSalmon),
-              size: _cardIconSize,
-            ),
+            trailing: icon,
             onTap: () {
-              Navigator.of(context)
-                  .push(createRoute(
-                      EditAlertScreen(alert: AlertObject), 'from_right'))
-                  .then((value) => setState(() {
-                        checkIfInstaPop(value);
-                      }));
+              if (this.widget.alertList == AlertList.NOT_COMPLETED) {
+                Navigator.of(context)
+                    .push(createRoute(
+                        EditAlertScreen(alert: AlertObject), 'from_right'))
+                    .then((value) => setState(() {
+                          checkIfInstaPop(value);
+                        }));
+              } else {
+                // Set reminder field isComplete to false
+                _dbServices.updateRemindersSpecificAlertRestore(
+                    context, AlertObject.id);
+                // Return to start screen
+                Navigator.popUntil(context, ModalRoute.withName('/'));
+              }
             }));
   }
 
@@ -235,17 +264,49 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   }
 
   Widget fabRow() {
-    return fabBar(
-        context,
-        FAB.MAP,
-        _buttonHeight,
-        _buttonWidth,
-        _backButtonFontSize,
-        _backButtonIconSize,
-        _backButtonCornerRadius,
-        _fabSpacing,
-        _fabMapWidth,
-        _mapButtonIconSize);
+    if (this.widget.alertList == AlertList.NOT_COMPLETED) {
+      return fabBar(
+          context,
+          FAB.MAP,
+          _buttonHeight,
+          _buttonWidth,
+          _backButtonFontSize,
+          _backButtonIconSize,
+          _backButtonCornerRadius,
+          _fabSpacing,
+          _fabMapWidth,
+          _mapButtonIconSize);
+    } else {
+      return Container(
+        height: _buttonHeight,
+        width: _buttonWidth + _fabSpacing + _fabMapWidth,
+        child: FloatingActionButton.extended(
+            heroTag: 'FAB_back',
+            onPressed: () {
+              // Remove keyboard
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+              Navigator.pop(context);
+            },
+            backgroundColor: Color(s_darkSalmon),
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.all(Radius.circular(_backButtonCornerRadius))),
+            label: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(
+                Icons.arrow_back_ios_rounded,
+                color: Colors.white,
+                size: _backButtonIconSize,
+              ),
+              SizedBox(
+                width: 8,
+              ),
+              buttonText(_backButtonFontSize)
+            ])),
+      );
+    }
   }
 
   Widget reminderCardTitleText(String text) {
@@ -281,8 +342,14 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   }
 
   Widget myAlertsScreenTitle() {
+    String text;
+    if (this.widget.alertList == AlertList.NOT_COMPLETED) {
+      text = _languageServices.myAlertsTitle;
+    } else {
+      text = _languageServices.myAlertsRestoreTitle;
+    }
     return FormattedText(
-      text: _languageServices.myAlertsTitle,
+      text: text,
       size: _titleTextFontSize,
       color: Colors.white,
       font: s_font_BerkshireSwash,
@@ -290,8 +357,14 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   }
 
   Widget explainerText() {
+    String text;
+    if (this.widget.alertList == AlertList.NOT_COMPLETED) {
+      text = _languageServices.myAlertsExplainer;
+    } else {
+      text = _languageServices.myAlertsRestoreExplainer;
+    }
     return FormattedText(
-      text: _languageServices.myAlertsExplainer,
+      text: text,
       size: _explainerTextFontSize,
       color: Color(s_darkSalmon),
       align: TextAlign.center,
@@ -300,8 +373,14 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   }
 
   Widget noAlertsYetText() {
+    String text;
+    if (this.widget.alertList == AlertList.NOT_COMPLETED) {
+      text = _languageServices.myAlertsNoneYet;
+    } else {
+      text = _languageServices.myAlertsRestoreNoneYet;
+    }
     return FormattedText(
-      text: _languageServices.myAlertsNoneYet,
+      text: text,
       size: _noAlertsYetText,
       color: Color(s_darkSalmon),
       font: s_font_BonaNova,

@@ -138,7 +138,7 @@ class LanguageServices {
   String startScreenLocationToggle = 'Allow My Location:';
   String startScreenCreateAlert = 'Create Alert';
   String startScreenViewAlerts = 'View my Alerts';
-  String startScreenLocationDisclosure = 'LocationDisclosure';
+  String startScreenLocationDisclosure = 'Location Disclosure';
   String startScreenSignature = 'An App by Cedric Eicher';
   List<String> _startScreenList = [];
 

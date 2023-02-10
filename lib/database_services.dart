@@ -95,7 +95,8 @@ class DatabaseServices {
       'remindersUpdated': 0,
       'remindersDeleted': 0,
       'userId': UUID_GLOBAL,
-      'userNo': highestUserNo + 1
+      'userNo': highestUserNo + 1,
+      'adsServed': 0,
     }).catchError((error) {
       _exception.popUp(context,
           'Add to users database: Action failed\n error string: ${error.toString()}\nerror raw: $error');
@@ -118,7 +119,8 @@ class DatabaseServices {
         query.docs[0]['remindersUpdated'],
         query.docs[0]['remindersDeleted'],
         query.docs[0]['userId'],
-        query.docs[0]['userNo']);
+        query.docs[0][
+            'userNo']); // Figured I wouldn't add adsServed here since it won't even be used
   }
 
   Future<bool> isUuidTaken(BuildContext context, String uuid) async {
@@ -150,6 +152,25 @@ class DatabaseServices {
         .doc(query.docs[0].id)
         .update({
       'numAppOpens': query.docs[0]['numAppOpens'] + 1,
+    }).catchError((error) {
+      _exception.popUp(context,
+          'Update in users database: Action failed\n error string: ${error.toString()}\nerror raw: $error');
+      throw ('Error: $error');
+    });
+  }
+
+  void updateUsersAdsServed(BuildContext context) async {
+    // Retrieve alert
+    var query = await FirebaseFirestore.instance
+        .collection(COLLECTION_USERS)
+        .where("userId", isEqualTo: UUID_GLOBAL)
+        .get();
+    // Update alert
+    await FirebaseFirestore.instance
+        .collection(COLLECTION_USERS)
+        .doc(query.docs[0].id)
+        .update({
+      'adsServed': query.docs[0]['adsServed'] + 1,
     }).catchError((error) {
       _exception.popUp(context,
           'Update in users database: Action failed\n error string: ${error.toString()}\nerror raw: $error');

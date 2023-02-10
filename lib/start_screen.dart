@@ -18,6 +18,7 @@ import 'background_theme.dart';
 import 'side_drawer.dart';
 //import 'logging_services.dart';
 import 'language_services.dart';
+import 'notification_services.dart';
 
 String UUID_GLOBAL = '';
 int ALERTS_NUM_GLOBAL = 0;
@@ -197,6 +198,8 @@ class _StartScreenState extends State<StartScreen> {
       }
       // Grab the information for the side drawer
       getSideDrawerUserInfo();
+      // Set up future notifications to prompt user
+      NotificationServices().scheduleNewNotification();
     }
 
     // OLD WAY: Part of overhaul to try to fix location/location toggle issues
@@ -869,7 +872,7 @@ class _StartScreenState extends State<StartScreen> {
                 BorderRadius.circular(_locationDisclosureButtonCornerRadius),
             child: InkWell(
                 onTap: () async {
-                  var url = "https://www.buymeacoffee.com/";
+                  var url = "https://www.buymeacoffee.com/cedriceicher";
                   if (!await launch(url)) {
                     _exception.popUp(
                         context, 'Launch URL: Could not launch $url');

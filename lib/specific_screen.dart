@@ -773,7 +773,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
     _locationButtonHeight = (30 / 781) * _screenHeight;
     _bottomPadding = (20 / 781) * _screenHeight;
     _fabPadding = (_buttonHeight * 2.25) + _buttonSpacing;
-    _aboveRestoreAlertsSpacing = (20 / 781) * _screenHeight;
+    _aboveRestoreAlertsSpacing = (10 / 781) * _screenHeight;
 
     // Width
     _textWidth = (325 / 392) * _screenWidth;

@@ -2,6 +2,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:locationalertsapp/language_services.dart';
 import 'package:locationalertsapp/styles.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'database_services.dart';
 import 'dart:math';
@@ -40,7 +41,7 @@ class NotificationServices {
           enableVibration: true)
     ]);
     // Future notifications
-    AwesomeNotifications().actionStream.listen((action) {
+    AwesomeNotifications().actionStream.listen((action) async {
       String docId = _activeNotificationsMap[action.id];
       if (action.buttonKeyPressed == 'Completed') {
         // Mark alert complete
@@ -48,6 +49,10 @@ class NotificationServices {
         _dbServices.updateUsersReminderComplete();
       } else if (action.buttonKeyPressed == 'Dismissed') {
         // Alert is dismissed, remains active and notification dissappears
+      } else if (action.buttonKeyPressed == 'DissmissedScheduled') {
+        // Scheduled notification
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('scheduledNotificationOn', false);
       }
     });
   }
@@ -78,26 +83,37 @@ class NotificationServices {
   }
 
   Future<void> scheduleNewNotification() async {
-    bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
-    if (isAllowed) {
-      // Set notification for the next day
-      int timeDelay = (24 * 60 * 60);
-      // Prep notification
-      AwesomeNotifications().createNotification(
-          content: NotificationContent(
-            id: -1, // -1 is replaced by a random number
-            channelKey: 'basic_channel',
-            title: "Location Alerts",
-            body: "Fancy creating a location alert?",
-          ),
-          actionButtons: [
-            NotificationActionButton(
-                key: 'DISMISS',
-                label: 'Dismiss',
-                buttonType: ActionButtonType.DisabledAction)
-          ],
-          schedule: NotificationCalendar.fromDate(
-              date: DateTime.now().add(Duration(seconds: timeDelay))));
+    // This is
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool scheduledNotificationOn = false;
+    if (prefs.getBool('scheduledNotificationOn') == null) {
+      prefs.setBool('scheduledNotificationOn', true);
+    } else {
+      scheduledNotificationOn = prefs.getBool('scheduledNotificationOn')!;
+    }
+
+    if (!scheduledNotificationOn) {
+      bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
+      if (isAllowed) {
+        // Set notification for 1 hr away
+        int timeDelay = 60;
+        // Prep notification
+        AwesomeNotifications().createNotification(
+            content: NotificationContent(
+              id: -1, // -1 is replaced by a random number
+              channelKey: 'basic_channel',
+              title: "Location Alerts",
+              body: "Fancy creating a location alert?",
+            ),
+            actionButtons: [
+              NotificationActionButton(
+                  key: 'DissmissedScheduled',
+                  label: 'Dismiss',
+                  buttonType: ActionButtonType.DisabledAction)
+            ],
+            schedule: NotificationCalendar.fromDate(
+                date: DateTime.now().add(Duration(seconds: timeDelay))));
+      }
     }
   }
 }

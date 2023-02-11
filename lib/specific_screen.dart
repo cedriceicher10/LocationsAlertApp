@@ -767,7 +767,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
     // and a 56 height appBar
 
     // Height
-    _topPadding = (40 / 781) * _screenHeight;
+    _topPadding = (20 / 781) * _screenHeight;
     _buttonHeight = (60 / 781) * _screenHeight;
     _submitButtonTopPadding = (175 / 781) * _screenHeight;
     _locationButtonHeight = (30 / 781) * _screenHeight;

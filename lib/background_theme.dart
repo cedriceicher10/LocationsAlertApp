@@ -10,39 +10,39 @@ enum Screen {
 }
 
 class BackgroundTheme {
-  Color topColor = Color(s_darkSalmon);
-  Color bottomColor = Color(s_aquarium);
+  Color topColor = gunmetal;
+  Color bottomColor = teal;
 
   BackgroundTheme(Screen screen) {
     switch (screen) {
       case Screen.START_SCREEN:
         {
-          topColor = Color(s_aquarium);
-          bottomColor = Color(s_lavenderWeb);
+          topColor = startScreenBackgroundTop;
+          bottomColor = startScreenBackgroundBottom;
         }
         break;
       case Screen.SPECIFIC_ALERT_SCREEN:
         {
-          topColor = Color(s_aquarium);
-          bottomColor = Color(s_lavenderWeb);
+          topColor = createAlertBackgroundTop;
+          bottomColor = createAlertBackgroundBottom;
         }
         break;
       case Screen.GENERIC_ALERT_SCREEN:
         {
-          topColor = Color(s_aquarium);
-          bottomColor = Color(s_lavenderWeb);
+          topColor = createAlertBackgroundTop;
+          bottomColor = createAlertBackgroundBottom;
         }
         break;
       case Screen.MY_ALERTS_SCREEN:
         {
-          topColor = Color(s_aquarium);
-          bottomColor = Color(s_lavenderWeb);
+          topColor = teal;
+          bottomColor = lavenderWeb;
         }
         break;
       case Screen.EDIT_ALERTS_SCREEN:
         {
-          topColor = Color(s_aquarium);
-          bottomColor = Color(s_lavenderWeb);
+          topColor = teal;
+          bottomColor = lavenderWeb;
         }
         break;
     }

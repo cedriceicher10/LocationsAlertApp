@@ -38,20 +38,20 @@ class _SpecificScreenState extends State<SpecificScreen> {
 
   bool _isMiles = true;
 
-  Color unitsMiBorderColor = s_myLocationColor;
-  Color unitsMiTextColor = s_myLocationColor;
-  Color unitsMiButtonColor = Color(s_darkSalmon);
+  Color unitsMiBorderColor = createAlertMiBorderOn;
+  Color unitsMiTextColor = createAlertMiTextOn;
+  Color unitsMiButtonColor = createAlertMiButtonOn;
 
-  Color unitsKmBorderColor = Color(s_aquarium);
-  Color unitsKmTextColor = Color(s_aquarium);
-  Color unitsKmButtonColor = Color(s_darkSalmon);
+  Color unitsKmBorderColor = createAlertKmBorderOff;
+  Color unitsKmTextColor = createAlertKmTextOff;
+  Color unitsKmButtonColor = createAlertKmButtonOff;
 
-  Color unitsBorderColorActivated = s_myLocationColor;
-  Color unitsBorderColorInactive = Color(s_darkSalmon);
-  Color unitsTextColorActivated = s_myLocationColor;
-  Color unitsTextColorInactive = Color(s_aquariumLighter);
-  Color unitsButtonColorActivated = Color(s_darkSalmon);
-  Color unitsButtonColorInactive = Color(s_darkSalmon);
+  Color unitsBorderColorActivated = createAlertBorderOn;
+  Color unitsBorderColorInactive = createAlertBorderOff;
+  Color unitsTextColorActivated = createAlertTextOn;
+  Color unitsTextColorInactive = createAlertTextOff;
+  Color unitsButtonColorActivated = createAlertUnitsOn;
+  Color unitsButtonColorInactive = createAlertUnitsOff;
 
   double _topPadding = 0;
   double _submitButtonTopPadding = 0;
@@ -115,7 +115,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           home: Scaffold(
             appBar: AppBar(
               title: specificScreenTitle(),
-              backgroundColor: const Color(s_aquarium),
+              backgroundColor: createAlertAppBar,
               centerTitle: true,
             ),
             resizeToAvoidBottomInset: false,
@@ -212,8 +212,8 @@ class _SpecificScreenState extends State<SpecificScreen> {
           selectedMiTrigger = val;
         }
       }),
-      activeColor: Color(s_darkSalmon),
-      inactiveColor: Color(s_aquariumLighter),
+      activeColor: createAlertSliderTickMarksOn,
+      inactiveColor: createAlertSliderTickMarksOff,
       linearStep: true,
       steps: determineSteps(),
       unit: determineUnits(),
@@ -340,26 +340,29 @@ class _SpecificScreenState extends State<SpecificScreen> {
     return TextFormField(
         autofocus: true,
         textCapitalization: TextCapitalization.sentences,
-        style: TextStyle(color: Colors.black, fontSize: _formFontSize),
+        style: TextStyle(
+            color: createAlertRemindMeFieldText, fontSize: _formFontSize),
         decoration: InputDecoration(
             filled: true,
-            fillColor: Colors.white,
+            fillColor: createAlertRemindMeFieldBackground,
             labelStyle: TextStyle(
-                color: Color(s_aquarium), fontWeight: FontWeight.bold),
+                color: createAlertRemindMeLabel, fontWeight: FontWeight.bold),
             hintText: _languageServices.createAlertReminderHint,
             hintStyle: TextStyle(
-                color: Color(s_disabledGray), fontSize: _formFontSize),
+                color: createAlertRemindMeFieldHintText,
+                fontSize: _formFontSize),
             errorStyle: TextStyle(
-                color: Color(s_declineRed),
+                color: createAlertRemindMeError,
                 fontWeight: FontWeight.bold,
                 fontSize: _formErrorFontSize),
             border: OutlineInputBorder(),
             enabledBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: Color(s_raisinBlack), width: 2.0)),
+                borderSide: BorderSide(
+                    color: createAlertRemindMeFieldUnfocusedBorder,
+                    width: 2.0)),
             focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: Color(s_darkSalmon), width: 2.0))),
+                borderSide: BorderSide(
+                    color: createAlertRemindMeFieldFocusedBorder, width: 2.0))),
         onSaved: (value) {
           _reminderBody = value!;
         },
@@ -387,26 +390,31 @@ class _SpecificScreenState extends State<SpecificScreen> {
             controller: _controllerRecentLocations,
             textCapitalization: TextCapitalization.sentences,
             autofocus: true,
-            style: TextStyle(color: Colors.black, fontSize: _formFontSize),
+            style: TextStyle(
+                color: createAlertLocationFieldText, fontSize: _formFontSize),
             decoration: InputDecoration(
                 filled: true,
-                fillColor: Colors.white,
-                labelStyle:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                fillColor: createAlertLocationFieldBackground,
+                labelStyle: TextStyle(
+                    color: createAlertLocationLabel,
+                    fontWeight: FontWeight.bold),
                 hintText: _languageServices.createAlertLocationHint,
                 hintStyle: TextStyle(
-                    color: Color(s_disabledGray), fontSize: _formFontSize),
+                    color: createAlertLocationFieldHintText,
+                    fontSize: _formFontSize),
                 errorStyle: TextStyle(
-                    color: Color(s_declineRed),
+                    color: createAlertLocationError,
                     fontWeight: FontWeight.bold,
                     fontSize: _formErrorFontSize),
                 border: OutlineInputBorder(),
                 enabledBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color(s_raisinBlack), width: 2.0)),
+                    borderSide: BorderSide(
+                        color: createAlertLocationFieldUnfocusedBorder,
+                        width: 2.0)),
                 focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color(s_darkSalmon), width: 2.0))),
+                    borderSide: BorderSide(
+                        color: createAlertLocationFieldFocusedBorder,
+                        width: 2.0))),
             onSaved: (value) async {
               _specificLocation = value!;
             },
@@ -424,7 +432,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
       ),
       PopupMenuButton<String>(
         icon: Icon(Icons.arrow_drop_down,
-            size: _dropDownIconSize, color: Colors.white),
+            size: _dropDownIconSize, color: createAlertPreviousLocations),
         onSelected: (String value) {
           _controllerRecentLocations.text = value;
         },
@@ -484,14 +492,14 @@ class _SpecificScreenState extends State<SpecificScreen> {
                 Navigator.pop(context);
               }
             },
-            backgroundColor: Color(s_aquarium),
+            backgroundColor: createAlertCreateButton,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(
                     Radius.circular(_largeButtonCornerRadius))),
             label: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Icon(
                 Icons.add,
-                color: Colors.white,
+                color: createAlertCreateIcon,
                 size: _submitButtonIconSize,
               ),
               SizedBox(
@@ -500,7 +508,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
               FormattedText(
                 text: _languageServices.createAlertCreateAlertButton,
                 size: _submitButtonFontSize,
-                color: Colors.white,
+                color: createAlertCreateText,
                 font: s_font_BonaNova,
                 weight: FontWeight.bold,
               )
@@ -590,14 +598,14 @@ class _SpecificScreenState extends State<SpecificScreen> {
           }
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: s_myLocationColor,
+            backgroundColor: createAlertMyLocationButton,
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
             Icons.my_location_sharp,
-            color: Color(s_darkSalmon),
+            color: createAlertMyLocationIcon,
             size: _atMyLocationIconSize,
           ),
           SizedBox(
@@ -623,14 +631,14 @@ class _SpecificScreenState extends State<SpecificScreen> {
                   }));
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: s_pickOnMapColor,
+            backgroundColor: createAlertPickOnMapButton,
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
             Icons.add_location_alt_outlined,
-            color: Color(s_darkSalmon),
+            color: createAlertPickOnMapIcon,
             size: _pickOnMapIconSize,
           ),
           SizedBox(
@@ -658,14 +666,14 @@ class _SpecificScreenState extends State<SpecificScreen> {
               MyAlertsScreen(alertList: AlertList.COMPLETED), 'from_right'));
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: s_restoreAlertsColor,
+            backgroundColor: createAlertRestoreButton,
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
             Icons.restore,
-            color: Color(s_darkSalmon),
+            color: createAlertRestoreIcon,
             size: _pickOnMapIconSize,
           ),
           SizedBox(
@@ -689,14 +697,14 @@ class _SpecificScreenState extends State<SpecificScreen> {
               }
               Navigator.pop(context);
             },
-            backgroundColor: Color(s_darkSalmon),
+            backgroundColor: createAlertCancelButton,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(
                     Radius.circular(_largeButtonCornerRadius))),
             label: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Icon(
                 Icons.arrow_back_ios_rounded,
-                color: Colors.white,
+                color: createAlertCancelIcon,
                 size: _cancelIconSize,
               ),
               // Expanded(
@@ -714,7 +722,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
     return FormattedText(
       text: _languageServices.createAlertCancelButton,
       size: fontSize,
-      color: Colors.white,
+      color: createAlertCancelText,
       font: s_font_BonaNova,
       weight: FontWeight.bold,
     );
@@ -734,7 +742,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
     return FormattedText(
       text: text,
       size: _locationButtonTextFontSize,
-      color: Color(s_darkSalmon),
+      color: createAlertMyLocationText,
       font: s_font_BonaNova,
       weight: FontWeight.bold,
     );
@@ -744,7 +752,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
     return FormattedText(
       text: _languageServices.createAlertTitle,
       size: _titleTextFontSize,
-      color: Colors.white,
+      color: createAlertTitleText,
       font: s_font_BerkshireSwash,
     );
   }
@@ -753,7 +761,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
     return FormattedText(
         text: title,
         size: _guideTextFontSize,
-        color: Colors.white,
+        color: createAlertRemindMeText,
         font: s_font_BonaNova,
         weight: FontWeight.bold);
   }

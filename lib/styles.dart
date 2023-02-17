@@ -32,7 +32,6 @@ const int s_iconGreen = 0xFF2fa561;
 const int s_linkedin = 0xFF0077B5;
 const Color s_deleteButtonColor = Color.fromARGB(255, 248, 178, 178);
 const Color s_markCompleteButtonColor = Color.fromARGB(255, 178, 248, 184);
-const Color s_restoreAlertsColor = Color.fromARGB(255, 112, 210, 255);
 
 // Colors
 const Color white = Colors.white;
@@ -48,6 +47,7 @@ const Color midYellow = Color.fromARGB(255, 239, 241, 79);
 const Color vibrantRed = Color(0xFFf2301b);
 const Color deepGreen = Color.fromARGB(255, 18, 148, 23);
 const Color deepGray = Color(0xFFAAAEB1);
+const Color skyBlue = Color.fromARGB(255, 112, 210, 255);
 
 const Color s_pickOnMapColor = lightYellow;
 const Color s_myLocationColor = lightYellow;
@@ -101,55 +101,65 @@ const int s_forrestGreen = 0xFF012B09;
 const int s_goldenrod = 0xC59849;
 const int s_blackBlue = 0xFF00171F;
 
-// createAlertAppBar
-// createAlertTitleText
-// createAlertBackgroundTop
-// createAlertBackgroundBottom
-// createAlertRemindMeText
-// createAlertRemindMeFieldBorder
-// createAlertRemindMeFieldText
-// createAlertRemindMeFieldHintText
-// createAlertRemindMeError
-// createAlertLocationText
-// createAlertLocationFieldBorder
-// createAlertLocationFieldText
-// createAlertLocationFieldHintText
-// createAlertLocationError
-// createAlertPreviousLocations
-// createAlertPreviousLocationsText
-// createAlertMyLocationButton
-// createAlertMyLocationText
-// createAlertMyLocationIcon
-// createAlertPickOnMapButton
-// createAlertPickOnMapText
-// createAlertPickOnMapIcon
-// createAlertAtTriggerText
-// createAlertSliderSelection
-// createAlertSliderBackground
-// createAlertSliderTickMarksOn
-// createAlertSliderTickMarksOff
-// createAlertSliderText
-// createAlertMiButtonOn
-// createAlertMiButtonOff
-// createAlertMiTextOn
-// createAlertMiTextOff
-// createAlertMiBorderOn
-// createAlertMiBorderOff
-// createAlertKmButtonOn
-// createAlertKmButtonOff
-// createAlertKmTextOn
-// createAlertKmTextOff
-// createAlertKmBorderOn
-// createAlertKmBorderOff
-// createAlertRestoreButton
-// createAlertRestoreText
-// createAlertRestoreIcon
-// createAlertCancelButton
-// createAlertCancelText
-// createAlertCancelIcon
-// createAlertCreateButton
-// createAlertCreateText
-// createAlertCreateIcon
+Color createAlertAppBar = gunmetal;
+Color createAlertTitleText = white;
+Color createAlertBackgroundTop = teal;
+Color createAlertBackgroundBottom = lavenderWeb;
+Color createAlertRemindMeText = white;
+Color createAlertRemindMeFieldFocusedBorder = gunmetal;
+Color createAlertRemindMeFieldUnfocusedBorder = columbiaBlue;
+Color createAlertRemindMeFieldText = black;
+Color createAlertRemindMeFieldHintText = deepGray;
+Color createAlertRemindMeError = vibrantRed;
+Color createAlertRemindMeLabel = teal;
+Color createAlertRemindMeFieldBackground = white;
+Color createAlertLocationText = white;
+Color createAlertLocationFieldFocusedBorder = gunmetal;
+Color createAlertLocationFieldUnfocusedBorder = columbiaBlue;
+Color createAlertLocationFieldText = black;
+Color createAlertLocationFieldHintText = deepGray;
+Color createAlertLocationError = vibrantRed;
+Color createAlertLocationLabel = teal;
+Color createAlertLocationFieldBackground = white;
+Color createAlertPreviousLocations = white;
+Color createAlertPreviousLocationsText = black;
+Color createAlertMyLocationButton = lightYellow;
+Color createAlertMyLocationText = blueBlack;
+Color createAlertMyLocationIcon = blueBlack;
+Color createAlertPickOnMapButton = lightYellow;
+Color createAlertPickOnMapText = blueBlack;
+Color createAlertPickOnMapIcon = blueBlack;
+Color createAlertAtTriggerText = white;
+Color createAlertSliderThumb = lightYellow;
+Color createAlertSliderTickMarksOn = gunmetal;
+Color createAlertSliderTickMarksOff = white;
+Color createAlertMiButtonOn = gunmetal;
+Color createAlertMiButtonOff = gunmetal;
+Color createAlertMiTextOn = midYellow;
+Color createAlertMiTextOff = teal;
+Color createAlertMiBorderOn = midYellow;
+Color createAlertMiBorderOff = teal;
+Color createAlertKmButtonOn = gunmetal;
+Color createAlertKmButtonOff = gunmetal;
+Color createAlertKmTextOn = midYellow;
+Color createAlertKmTextOff = teal;
+Color createAlertKmBorderOn = midYellow;
+Color createAlertKmBorderOff = teal;
+Color createAlertUnitsOn = gunmetal;
+Color createAlertUnitsOff = gunmetal;
+Color createAlertBorderOn = midYellow;
+Color createAlertBorderOff = teal;
+Color createAlertTextOn = midYellow;
+Color createAlertTextOff = teal;
+Color createAlertRestoreButton = skyBlue;
+Color createAlertRestoreText = blueBlack;
+Color createAlertRestoreIcon = blueBlack;
+Color createAlertCancelButton = gunmetal;
+Color createAlertCancelText = white;
+Color createAlertCancelIcon = white;
+Color createAlertCreateButton = teal;
+Color createAlertCreateText = white;
+Color createAlertCreateIcon = white;
 
 // editAlertAppBar
 // editAlertTitleText

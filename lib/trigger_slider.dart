@@ -97,7 +97,7 @@ class TriggerSlider extends StatelessWidget {
               inactiveTickMarkColor: inactiveColor ?? Colors.orange.shade50,
               activeTrackColor: activeColor ?? Colors.orange,
               inactiveTrackColor: inactiveColor ?? Colors.orange.shade50,
-              thumbColor: s_myLocationColor,
+              thumbColor: createAlertSliderThumb,
               overlayColor: activeColor == null
                   ? Colors.orange.withOpacity(0.1)
                   : activeColor!.withOpacity(0.1),

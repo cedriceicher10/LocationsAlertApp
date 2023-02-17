@@ -83,37 +83,37 @@ class NotificationServices {
   }
 
   Future<void> scheduleNewNotification() async {
-    // This is
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool scheduledNotificationOn = false;
-    if (prefs.getBool('scheduledNotificationOn') == null) {
-      prefs.setBool('scheduledNotificationOn', true);
-    } else {
-      scheduledNotificationOn = prefs.getBool('scheduledNotificationOn')!;
-    }
+    // // This is
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // bool scheduledNotificationOn = false;
+    // if (prefs.getBool('scheduledNotificationOn') == null) {
+    //   prefs.setBool('scheduledNotificationOn', true);
+    // } else {
+    //   scheduledNotificationOn = prefs.getBool('scheduledNotificationOn')!;
+    // }
 
-    if (!scheduledNotificationOn) {
-      bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
-      if (isAllowed) {
-        // Set notification for 1 hr away
-        int timeDelay = 60;
-        // Prep notification
-        AwesomeNotifications().createNotification(
-            content: NotificationContent(
-              id: -1, // -1 is replaced by a random number
-              channelKey: 'basic_channel',
-              title: "Location Alerts",
-              body: "Fancy creating a location alert?",
-            ),
-            actionButtons: [
-              NotificationActionButton(
-                  key: 'DissmissedScheduled',
-                  label: 'Dismiss',
-                  buttonType: ActionButtonType.DisabledAction)
-            ],
-            schedule: NotificationCalendar.fromDate(
-                date: DateTime.now().add(Duration(seconds: timeDelay))));
-      }
-    }
+    // if (!scheduledNotificationOn) {
+    //   bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
+    //   if (isAllowed) {
+    //     // Set notification for 1 hr away
+    //     int timeDelay = 60;
+    //     // Prep notification
+    //     AwesomeNotifications().createNotification(
+    //         content: NotificationContent(
+    //           id: -1, // -1 is replaced by a random number
+    //           channelKey: 'basic_channel',
+    //           title: "Location Alerts",
+    //           body: "Fancy creating a location alert?",
+    //         ),
+    //         actionButtons: [
+    //           NotificationActionButton(
+    //               key: 'DissmissedScheduled',
+    //               label: 'Dismiss',
+    //               buttonType: ActionButtonType.DisabledAction)
+    //         ],
+    //         schedule: NotificationCalendar.fromDate(
+    //             date: DateTime.now().add(Duration(seconds: timeDelay))));
+    //   }
+    // }
   }
 }

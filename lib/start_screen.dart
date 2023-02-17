@@ -102,9 +102,9 @@ class _StartScreenState extends State<StartScreen> {
   bool _masterLocationToggle = false;
   bool _toggleJustDone = false;
   bool _toggleBack = false;
-  Color _masterLocationColorOn = s_locationToggleColor;
-  Color _masterLocationColorOff = Colors.white;
-  Color _masterLocationColor = Colors.white;
+  Color _masterLocationColorOn = startScreenToggleSliderOn;
+  Color _masterLocationColorOff = startScreenToggleSliderOff;
+  Color _masterLocationColor = startScreenToggleSliderOff;
 
   // Layout
   double _topPadding = 0;
@@ -153,8 +153,8 @@ class _StartScreenState extends State<StartScreen> {
         });
         return Scaffold(
           appBar: AppBar(
-            title: startScreenTitle('Location Alerts'),
-            backgroundColor: const Color(s_blackBlue),
+            title: startScreenTitle(),
+            backgroundColor: startScreenAppBar,
             centerTitle: true,
           ),
           drawer: SideDrawer(),
@@ -164,9 +164,9 @@ class _StartScreenState extends State<StartScreen> {
                 if (snapshot.hasData) {
                   return startScreenBody(context);
                 } else {
-                  return const Center(
+                  return Center(
                       child: CircularProgressIndicator(
-                    color: Color(s_darkSalmon),
+                    color: startScreenLoading,
                   ));
                 }
               }),
@@ -301,76 +301,6 @@ class _StartScreenState extends State<StartScreen> {
     }
   }
 
-  // // OLD WAY: Part of overhaul to try to fix location/location toggle issues
-  // Future<void> oldWay() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   bool? showLocationDisclosure = prefs.getBool('showLocationDisclosure');
-  //   bool? masterLocationToggle = prefs.getBool('masterLocationToggle');
-  //   if (masterLocationToggle == null) {
-  //     _masterLocationToggle = false;
-  //     prefs.setBool('masterLocationToggle', false);
-  //   } else {
-  //     _masterLocationToggle = masterLocationToggle;
-  //   }
-  //   if ((_masterLocationToggle) &&
-  //       ((showLocationDisclosure == false) &&
-  //           (showLocationDisclosure != null))) {
-  //     _masterLocationColor = Color.fromARGB(255, 105, 235, 66);
-  //     await _locationServices.getLocation();
-
-  //     // Background location service
-  //     await BackgroundLocation.setAndroidNotification(
-  //       title: 'Location Alerts',
-  //       message: 'Background services currently in progress',
-  //       icon: '@mipmap/ic_launcher',
-  //     );
-  //     await BackgroundLocation.setAndroidConfiguration(1000);
-  //     await BackgroundLocation.startLocationService(distanceFilter: 0);
-  //     BackgroundLocation.getLocationUpdates((bgLocationData) {
-  //       _userBgLat = bgLocationData.latitude!;
-  //       _userBgLon = bgLocationData.longitude!;
-  //       setState(() async {
-  //         print('BACKGROUND LOCATION TRIGGERED ==============');
-  //         print('Latitude : ${bgLocationData.latitude}');
-  //         print('Longitude: ${bgLocationData.longitude}');
-  //         print('Accuracy : ${bgLocationData.accuracy}');
-  //         print('Altitude : ${bgLocationData.altitude}');
-  //         print('Bearing  : ${bgLocationData.bearing}');
-  //         print('Speed    : ${bgLocationData.speed}');
-  //         print(
-  //             'Time     : ${DateTime.fromMillisecondsSinceEpoch(bgLocationData.time!.toInt())}');
-
-  //         // NOTIFICATION KICKOFF LOGIC
-  //         // Retrieve alerts
-  //         QuerySnapshot<Map<String, dynamic>> alerts =
-  //             await _dbServices.getIsCompleteAlertsGetCall(context);
-
-  //         // Alert trigger
-  //         for (var index = 0; index < alerts.docs.length; ++index) {
-  //           // For now only specific alerts
-  //           if (alerts.docs[index]['isSpecific']) {
-  //             _alertServices.alertDeterminationLogic(
-  //                 _userBgLat, _userBgLon, alerts.docs[index]);
-  //           }
-  //         }
-  //       });
-  //     });
-  //     if (_locationServices.permitted) {
-  //       // Location is turned on
-  //       print('LOCATION SERVICES: $_masterLocationToggle');
-  //     } else {
-  //       _masterLocationToggle = false;
-  //       prefs.setBool('masterLocationToggle', false);
-  //       _masterLocationColor = Colors.white;
-  //       BackgroundLocation.stopLocationService();
-  //     }
-  //   } else {
-  //     BackgroundLocation.stopLocationService();
-  //     // Location toggle is turned off
-  //     print('LOCATION SERVICES: $_masterLocationToggle');
-  //   }
-  // }
-
   Future<void> setAlertCount() async {
     ALERTS_NUM_GLOBAL = await _dbServices.getAlertCount(context);
   }
@@ -434,22 +364,22 @@ class _StartScreenState extends State<StartScreen> {
   AlertDialog locationDisclosureAlert(
       BuildContext context, SharedPreferences prefs) {
     return AlertDialog(
-      title: const Text(
-        "Location Disclosure",
+      title: Text(
+        _languageServices.disclosureLocationTitle,
         style: TextStyle(
             color: Colors.transparent,
             fontWeight: FontWeight.bold,
             shadows: [Shadow(offset: Offset(0, -3), color: Colors.black)],
             decoration: TextDecoration.underline,
-            decorationColor: Colors.black,
+            decorationColor: startScreenLocationDisclosureAlertText,
             decorationThickness: 1),
       ),
-      content: const Text(
-          "Location Alerts collects background location data to deliver reminder alerts based on your location. This feature may be in use when the app is in the background or closed. \n\nLocation Alerts will ALWAYS ask your permission before turning on your location services."),
+      content: Text(_languageServices.disclosureLocation),
       actions: <Widget>[
         TextButton(
-            child: const Text("Decline (No location services)"),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: Text(_languageServices.disclosureLocationDecline),
+            style: TextButton.styleFrom(
+                foregroundColor: startScreenLocationDisclosureAlertDeclineText),
             onPressed: () {
               Navigator.of(context).pop();
               prefs.setBool('showLocationDisclosure', true);
@@ -465,11 +395,12 @@ class _StartScreenState extends State<StartScreen> {
         Padding(
             padding: EdgeInsets.fromLTRB(0, 0, _alertPaddingRight, 0),
             child: TextButton(
-              child: const Text("Acknowledge",
+              child: Text(_languageServices.disclosureLocationAccept,
                   style: TextStyle(fontWeight: FontWeight.bold)),
               style: TextButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 18, 148, 23),
-                  foregroundColor: Colors.white),
+                  backgroundColor: startScreenLocationDisclosureAlertAccept,
+                  foregroundColor:
+                      startScreenLocationDisclosureAlertAcceptText),
               onPressed: () async {
                 Navigator.of(context).pop();
                 prefs.setBool('showLocationDisclosure', false);
@@ -482,23 +413,22 @@ class _StartScreenState extends State<StartScreen> {
   AlertDialog locationOffNoticeAlert(
       BuildContext context, SharedPreferences prefs) {
     return AlertDialog(
-        title: const Text(
-          "Notice of Location Dismissal",
+        title: Text(
+          _languageServices.disclosureLocationOffTitle,
           style: TextStyle(
               color: Colors.transparent,
               fontWeight: FontWeight.bold,
               shadows: [Shadow(offset: Offset(0, -3), color: Colors.black)],
               decoration: TextDecoration.underline,
-              decorationColor: Colors.black,
+              decorationColor: startScreenLocationOffText,
               decorationThickness: 1),
         ),
-        content: const Text(
-            "To receive alerts based on your current location, tap on the Location Disclosure button at the bottom of the screen and Acknowledge."),
+        content: Text(_languageServices.disclosureLocationOff),
         actions: <Widget>[
           TextButton(
-              child: const Text("Close"),
-              style:
-                  TextButton.styleFrom(backgroundColor: Color(s_disabledGray)),
+              child: Text(_languageServices.disclosureLocationOffClose),
+              style: TextButton.styleFrom(
+                  backgroundColor: startScreenLocationOffButton),
               onPressed: () {
                 Navigator.of(context).pop();
               })
@@ -532,7 +462,7 @@ class _StartScreenState extends State<StartScreen> {
                               BorderRadius.circular(_logoBorderRadius),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.white,
+                              color: startScreenLogoGlow,
                               spreadRadius: 4,
                               blurRadius: 8,
                               offset: Offset(0, 0),
@@ -581,7 +511,7 @@ class _StartScreenState extends State<StartScreen> {
         //text: text,
         text: _languageServices.startScreenExplainer,
         size: _explainerFontSize,
-        color: Colors.white,
+        color: startScreenExplainerText,
         font: s_font_BonaNova,
         weight: FontWeight.bold,
         align: TextAlign.center);
@@ -601,9 +531,9 @@ class _StartScreenState extends State<StartScreen> {
       Transform.scale(
           scale: _locationToggleScale,
           child: Switch(
-            inactiveThumbColor: Color(s_beauBlue),
-            activeTrackColor: Color.fromARGB(255, 247, 248, 181),
-            activeColor: s_locationToggleColor,
+            inactiveThumbColor: columbiaBlue,
+            activeTrackColor: startScreenToggleSliderOn,
+            activeColor: startScreenToggleOn,
             value: _masterLocationToggle,
             onChanged: (value) async {
               SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -616,7 +546,7 @@ class _StartScreenState extends State<StartScreen> {
                   await _locationServices.getLocation();
                   setState(() {
                     if (_locationServices.permitted) {
-                      _masterLocationColor = s_locationToggleColor;
+                      _masterLocationColor = startScreenToggleOn;
                       prefs.setBool(
                           'masterLocationToggle', _masterLocationToggle);
                     } else {
@@ -630,32 +560,11 @@ class _StartScreenState extends State<StartScreen> {
                 }
               } else {
                 setState(() {
-                  _masterLocationColor = Colors.white;
+                  _masterLocationColor = startScreenToggleSliderOff;
                   prefs.setBool('masterLocationToggle', _masterLocationToggle);
                 });
               }
               _toggleJustDone = true;
-
-              // OLD WAY: Part of overhaul to try to fix location/location toggle issues
-              // SharedPreferences prefs = await SharedPreferences.getInstance();
-              // bool? showLocationDisclosure =
-              //     prefs.getBool('showLocationDisclosure');
-              // if ((showLocationDisclosure == false) &&
-              //     (showLocationDisclosure != null)) {
-              //   setState(() {
-              //     _masterLocationToggle = value;
-              //     prefs.setBool('masterLocationToggle', value);
-              //     if (_masterLocationToggle == false) {
-              //       _masterLocationColor = Colors.white;
-              //     } else {
-              //       _masterLocationColor = Color.fromARGB(255, 105, 235, 66);
-              //     }
-              //     _toggleJustDone = true;
-              //     print('LOCATION TOGGLE: $_masterLocationToggle');
-              //   });
-              // } else {
-              //   showLocationDisclosureAlert(context, prefs);
-              // }
             },
           )),
     ]);
@@ -686,25 +595,16 @@ class _StartScreenState extends State<StartScreen> {
           ),
           Icon(
             Icons.arrow_forward_ios_rounded,
-            color: Colors.white,
+            color: startScreenCreateAlertIcon1,
             size: _specificLocationIconSize,
           )
         ]),
         style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(s_aquarium),
+            backgroundColor: startScreenCreateAlertButton,
             fixedSize: Size(_buttonWidth, _buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius:
                     BorderRadius.circular(_submitButtonCornerRadius))));
-  }
-
-  Widget genericHelpText() {
-    return FormattedText(
-        text: 'Such as: At any grocery store',
-        size: _helpFontSize,
-        color: Color(s_blackBlue),
-        font: s_font_BonaNova,
-        weight: FontWeight.bold);
   }
 
   Widget specificLocationButton(BuildContext context, String text) {
@@ -723,7 +623,7 @@ class _StartScreenState extends State<StartScreen> {
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
             Icons.add_alert,
-            color: Colors.white,
+            color: startScreenCreateAlertIcon1,
             size: _specificLocationIconSize,
           ),
           SizedBox(width: _iconGap),
@@ -734,25 +634,16 @@ class _StartScreenState extends State<StartScreen> {
           )),
           Icon(
             Icons.arrow_forward_ios_rounded,
-            color: Colors.white,
+            color: startScreenCreateAlertIcon2,
             size: _specificLocationIconSize,
           )
         ]),
         style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(s_aquarium),
+            backgroundColor: startScreenCreateAlertButton,
             fixedSize: Size(_buttonWidth, _buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius:
                     BorderRadius.circular(_submitButtonCornerRadius))));
-  }
-
-  Widget specificHelpText() {
-    return FormattedText(
-        text: 'Such as: At a specific address',
-        size: _helpFontSize,
-        color: Color(s_blackBlue),
-        font: s_font_BonaNova,
-        weight: FontWeight.bold);
   }
 
   Widget myAlertsButton(BuildContext context, String text) {
@@ -768,7 +659,7 @@ class _StartScreenState extends State<StartScreen> {
                   }));
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(s_darkSalmon),
+            backgroundColor: startScreenMyAlertsButton,
             fixedSize: Size(_buttonWidth, _buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius:
@@ -778,7 +669,7 @@ class _StartScreenState extends State<StartScreen> {
           children: [
             Icon(
               Icons.doorbell,
-              color: Colors.white,
+              color: startScreenMyAlertsIcon1,
               size: _specificLocationIconSize,
             ),
             SizedBox(
@@ -791,19 +682,18 @@ class _StartScreenState extends State<StartScreen> {
             )),
             Icon(
               Icons.arrow_forward_ios_rounded,
-              color: Colors.white,
+              color: startScreenMyAlertsIcon1,
               size: _specificLocationIconSize,
             )
           ],
         ));
   }
 
-  Widget startScreenTitle(String title) {
+  Widget startScreenTitle() {
     return FormattedText(
-      //text: title,
       text: _languageServices.startScreenTitle,
       size: _titleTextFontSize,
-      color: Colors.white,
+      color: startScreenTitleText,
       font: s_font_BerkshireSwash,
     );
   }
@@ -812,7 +702,7 @@ class _StartScreenState extends State<StartScreen> {
     return FormattedText(
         text: title,
         size: _submitButtonFontSize,
-        color: Colors.white,
+        color: startScreenCreateAlertText,
         font: s_font_BonaNova,
         weight: FontWeight.bold);
   }
@@ -821,7 +711,7 @@ class _StartScreenState extends State<StartScreen> {
     return RichText(
       text: TextSpan(
           style: TextStyle(
-              color: Colors.black,
+              color: startScreenSignatureText,
               fontFamily: s_font_IBMPlexSans,
               fontSize: _signatureFontSize,
               fontWeight: FontWeight.bold,
@@ -845,7 +735,7 @@ class _StartScreenState extends State<StartScreen> {
         width: _locationDisclosureButtonWidth,
         child: DecoratedBox(
             decoration: BoxDecoration(
-                color: Color(s_blackBlue),
+                color: startScreenLocationDisclosureButton,
                 borderRadius: BorderRadius.all(
                     Radius.circular(_locationDisclosureButtonCornerRadius))),
             child: Row(
@@ -854,10 +744,10 @@ class _StartScreenState extends State<StartScreen> {
                 children: [
                   Icon(Icons.location_on,
                       size: _locationDisclosureIconSize,
-                      color: s_myLocationColor),
+                      color: startScreenLocationDisclosureIcon),
                   TextButton(
                       style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                      child: locationDisclosureText('Location Disclosure'),
+                      child: locationDisclosureText(),
                       onPressed: () async {
                         SharedPreferences prefs =
                             await SharedPreferences.getInstance();
@@ -888,21 +778,12 @@ class _StartScreenState extends State<StartScreen> {
                         'assets/images/buy_me_a_coffee_button.png')))));
   }
 
-  Widget locationDisclosureText(String text) {
+  Widget locationDisclosureText() {
     return FormattedText(
         //text: text,
         text: _languageServices.startScreenLocationDisclosure,
         size: _locationDisclosureFontSize,
         color: Colors.white,
-        font: s_font_IBMPlexSans,
-        weight: FontWeight.bold);
-  }
-
-  Widget buyMeACoffeeText(String text) {
-    return FormattedText(
-        text: text,
-        size: _locationDisclosureFontSize,
-        color: Colors.black,
         font: s_font_IBMPlexSans,
         weight: FontWeight.bold);
   }

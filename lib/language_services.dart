@@ -260,6 +260,15 @@ class LanguageServices {
       'You must RESTART the app for this change to take effect.';
   String disclosureLinkedinButton = 'Visit my LinkedIn Page';
   String disclosureCloseButton = 'Close';
+  String disclosureLocationTitle = 'Location Disclosure';
+  String disclosureLocation =
+      'Location Alerts collects background location data to deliver reminder alerts based on your location. This feature may be in use when the app is in the background or closed. \n\nLocation Alerts will ALWAYS ask your permission before turning on your location services.';
+  String disclosureLocationDecline = 'Decline (No location services)';
+  String disclosureLocationAccept = 'Acknowledge';
+  String disclosureLocationOffTitle = 'Notice of Location Dismissal';
+  String disclosureLocationOff =
+      'To receive alerts based on your current location, tap on the Location Disclosure button at the bottom of the screen and Acknowledge.';
+  String disclosureLocationOffClose = 'Close';
   List<String> _disclosure = [];
 
   // Recent Locations
@@ -532,6 +541,13 @@ class LanguageServices {
       dislcosureRestartRequired,
       disclosureLinkedinButton,
       disclosureCloseButton,
+      disclosureLocationTitle,
+      disclosureLocation,
+      disclosureLocationDecline,
+      disclosureLocationAccept,
+      disclosureLocationOffTitle,
+      disclosureLocationOff,
+      disclosureLocationOffClose,
     ];
 
     // Recent Locations
@@ -819,6 +835,12 @@ class LanguageServices {
     dislcosureRestartRequired = newVars[9];
     disclosureLinkedinButton = newVars[10];
     disclosureCloseButton = newVars[11];
+    disclosureLocation = newVars[12];
+    disclosureLocationDecline = newVars[13];
+    disclosureLocationAccept = newVars[14];
+    disclosureLocationOffTitle = newVars[15];
+    disclosureLocationOff = newVars[16];
+    disclosureLocationOffClose = newVars[17];
   }
 
   // Recent Locations

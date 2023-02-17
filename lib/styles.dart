@@ -20,29 +20,86 @@ const double s_fontSizeMedium = 20;
 const double s_fontSizeSmall = 16;
 const double s_fontSizeExtraSmall = 12;
 
+// Colors Used in App
+const int s_aquarium = 0xFF1F7A8C; // 0xFF328396 (orig), 0xFF1F7A8C(second)
+const int s_aquariumLighter = 0xFF5A9BAB; // 0xFF5A9BAB
+const int s_darkSalmon = 0xFF022B3A; // 0xFFDD9787 (orig)
+const int s_declineRed = 0xFFf2301b; // 0xFFf2301b
+const int s_raisinBlack = 0xFFBFDBF7; // 0xFF2A2D34
+const int s_beauBlue = 0xFFBFDBF7;
+const int s_lavenderWeb = 0xFFE1E5F2;
+const int s_iconGreen = 0xFF2fa561;
+const int s_linkedin = 0xFF0077B5;
+const Color s_deleteButtonColor = Color.fromARGB(255, 248, 178, 178);
+const Color s_markCompleteButtonColor = Color.fromARGB(255, 178, 248, 184);
+const Color s_restoreAlertsColor = Color.fromARGB(255, 112, 210, 255);
+
 // Colors
-// startScreenAppBar
-// startScreenTitleText
-// startScreenBackgroundTop
-// startScreenBackgroundBottom
-// startScreenExplainerText
-// startScreenLocationToggleText
-// startScreenToggleOn
-// startScreenToggleOff
-// startScreenToggleSliderOn
-// startScreenToggleSliderOff
-// startScreenCreateAlertButton
-// startScreenCreateAlertText
-// startScreenCreateAlertIcon1
-// startScreenCreateAlertIcon2
-// startScreenMyAlertsButton
-// startScreenMyAlertsText
-// startScreenMyAlertsIcon1
-// startScreenMyAlertsIcon2
-// startScreenLocationDisclosureButton
-// startScreenLocationDisclosureText
-// startScreenLocationDisclosureIcon
-// startScreenSignatureText
+const Color white = Colors.white;
+const Color black = Colors.black;
+const Color mooonstone = Color(0xFF5A9BAB); // aquariumLighter
+const Color teal = Color(0xFF1F7A8C); // aquarium
+const Color gunmetal = Color(0xFF022B3A); // darkSalmon
+const Color columbiaBlue = Color(0xFFBFDBF7); // beauBlue
+const Color lavenderWeb = Color(0xFFE1E5F2);
+const Color blueBlack = Color(0xFF00171F);
+const Color lightYellow = Color.fromARGB(255, 243, 245, 159);
+const Color midYellow = Color.fromARGB(255, 239, 241, 79);
+const Color vibrantRed = Color(0xFFf2301b);
+const Color deepGreen = Color.fromARGB(255, 18, 148, 23);
+const Color deepGray = Color(0xFFAAAEB1);
+
+const Color s_pickOnMapColor = lightYellow;
+const Color s_myLocationColor = lightYellow;
+
+Color startScreenAppBar = gunmetal;
+Color startScreenLoading = gunmetal;
+Color startScreenTitleText = white;
+Color startScreenBackgroundTop = teal;
+Color startScreenBackgroundBottom = lavenderWeb;
+Color startScreenExplainerText = white;
+Color startScreenLogoGlow = white;
+Color startScreenLocationToggleText = white;
+Color startScreenToggleOn = midYellow;
+Color startScreenToggleOff = columbiaBlue;
+Color startScreenToggleSliderOn = lightYellow;
+Color startScreenToggleSliderOff = white;
+Color startScreenCreateAlertButton = teal;
+Color startScreenCreateAlertText = white;
+Color startScreenCreateAlertIcon1 = white;
+Color startScreenCreateAlertIcon2 = white;
+Color startScreenMyAlertsButton = gunmetal;
+Color startScreenMyAlertsText = white;
+Color startScreenMyAlertsIcon1 = white;
+Color startScreenMyAlertsIcon2 = white;
+Color startScreenLocationDisclosureButton = blueBlack;
+Color startScreenLocationDisclosureText = white;
+Color startScreenLocationDisclosureIcon = lightYellow;
+Color startScreenSignatureText = black;
+Color startScreenLocationDisclosureAlertText = black;
+Color startScreenLocationDisclosureAlertDeclineText = vibrantRed;
+Color startScreenLocationDisclosureAlertAccept = deepGreen;
+Color startScreenLocationDisclosureAlertAcceptText = white;
+Color startScreenLocationOffText = black;
+Color startScreenLocationOffButton = deepGray;
+
+// Others
+const int s_jungleGreen = 0xFF2EAD65;
+const int s_grayGreen = 0xFF89A894;
+const int s_darkGray = 0xFF333333;
+const int s_jungleGreen_faded = 0xEEbac261;
+const int s_mustard = 0xFFFFD700;
+const int s_fadedDeclineRed = 0xCCbe5b50;
+const int s_periwinkleBlue = 0xFF4aa8ff;
+const int s_periwinkleBlueTransparent = 0xCC4aa8ff;
+const int s_lightPurple = 0xFF8565c4;
+const int s_cadmiumOrange = 0xFFFF6500;
+const int s_lightOrange = 0xFFFF8c69;
+const int s_disabledGray = 0xFFAAAEB1;
+const int s_seaFoam = 0xFF0A8C79;
+const int s_forrestGreen = 0xFF012B09;
+const int s_goldenrod = 0xC59849;
+const int s_blackBlue = 0xFF00171F;
 
 // createAlertAppBar
 // createAlertTitleText
@@ -242,42 +299,6 @@ const double s_fontSizeExtraSmall = 12;
 // locationDisclosureDeclineText
 // locationDisclosureAcknowledgeButton
 // locationDisclosureAcknowledgeText
-
-// Colors Used in App
-const int s_aquarium = 0xFF1F7A8C; // 0xFF328396 (orig), 0xFF1F7A8C(second)
-const int s_aquariumLighter = 0xFF5A9BAB; // 0xFF5A9BAB
-const int s_darkSalmon = 0xFF022B3A; // 0xFFDD9787 (orig)
-const int s_declineRed = 0xFFf2301b; // 0xFFf2301b
-const int s_raisinBlack = 0xFFBFDBF7; // 0xFF2A2D34
-const int s_beauBlue = 0xFFBFDBF7;
-const int s_lavenderWeb = 0xFFE1E5F2;
-const int s_iconGreen = 0xFF2fa561;
-const int s_linkedin = 0xFF0077B5;
-
-const Color s_locationToggleColor = Color.fromARGB(255, 239, 241, 79);
-const Color s_myLocationColor = Color.fromARGB(255, 243, 245, 159);
-const Color s_pickOnMapColor = s_myLocationColor;
-const Color s_deleteButtonColor = Color.fromARGB(255, 248, 178, 178);
-const Color s_markCompleteButtonColor = Color.fromARGB(255, 178, 248, 184);
-const Color s_restoreAlertsColor = Color.fromARGB(255, 112, 210, 255);
-
-// Others
-const int s_jungleGreen = 0xFF2EAD65;
-const int s_grayGreen = 0xFF89A894;
-const int s_darkGray = 0xFF333333;
-const int s_jungleGreen_faded = 0xEEbac261;
-const int s_mustard = 0xFFFFD700;
-const int s_fadedDeclineRed = 0xCCbe5b50;
-const int s_periwinkleBlue = 0xFF4aa8ff;
-const int s_periwinkleBlueTransparent = 0xCC4aa8ff;
-const int s_lightPurple = 0xFF8565c4;
-const int s_cadmiumOrange = 0xFFFF6500;
-const int s_lightOrange = 0xFFFF8c69;
-const int s_disabledGray = 0xFFAAAEB1;
-const int s_seaFoam = 0xFF0A8C79;
-const int s_forrestGreen = 0xFF012B09;
-const int s_goldenrod = 0xC59849;
-const int s_blackBlue = 0xFF00171F;
 
 // Color Swatch
 const MaterialColor s_whiteSwatch = const MaterialColor(

@@ -19,6 +19,7 @@ import 'side_drawer.dart';
 //import 'logging_services.dart';
 import 'language_services.dart';
 import 'notification_services.dart';
+import 'language_selection_alert_dialog.dart';
 
 String UUID_GLOBAL = '';
 int ALERTS_NUM_GLOBAL = 0;
@@ -201,12 +202,28 @@ class _StartScreenState extends State<StartScreen> {
       getSideDrawerUserInfo();
       // Set up future notifications to prompt user
       NotificationServices().scheduleNewNotification();
+      // Language selection (first time only)
+      languageSelection();
     }
-
-    // OLD WAY: Part of overhaul to try to fix location/location toggle issues
-    //await oldWay();
-
     return true;
+  }
+
+  dynamic languageSelection() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? languageSelectionFirstTime =
+        prefs.getBool('languageSelectionFirstTime');
+    if ((languageSelectionFirstTime == null) ||
+        (languageSelectionFirstTime == false)) {
+      prefs.setBool('languageSelectionFirstTime', true);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return LanguageSelectionAlertDialogue(padding: _alertPaddingRight);
+        },
+      );
+    } else {
+      return;
+    }
   }
 
   Future<void> getSideDrawerUserInfo() async {

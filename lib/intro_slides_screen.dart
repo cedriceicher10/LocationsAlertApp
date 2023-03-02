@@ -40,7 +40,7 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
         widthImage: _imageWidth,
         heightImage: _imageHeight,
         foregroundImageFit: BoxFit.fitWidth,
-        backgroundColor: Color(s_beauBlue),
+        backgroundColor: introSlidesBackgroundSlide1,
       ),
     );
     listContentConfig.add(
@@ -52,7 +52,7 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
         pathImage: "assets/images/IntroSlide_WriteAlert.png",
         widthImage: _imageWidth,
         heightImage: _imageHeight,
-        backgroundColor: Color(s_darkSalmon),
+        backgroundColor: introSlidesBackgroundSlide2,
       ),
     );
     listContentConfig.add(
@@ -64,7 +64,7 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
         pathImage: "assets/images/IntroSlide_LocationOn.png",
         widthImage: _imageWidth,
         heightImage: _imageHeight,
-        backgroundColor: Color(s_beauBlue),
+        backgroundColor: introSlidesBackgroundSlide3,
       ),
     );
     listContentConfig.add(
@@ -76,7 +76,7 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
         pathImage: "assets/images/IntroSlide_ManyAlerts.png",
         widthImage: _imageWidth,
         heightImage: _imageHeight,
-        backgroundColor: Color(s_darkSalmon),
+        backgroundColor: introSlidesBackgroundSlide4,
       ),
     );
     super.initState();
@@ -102,7 +102,7 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
 
   TextStyle titleTextStyleDark() {
     return TextStyle(
-        color: Color(s_darkSalmon),
+        color: introSlidesTitleTextSlide1,
         fontSize: _titleFontSize,
         fontFamily: s_font_BonaNova,
         fontWeight: FontWeight.bold);
@@ -110,7 +110,7 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
 
   TextStyle titleTextStyleLight() {
     return TextStyle(
-        color: Color(s_lavenderWeb),
+        color: introSlidesTitleTextSlide2,
         fontSize: _titleFontSize,
         fontFamily: s_font_BonaNova,
         fontWeight: FontWeight.bold);
@@ -118,7 +118,7 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
 
   TextStyle textStyleDark() {
     return TextStyle(
-        color: Color(s_darkSalmon),
+        color: introSlidesTextSlide1,
         fontSize: _textFontSize,
         fontFamily: s_font_IBMPlexSans,
         fontWeight: FontWeight.bold);
@@ -126,7 +126,7 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
 
   TextStyle textStyleLight() {
     return TextStyle(
-        color: Color(s_lavenderWeb),
+        color: introSlidesTextSlide2,
         fontSize: _textFontSize,
         fontFamily: s_font_IBMPlexSans,
         fontWeight: FontWeight.bold);

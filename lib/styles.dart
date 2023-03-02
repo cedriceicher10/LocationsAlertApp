@@ -278,11 +278,14 @@ Color createAlertCreateIcon = white;
 // mapViewListViewText
 // mapViewListViewIcon
 
-// introSlidesAppBar
-// introSlidesTitleText
-// introSlidesBackgroundTop
-// introSlidesBackgroundBottom
-// introSlidesText
+Color introSlidesBackgroundSlide1 = columbiaBlue;
+Color introSlidesBackgroundSlide2 = gunmetal;
+Color introSlidesBackgroundSlide3 = columbiaBlue;
+Color introSlidesBackgroundSlide4 = gunmetal;
+Color introSlidesTitleTextSlide1 = gunmetal;
+Color introSlidesTitleTextSlide2 = columbiaBlue;
+Color introSlidesTextSlide1 = columbiaBlue;
+Color introSlidesTextSlide2 = gunmetal;
 
 // sideDrawerTopBar
 // sideDrawerTitleText

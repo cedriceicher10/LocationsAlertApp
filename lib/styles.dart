@@ -73,7 +73,7 @@ Color startScreenMyAlertsText = white;
 Color startScreenMyAlertsIcon1 = white;
 Color startScreenMyAlertsIcon2 = white;
 Color startScreenLocationDisclosureButton = blueBlack;
-Color startScreenLocationDisclosureText = white;
+Color startScreenLocationDisclosureButtonText = white;
 Color startScreenLocationDisclosureIcon = lightYellow;
 Color startScreenSignatureText = black;
 Color startScreenLocationDisclosureAlertText = black;
@@ -82,6 +82,7 @@ Color startScreenLocationDisclosureAlertAccept = deepGreen;
 Color startScreenLocationDisclosureAlertAcceptText = white;
 Color startScreenLocationOffText = black;
 Color startScreenLocationOffButton = deepGray;
+Color startScreenLocationDisclosureText = black;
 
 // Others
 const int s_jungleGreen = 0xFF2EAD65;
@@ -306,12 +307,6 @@ Color introSlidesTextSlide2 = gunmetal;
 // sideDrawerChangeLanguageRestartText
 // sideDrawerChagneLanguageRestartButton
 // sideDrawerChagneLanguageRestartButtonText
-
-// locationDisclosureTitle
-// locationDisclosureText
-// locationDisclosureDeclineText
-// locationDisclosureAcknowledgeButton
-// locationDisclosureAcknowledgeText
 
 // Color Swatch
 const MaterialColor s_whiteSwatch = const MaterialColor(

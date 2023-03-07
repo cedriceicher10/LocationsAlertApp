@@ -386,7 +386,11 @@ class _StartScreenState extends State<StartScreen> {
         style: TextStyle(
             color: Colors.transparent,
             fontWeight: FontWeight.bold,
-            shadows: [Shadow(offset: Offset(0, -3), color: Colors.black)],
+            shadows: [
+              Shadow(
+                  offset: Offset(0, -3),
+                  color: startScreenLocationDisclosureText)
+            ],
             decoration: TextDecoration.underline,
             decorationColor: startScreenLocationDisclosureAlertText,
             decorationThickness: 1),
@@ -800,7 +804,7 @@ class _StartScreenState extends State<StartScreen> {
         //text: text,
         text: _languageServices.startScreenLocationDisclosure,
         size: _locationDisclosureFontSize,
-        color: Colors.white,
+        color: startScreenLocationDisclosureButtonText,
         font: s_font_IBMPlexSans,
         weight: FontWeight.bold);
   }

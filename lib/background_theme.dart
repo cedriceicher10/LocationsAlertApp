@@ -35,8 +35,8 @@ class BackgroundTheme {
         break;
       case Screen.MY_ALERTS_SCREEN:
         {
-          topColor = teal;
-          bottomColor = lavenderWeb;
+          topColor = myAlertsBackgroundTop;
+          bottomColor = myAlertsBackgroundBottom;
         }
         break;
       case Screen.EDIT_ALERTS_SCREEN:

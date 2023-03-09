@@ -96,7 +96,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
       home: Scaffold(
         appBar: AppBar(
           title: myAlertsScreenTitle(),
-          backgroundColor: const Color(s_darkSalmon),
+          backgroundColor: myAlertsAppBar,
           centerTitle: true,
         ),
         resizeToAvoidBottomInset: false,
@@ -143,9 +143,9 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
               return Center(child: noAlertsYetText());
             }
           } else {
-            return const Center(
+            return Center(
                 child: CircularProgressIndicator(
-              color: Color(s_blackBlue),
+              color: myAlertsProgressIndicator,
             ));
           }
         });
@@ -204,24 +204,24 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     if (this.widget.alertList == AlertList.NOT_COMPLETED) {
       icon = Icon(
         Icons.edit,
-        color: Color(s_darkSalmon),
+        color: myAlertsCardIcon,
         size: _cardIconSize,
       );
     } else {
       icon = Icon(
         Icons.restore,
-        color: Color(s_darkSalmon),
+        color: restoreAlertsCardIcon,
         size: _cardIconSize,
       );
     }
 
     return Card(
         elevation: 2,
+        color: myAlertsCardBackground,
         margin: EdgeInsets.fromLTRB(0, _cardGap, 0, _cardGap),
-        //color: Color.fromARGB(255, 188, 227, 245),
         shape: RoundedRectangleBorder(
             side:
-                BorderSide(color: Color(s_darkSalmon), width: _cardBorderWidth),
+                BorderSide(color: myAlertsCardBorder, width: _cardBorderWidth),
             borderRadius: BorderRadius.circular(_cardCornerRadius)),
         child: ListTile(
             contentPadding: EdgeInsets.fromLTRB(
@@ -290,14 +290,14 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
               }
               Navigator.pop(context);
             },
-            backgroundColor: Color(s_darkSalmon),
+            backgroundColor: restoreAlertsBackButton,
             shape: RoundedRectangleBorder(
                 borderRadius:
                     BorderRadius.all(Radius.circular(_backButtonCornerRadius))),
             label: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Icon(
                 Icons.arrow_back_ios_rounded,
-                color: Colors.white,
+                color: restoreAlertsBackIcon,
                 size: _backButtonIconSize,
               ),
               SizedBox(
@@ -313,7 +313,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     return FormattedText(
       text: text,
       size: _cardTitleFontSize,
-      color: const Color(s_blackBlue),
+      color: myAlertsFirstLine,
       font: s_font_IBMPlexSans,
       weight: FontWeight.bold,
     );
@@ -323,7 +323,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     return FormattedText(
       text: text,
       size: _cardBodyFontSize,
-      color: const Color(s_aquarium),
+      color: myAlertsSecondLine,
       font: s_font_IBMPlexSans,
       decoration: TextDecoration.underline,
       weight: FontWeight.bold,
@@ -334,7 +334,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     return FormattedText(
       text: text,
       size: _cardSubtitleFontSize,
-      color: const Color(s_blackBlue),
+      color: myAlertsThirdLine,
       font: s_font_IBMPlexSans,
       style: FontStyle.italic,
       weight: FontWeight.bold,
@@ -351,7 +351,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     return FormattedText(
       text: text,
       size: _titleTextFontSize,
-      color: Colors.white,
+      color: myAlertsTitleText,
       font: s_font_BerkshireSwash,
     );
   }
@@ -366,7 +366,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     return FormattedText(
       text: text,
       size: _explainerTextFontSize,
-      color: Color(s_darkSalmon),
+      color: myAlertsExplainerText,
       align: TextAlign.center,
       font: s_font_IBMPlexSans,
     );
@@ -382,7 +382,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     return FormattedText(
       text: text,
       size: _noAlertsYetText,
-      color: Color(s_darkSalmon),
+      color: myAlertsNoneYetText,
       font: s_font_BonaNova,
       weight: FontWeight.bold,
       align: TextAlign.center,

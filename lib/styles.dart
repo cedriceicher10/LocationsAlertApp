@@ -218,39 +218,30 @@ Color createAlertCreateIcon = white;
 // editAlertDeleteText
 // editAlertDeleteIcon
 
-// myAlertsAppBar
-// myAlertsTitleText
-// myAlertsBackgroundTop
-// myAlertsBackgroundBottom
-// myAlertsCardBorder
-// myAlertsCardBackground
-// myAlertsFirstLine
-// myAlertsSecondLine
-// myAlertsThirdLine
-// myAlertsCardIcon
-// myAlertsExplainerText
-// myAlertsBackButton
-// myAlertsBackText
-// myAlertsBackIcon
-// myAlertsMapViewButton
-// myAlertsMapViewText
-// myAlertsMapViewIcon
-// myAlertsNoneYetText
+Color myAlertsAppBar = gunmetal;
+Color myAlertsTitleText = white;
+Color myAlertsBackgroundTop = teal;
+Color myAlertsBackgroundBottom = lavenderWeb;
+Color myAlertsCardBorder = gunmetal;
+Color myAlertsCardBackground = white;
+Color myAlertsFirstLine = blueBlack;
+Color myAlertsSecondLine = teal;
+Color myAlertsThirdLine = blueBlack;
+Color myAlertsCardIcon = gunmetal;
+Color myAlertsExplainerText = gunmetal;
+Color myAlertsBackButton = gunmetal;
+Color myAlertsBackText = white;
+Color myAlertsBackIcon = white;
+Color myAlertsMapViewButton = lightYellow;
+Color myAlertsMapViewText = gunmetal;
+Color myAlertsMapViewIcon = gunmetal;
+Color myAlertsNoneYetText = gunmetal;
+Color myAlertsProgressIndicator = gunmetal;
 
-// restoreAlertsTitleText
-// restoreAlertsBackgroundTop
-// restoreAlertsBackgroundBottom
-// restoreAlertsCardBorder
-// restoreAlertsCardBackground
-// restoreAlertsFirstLine
-// restoreAlertsSecondLine
-// restoreAlertsThirdLine
-// restoreAlertsCardIcon
-// restoreAlertsExplainerText
-// restoreAlertsBackButton
-// restoreAlertsBackText
-// restoreAlertsBackIcon
-// restoreAlertsNoneYetText
+Color restoreAlertsCardIcon = gunmetal;
+Color restoreAlertsBackButton = gunmetal;
+Color restoreAlertsBackText = white;
+Color restoreAlertsBackIcon = white;
 
 // mapViewAppBar
 // mapViewTitleText

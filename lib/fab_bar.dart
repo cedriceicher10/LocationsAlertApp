@@ -46,7 +46,7 @@ Widget fabBar(
                   }
                   Navigator.pop(context);
                 },
-                backgroundColor: Color(s_darkSalmon),
+                backgroundColor: myAlertsBackButton,
                 shape: RoundedRectangleBorder(
                     borderRadius:
                         BorderRadius.all(Radius.circular(cornerRadius))),
@@ -54,7 +54,7 @@ Widget fabBar(
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   Icon(
                     Icons.arrow_back_ios_rounded,
-                    color: Colors.white,
+                    color: myAlertsBackIcon,
                     size: buttonIconWidth,
                   ),
                   SizedBox(
@@ -95,18 +95,18 @@ Widget fabBar(
                       );
                     }
                   },
-                  backgroundColor: Color.fromARGB(255, 252, 241, 144),
+                  backgroundColor: myAlertsMapViewButton,
                   shape: RoundedRectangleBorder(
                       borderRadius:
                           BorderRadius.all(Radius.circular(cornerRadius))),
                   label: Column(children: [
                     Text(
                       fabToggleText,
-                      style: TextStyle(color: Color(s_darkSalmon)),
+                      style: TextStyle(color: myAlertsMapViewText),
                     ),
                     Icon(
                       iconSelection,
-                      color: Color(s_darkSalmon),
+                      color: myAlertsMapViewIcon,
                       size: iconSize,
                     )
                   ])))
@@ -125,7 +125,7 @@ Widget buttonText(double fontSize) {
   return FormattedText(
     text: _languageServices.myAlertsBackButton,
     size: fontSize,
-    color: Colors.white,
+    color: myAlertsBackText,
     font: s_font_BonaNova,
     weight: FontWeight.bold,
   );

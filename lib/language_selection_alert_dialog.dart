@@ -44,7 +44,7 @@ class _LanguageSelectionAlertDialogueState
             fontWeight: FontWeight.bold,
             shadows: [Shadow(offset: Offset(0, -3), color: Colors.black)],
             decoration: TextDecoration.underline,
-            decorationColor: Colors.black,
+            decorationColor: sideDrawerChangeLanguageText,
             decorationThickness: 1),
       ),
       content: Container(
@@ -58,10 +58,10 @@ class _LanguageSelectionAlertDialogueState
                 value: dropDownValue,
                 icon: const Icon(Icons.arrow_drop_down),
                 elevation: 16,
-                style: TextStyle(color: Color(s_darkSalmon)),
+                style: TextStyle(color: sideDrawerChangeLanguageDropDown),
                 underline: Container(
                   height: 2,
-                  color: Color(s_darkSalmon),
+                  color: sideDrawerChangeLanguageUnderline,
                 ),
                 onChanged: (String? value) {
                   // This is called when the user selects an item.
@@ -83,7 +83,7 @@ class _LanguageSelectionAlertDialogueState
                 ? Text(
                     _languageServices.dislcosureRestartRequired,
                     style: TextStyle(
-                        color: Color(s_declineRed),
+                        color: sideDrawerChangeLanguageRestartText,
                         fontWeight: FontWeight.bold),
                   )
                 : Container(),
@@ -95,12 +95,13 @@ class _LanguageSelectionAlertDialogueState
               child: Text(_languageServices.disclosureChangeLanguageButton,
                   style: TextStyle(fontWeight: FontWeight.bold)),
               style: TextButton.styleFrom(
-                  backgroundColor: _buttonColor, foregroundColor: Colors.white),
+                  backgroundColor: _buttonColor,
+                  foregroundColor: sideDrawerChangeLanguageRestartButtonText),
               onPressed: () async {
                 // First time pressed, inform user that a restart is necessary
                 if (!_firstTimePressed) {
                   setState(() {
-                    _buttonColor = Color(s_declineRed);
+                    _buttonColor = sideDrawerChangeLanguageRestartButton;
                     _showRestartWarning = true;
                     _firstTimePressed = true;
                   });
@@ -117,8 +118,8 @@ class _LanguageSelectionAlertDialogueState
               child: Text(_languageServices.disclosureCloseButton,
                   style: TextStyle(fontWeight: FontWeight.bold)),
               style: TextButton.styleFrom(
-                  backgroundColor: Color(s_aquarium),
-                  foregroundColor: Colors.white),
+                  backgroundColor: sideDrawerChangeLanguageCloseButton,
+                  foregroundColor: sideDrawerChangeLanguageCloseButtonText),
               onPressed: () async {
                 Navigator.of(context).pop();
               },

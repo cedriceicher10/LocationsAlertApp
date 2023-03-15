@@ -51,9 +51,9 @@ class SideDrawer extends StatelessWidget {
             if (snapshot.hasData) {
               return sideDrawer(context);
             } else {
-              return const Center(
+              return Center(
                   child: CircularProgressIndicator(
-                color: Color(s_darkSalmon),
+                color: sideDrawerCircularProgressIndicator,
               ));
             }
           });
@@ -79,7 +79,7 @@ class SideDrawer extends StatelessWidget {
                   height: _sideDrawerHeaderHeight,
                   child: DrawerHeader(
                     decoration: BoxDecoration(
-                      color: Color(s_darkSalmon),
+                      color: sideDrawerTitleBackground,
                     ),
                     child: sideDrawerTitle(),
                   )),
@@ -277,7 +277,7 @@ class SideDrawer extends StatelessWidget {
             fontWeight: FontWeight.bold,
             shadows: [Shadow(offset: Offset(0, -3), color: Colors.black)],
             decoration: TextDecoration.underline,
-            decorationColor: Colors.black,
+            decorationColor: sideDrawerDisclosureTitle,
             decorationThickness: 1),
       ),
       content: Text(_languageServices.disclosureDataBody),
@@ -288,8 +288,8 @@ class SideDrawer extends StatelessWidget {
               child: Text(_languageServices.disclosureCloseButton,
                   style: TextStyle(fontWeight: FontWeight.bold)),
               style: TextButton.styleFrom(
-                  backgroundColor: Color(s_aquarium),
-                  foregroundColor: Colors.white),
+                  backgroundColor: sideDrawerDisclosureCloseButton,
+                  foregroundColor: sideDrawerDisclosureCloseText),
               onPressed: () async {
                 Navigator.of(context).pop();
               },
@@ -307,7 +307,7 @@ class SideDrawer extends StatelessWidget {
             fontWeight: FontWeight.bold,
             shadows: [Shadow(offset: Offset(0, -3), color: Colors.black)],
             decoration: TextDecoration.underline,
-            decorationColor: Colors.black,
+            decorationColor: sideDrawerDisclosureTitle,
             decorationThickness: 1),
       ),
       content: Text(_languageServices.disclosureAdsBody),
@@ -318,8 +318,8 @@ class SideDrawer extends StatelessWidget {
               child: Text(_languageServices.disclosureCloseButton,
                   style: TextStyle(fontWeight: FontWeight.bold)),
               style: TextButton.styleFrom(
-                  backgroundColor: Color(s_aquarium),
-                  foregroundColor: Colors.white),
+                  backgroundColor: sideDrawerDisclosureCloseButton,
+                  foregroundColor: sideDrawerDisclosureCloseText),
               onPressed: () async {
                 Navigator.of(context).pop();
               },
@@ -337,7 +337,7 @@ class SideDrawer extends StatelessWidget {
             fontWeight: FontWeight.bold,
             shadows: [Shadow(offset: Offset(0, -3), color: Colors.black)],
             decoration: TextDecoration.underline,
-            decorationColor: Colors.black,
+            decorationColor: sideDrawerDisclosureTitle,
             decorationThickness: 1),
       ),
       content: Text(_languageServices.disclosureAboutBody),
@@ -345,8 +345,8 @@ class SideDrawer extends StatelessWidget {
         TextButton(
             child: Text(_languageServices.disclosureLinkedinButton),
             style: TextButton.styleFrom(
-                backgroundColor: Color(s_linkedin),
-                foregroundColor: Colors.white),
+                backgroundColor: sideDrawerDisclosureLinkedinButton,
+                foregroundColor: sideDrawerDisclosureLinkedinText),
             onPressed: () async {
               Navigator.of(context).pop();
               String url = 'https://www.linkedin.com/in/cedriceicher/';
@@ -361,8 +361,8 @@ class SideDrawer extends StatelessWidget {
               child: Text(_languageServices.disclosureCloseButton,
                   style: TextStyle(fontWeight: FontWeight.bold)),
               style: TextButton.styleFrom(
-                  backgroundColor: Color(s_aquarium),
-                  foregroundColor: Colors.white),
+                  backgroundColor: sideDrawerDisclosureCloseButton,
+                  foregroundColor: sideDrawerDisclosureCloseText),
               onPressed: () async {
                 Navigator.of(context).pop();
               },
@@ -377,7 +377,7 @@ class SideDrawer extends StatelessWidget {
         //crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(Icons.dashboard_outlined,
-              size: _dataDisclosureIconSize, color: Color(s_blackBlue)),
+              size: _dataDisclosureIconSize, color: sideDrawerDisclosureIcon),
           SizedBox(width: _dataIconSpacer),
           listText(_languageServices.sideDrawerDataDisclosureTitle)
         ]);
@@ -389,7 +389,7 @@ class SideDrawer extends StatelessWidget {
         //crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(Icons.attach_money_outlined,
-              size: _adDisclosureIconSize, color: Color(s_blackBlue)),
+              size: _adDisclosureIconSize, color: sideDrawerIcons),
           SizedBox(width: _adIconSpacer),
           listText(_languageServices.sideDrawerAdsDisclosureTitle)
         ]);
@@ -401,7 +401,7 @@ class SideDrawer extends StatelessWidget {
         //crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(Icons.question_mark,
-              size: _howToUseIconSize, color: Color(s_blackBlue)),
+              size: _howToUseIconSize, color: sideDrawerIcons),
           SizedBox(width: _howToUseIconSpacer),
           listText(_languageServices.sideDrawerHowToUseTitle)
         ]);
@@ -413,7 +413,7 @@ class SideDrawer extends StatelessWidget {
         //crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(Icons.email_outlined,
-              size: _dataDisclosureIconSize, color: Color(s_blackBlue)),
+              size: _dataDisclosureIconSize, color: sideDrawerIcons),
           SizedBox(width: _dataIconSpacer),
           listText(_languageServices.sideDrawerSendFeedbackTitle)
         ]);
@@ -425,7 +425,7 @@ class SideDrawer extends StatelessWidget {
         //crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(Icons.perm_device_information_rounded,
-              size: _dataDisclosureIconSize, color: Color(s_blackBlue)),
+              size: _dataDisclosureIconSize, color: sideDrawerIcons),
           SizedBox(width: _dataIconSpacer),
           listText(_languageServices.sideDrawerRequestUserDataTitle)
         ]);
@@ -437,7 +437,7 @@ class SideDrawer extends StatelessWidget {
         //crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(Icons.privacy_tip_outlined,
-              size: _adDisclosureIconSize, color: Color(s_blackBlue)),
+              size: _adDisclosureIconSize, color: sideDrawerIcons),
           SizedBox(width: _adIconSpacer),
           listText(_languageServices.sideDrawerPrivacyPolicyTitle)
         ]);
@@ -449,7 +449,7 @@ class SideDrawer extends StatelessWidget {
         //crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(Icons.info_outline,
-              size: _adDisclosureIconSize, color: Color(s_blackBlue)),
+              size: _adDisclosureIconSize, color: sideDrawerIcons),
           SizedBox(width: _adIconSpacer),
           listText(_languageServices.sideDrawerAboutTitle)
         ]);
@@ -461,7 +461,7 @@ class SideDrawer extends StatelessWidget {
         //crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(Icons.language,
-              size: _adDisclosureIconSize, color: Color(s_blackBlue)),
+              size: _adDisclosureIconSize, color: sideDrawerIcons),
           SizedBox(width: _adIconSpacer),
           listText(_languageServices.sideDrawerChangeLanguageTitle)
         ]);
@@ -474,7 +474,7 @@ class SideDrawer extends StatelessWidget {
         //crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(Icons.numbers_rounded,
-              size: _adDisclosureIconSize, color: Color(s_blackBlue)),
+              size: _adDisclosureIconSize, color: sideDrawerIcons),
           SizedBox(width: _adIconSpacer),
           listText('${_languageServices.sideDrawerUserNo}: $userNoString')
         ]);
@@ -486,7 +486,7 @@ class SideDrawer extends StatelessWidget {
         //crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(Icons.person,
-              size: _adDisclosureIconSize, color: Color(s_blackBlue)),
+              size: _adDisclosureIconSize, color: sideDrawerIcons),
           SizedBox(width: _adIconSpacer),
           listText('${_languageServices.sideDrawerUuid}: $UUID_GLOBAL')
         ]);
@@ -496,7 +496,7 @@ class SideDrawer extends StatelessWidget {
     return FormattedText(
         text: text,
         size: _sideDrawerItemFontSize,
-        color: Color(s_aquarium),
+        color: sideDrawerSectionTitleText,
         font: s_font_IBMPlexSans,
         weight: FontWeight.bold);
   }
@@ -505,7 +505,7 @@ class SideDrawer extends StatelessWidget {
     return FormattedText(
         text: text,
         size: _sideDrawerDividerFontSize,
-        color: Color.fromARGB(255, 117, 114, 114),
+        color: sideDrawerDivider,
         font: s_font_IBMPlexSans,
         weight: FontWeight.bold);
   }
@@ -551,14 +551,14 @@ class SideDrawer extends StatelessWidget {
         children: [
           Icon(
             Icons.location_pin,
-            color: Colors.white,
+            color: sideDrawerTitleIcon,
             size: _sideDrawerIconSize,
           ),
           SizedBox(width: 2),
           FormattedText(
               text: _languageServices.sideDrawerTitle,
               size: _sideDrawerTitleFontSize,
-              color: Colors.white,
+              color: sideDrawerTitleText,
               font: s_font_IBMPlexSans,
               align: TextAlign.center,
               weight: FontWeight.bold)
@@ -569,7 +569,7 @@ class SideDrawer extends StatelessWidget {
     return FormattedText(
         text: text,
         size: _sideDrawerItemFontSize,
-        color: Color(s_aquarium),
+        color: sideDrawerSectionText,
         font: s_font_IBMPlexSans,
         weight: FontWeight.bold);
   }

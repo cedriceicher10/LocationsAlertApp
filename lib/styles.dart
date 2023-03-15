@@ -48,6 +48,8 @@ const Color vibrantRed = Color(0xFFf2301b);
 const Color deepGreen = Color.fromARGB(255, 18, 148, 23);
 const Color deepGray = Color(0xFFAAAEB1);
 const Color skyBlue = Color.fromARGB(255, 112, 210, 255);
+const Color charcoal = Color.fromARGB(255, 117, 114, 114);
+const Color linkedin = Color(0xFF0077B5);
 
 const Color s_pickOnMapColor = lightYellow;
 const Color s_myLocationColor = lightYellow;
@@ -279,25 +281,30 @@ Color introSlidesTitleTextSlide2 = columbiaBlue;
 Color introSlidesTextSlide1 = columbiaBlue;
 Color introSlidesTextSlide2 = gunmetal;
 
-// sideDrawerTopBar
-// sideDrawerTitleText
-// sideDrawerTitleIcon
-// sideDrawerBackground
-// sideDrawerSectionTitleText
-// sideDrawerSectionText
-// sideDrawerIcons
-// sideDrawerDisclosureTitle
-// sideDrawerDisclosureText
-// sideDrawerDisclosureCloseButton
-// sideDrawerDisclosureCloseText
-// sideDrawerDisclosureLinkedinButton
-// sideDrawerDisclosureLinkedinText
-// sideDrawerChangeLanguageButton
-// sideDrawerChangeLanguageText
-// sideDrawerChangeLanguageDropDown
-// sideDrawerChangeLanguageRestartText
-// sideDrawerChagneLanguageRestartButton
-// sideDrawerChagneLanguageRestartButtonText
+Color sideDrawerCircularProgressIndicator = teal;
+Color sideDrawerTitleText = white;
+Color sideDrawerTitleIcon = white;
+Color sideDrawerTitleBackground = gunmetal;
+Color sideDrawerSectionTitleText = gunmetal;
+Color sideDrawerSectionText = gunmetal;
+Color sideDrawerDivider = charcoal;
+Color sideDrawerIcons = teal;
+Color sideDrawerDisclosureTitle = black;
+Color sideDrawerDisclosureText = gunmetal;
+Color sideDrawerDisclosureIcon = columbiaBlue;
+Color sideDrawerDisclosureBackground = white;
+Color sideDrawerDisclosureCloseButton = gunmetal;
+Color sideDrawerDisclosureCloseText = white;
+Color sideDrawerDisclosureLinkedinButton = linkedin;
+Color sideDrawerDisclosureLinkedinText = white;
+Color sideDrawerChangeLanguageText = black;
+Color sideDrawerChangeLanguageUnderline = gunmetal;
+Color sideDrawerChangeLanguageDropDown = gunmetal;
+Color sideDrawerChangeLanguageRestartText = vibrantRed;
+Color sideDrawerChangeLanguageRestartButton = vibrantRed;
+Color sideDrawerChangeLanguageRestartButtonText = white;
+Color sideDrawerChangeLanguageCloseButton = gunmetal;
+Color sideDrawerChangeLanguageCloseButtonText = white;
 
 // Color Swatch
 const MaterialColor s_whiteSwatch = const MaterialColor(

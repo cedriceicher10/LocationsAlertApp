@@ -41,8 +41,8 @@ class BackgroundTheme {
         break;
       case Screen.EDIT_ALERTS_SCREEN:
         {
-          topColor = teal;
-          bottomColor = lavenderWeb;
+          topColor = editAlertBackgroundTop;
+          bottomColor = editAlertBackgroundBottom;
         }
         break;
     }

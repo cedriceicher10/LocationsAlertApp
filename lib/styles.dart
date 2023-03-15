@@ -36,7 +36,7 @@ const Color s_markCompleteButtonColor = Color.fromARGB(255, 178, 248, 184);
 // Colors
 const Color white = Colors.white;
 const Color black = Colors.black;
-const Color mooonstone = Color(0xFF5A9BAB); // aquariumLighter
+const Color moonstone = Color(0xFF5A9BAB); // aquariumLighter
 const Color teal = Color(0xFF1F7A8C); // aquarium
 const Color gunmetal = Color(0xFF022B3A); // darkSalmon
 const Color columbiaBlue = Color(0xFFBFDBF7); // beauBlue
@@ -50,6 +50,7 @@ const Color deepGray = Color(0xFFAAAEB1);
 const Color skyBlue = Color.fromARGB(255, 112, 210, 255);
 const Color charcoal = Color.fromARGB(255, 117, 114, 114);
 const Color linkedin = Color(0xFF0077B5);
+const Color blue = Colors.blue;
 
 const Color s_pickOnMapColor = lightYellow;
 const Color s_myLocationColor = lightYellow;
@@ -166,8 +167,8 @@ Color createAlertCreateIcon = white;
 
 // editAlertAppBar
 // editAlertTitleText
-// editAlertBackgroundTop
-// editAlertBackgroundBottom
+Color editAlertBackgroundTop = lavenderWeb;
+Color editAlertBackgroundBottom = teal;
 // editAlertRemindMeText
 // editAlertRemindMeFieldBorder
 // editAlertRemindMeFieldText
@@ -245,32 +246,33 @@ Color restoreAlertsBackButton = gunmetal;
 Color restoreAlertsBackText = white;
 Color restoreAlertsBackIcon = white;
 
-// mapViewAppBar
-// mapViewTitleText
-// mapViewBackgroundTop
-// mapViewBackgroundBottom
-// mapViewCluster
-// mapViewClusterText
-// mapViewAlertMarker
-// mapViewUserLocation
-// mapViewResetNorthButton
-// mapViewResetNorthIcon
-// mapViewZoomInButton
-// mapViewZoomInIcon
-// mapViewZoomOutButton
-// mapViewZoomOutIcon
-// mapViewCardBorder
-// mapViewCardBackground
-// mapViewCardLineOne
-// mapViewCardLineTwo
-// mapViewCardLineThree
-// mapViewCardIcon
-// mapViewCardNotFoundBorder
-// mapViewCardNotFoundText
-// mapViewCardNotFoundIcon
-// mapViewListViewButton
-// mapViewListViewText
-// mapViewListViewIcon
+Color mapViewAppBar = gunmetal;
+Color mapViewTitleText = white;
+Color mapViewCluster = gunmetal;
+Color mapViewTilesUnloaded = white;
+Color mapViewClusterText = white;
+Color mapViewAlertMarker = gunmetal;
+Color mapViewUserLocation = vibrantRed;
+Color mapViewTriggerRadius = blue;
+Color mapViewMyLocationButton = vibrantRed;
+Color mapViewMyLocationIcon = white;
+Color mapViewResetNorthButton = white;
+Color mapViewResetNorthIcon = teal;
+Color mapViewZoomInButton = moonstone;
+Color mapViewZoomInIcon = white;
+Color mapViewZoomOutButton = moonstone;
+Color mapViewZoomOutIcon = white;
+Color mapViewCardBorder = blueBlack;
+Color mapViewCardBackground = white;
+Color mapViewCardLineOne = blueBlack;
+Color mapViewCardLineTwo = teal;
+Color mapViewCardLineThree = blueBlack;
+Color mapViewCardIcon = blueBlack;
+Color mapViewCardNotFoundBorder = vibrantRed;
+Color mapViewCardNotFoundText = vibrantRed;
+Color mapViewCardUserLocationText = black;
+Color mapViewNoAlertsText = gunmetal;
+Color mapViewCircularProgressIndicator = blueBlack;
 
 Color introSlidesBackgroundSlide1 = columbiaBlue;
 Color introSlidesBackgroundSlide2 = gunmetal;

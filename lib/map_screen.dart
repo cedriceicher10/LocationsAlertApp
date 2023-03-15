@@ -81,7 +81,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       home: Scaffold(
         appBar: AppBar(
           title: myAlertsScreenTitle(),
-          backgroundColor: Color(s_darkSalmon),
+          backgroundColor: mapViewAppBar,
           centerTitle: true,
         ),
         resizeToAvoidBottomInset: false,
@@ -91,9 +91,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               if (snapshot.hasData) {
                 return buildMap();
               } else {
-                return const Center(
+                return Center(
                     child: CircularProgressIndicator(
-                  color: Color(s_darkSalmon),
+                  color: mapViewCircularProgressIndicator,
                 ));
               }
             }),
@@ -194,9 +194,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                           noAlertsYetText(_languageServices.mapViewNoneYet)));
             }
           } else {
-            return const Center(
+            return Center(
                 child: CircularProgressIndicator(
-              color: Color(s_blackBlue),
+              color: mapViewCircularProgressIndicator,
             ));
           }
         });
@@ -267,8 +267,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                 Icons.location_on_sharp,
                 size: (index == 0 && (_userPin)) ? 50 : 60,
                 color: (index == 0 && (_userPin))
-                    ? Color(s_declineRed)
-                    : Color(s_aquarium),
+                    ? mapViewUserLocation
+                    : mapViewAlertMarker,
               ));
       _alertMarkers.add(marker);
     }
@@ -287,9 +287,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         circle = CircleMarker(
             point:
                 LatLng(_alertObjs[index].latitude, _alertObjs[index].longitude),
-            color: Colors.blue.withOpacity(0.15),
+            color: (mapViewTriggerRadius).withOpacity(0.15),
             borderStrokeWidth: 3.0,
-            borderColor: Colors.blue,
+            borderColor: mapViewTriggerRadius,
             useRadiusInMeter: true,
             radius: determineRadiusInMeters(index));
       }
@@ -324,7 +324,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         TileLayerOptions(
           minZoom: 1,
           maxZoom: 20,
-          backgroundColor: Colors.white,
+          backgroundColor: mapViewTilesUnloaded,
           urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
           subdomains: ['a', 'b', 'c'],
         ),
@@ -349,7 +349,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
             return Container(
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                  color: Color(s_darkSalmon), shape: BoxShape.circle),
+                  color: mapViewAlertMarker, shape: BoxShape.circle),
               child: clusteringText(markers),
             );
           },
@@ -375,10 +375,10 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                             ? _popupUserLocationWidth
                             : _popupWidth,
                         decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: mapViewCardBackground,
                             shape: BoxShape.rectangle,
-                            border: Border.all(
-                                color: Color(s_darkSalmon), width: 3),
+                            border:
+                                Border.all(color: mapViewCardBorder, width: 3),
                             borderRadius: BorderRadius.all(
                                 Radius.circular(_popupBorderRadius))),
                         child: Padding(
@@ -394,7 +394,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                 bottom: 115,
                 child: FloatingActionButton(
                   heroTag: 'user_location',
-                  backgroundColor: Color(s_declineRed),
+                  backgroundColor: mapViewMyLocationButton,
                   onPressed: () {
                     // Go to the user's location
                     setState(() {
@@ -405,9 +405,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                       }
                     });
                   },
-                  child: const Icon(
+                  child: Icon(
                     Icons.my_location,
-                    color: Colors.white,
+                    color: mapViewMyLocationIcon,
                   ),
                 ),
               )
@@ -417,16 +417,16 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           bottom: rotateResetButtonBottomDistance,
           child: FloatingActionButton(
             heroTag: 'rotation_reset',
-            backgroundColor: Colors.white,
+            backgroundColor: mapViewResetNorthButton,
             onPressed: () {
               // Go to the user's location
               setState(() {
                 _mapController.rotate(0);
               });
             },
-            child: const Icon(
+            child: Icon(
               Icons.arrow_upward_sharp,
-              color: Color(s_aquarium),
+              color: mapViewResetNorthIcon,
             ),
           ),
         ),
@@ -435,7 +435,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           bottom: zoomInButtonBottomDistance,
           child: FloatingActionButton(
             heroTag: 'zoom_in',
-            backgroundColor: Color(s_aquariumLighter),
+            backgroundColor: mapViewZoomInButton,
             onPressed: () {
               // Zoom in
               setState(() {
@@ -443,9 +443,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                     _mapController.center, _mapController.zoom + 1);
               });
             },
-            child: const Icon(
+            child: Icon(
               Icons.zoom_in,
-              color: Colors.white,
+              color: mapViewZoomInIcon,
             ),
           ),
         ),
@@ -454,7 +454,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           bottom: zoomOutButtonBottomDistance,
           child: FloatingActionButton(
             heroTag: 'zoom_out',
-            backgroundColor: Color(s_aquariumLighter),
+            backgroundColor: mapViewZoomOutButton,
             onPressed: () {
               // Zoom in
               setState(() {
@@ -462,9 +462,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                     _mapController.center, _mapController.zoom - 1);
               });
             },
-            child: const Icon(
+            child: Icon(
               Icons.zoom_out,
-              color: Colors.white,
+              color: mapViewZoomOutIcon,
             ),
           ),
         )
@@ -503,8 +503,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       }
     }
     return Text('${markers.length - userPinOffset}',
-        style:
-            TextStyle(color: Colors.white, fontSize: _clusterAlertNumFontSize));
+        style: TextStyle(
+            color: mapViewClusterText, fontSize: _clusterAlertNumFontSize));
   }
 
   double determineRadiusInMeters(int index) {
@@ -570,7 +570,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       return FormattedText(
         text: _languageServices.mapViewYourLocation,
         size: _popupErrorFontSize,
-        color: Colors.red,
+        color: mapViewCardUserLocationText,
         font: s_font_IBMPlexSans,
         weight: FontWeight.bold,
         align: TextAlign.center,
@@ -579,7 +579,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       return FormattedText(
           text: _languageServices.mapViewNoAlertInformation,
           size: _popupErrorFontSize,
-          color: Colors.red,
+          color: mapViewCardNotFoundText,
           font: s_font_IBMPlexSans,
           weight: FontWeight.bold,
           align: TextAlign.center);
@@ -593,7 +593,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       Center(
           child: Icon(
         Icons.edit,
-        color: Color(s_darkSalmon),
+        color: mapViewCardIcon,
         size: _editIconSize,
       ))
     ]);
@@ -603,7 +603,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     return FormattedText(
       text: text,
       size: _popupTitleFontSize,
-      color: const Color(s_blackBlue),
+      color: mapViewCardLineOne,
       font: s_font_IBMPlexSans,
       weight: FontWeight.bold,
     );
@@ -613,7 +613,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     return FormattedText(
       text: text,
       size: _popupLocationFontSize,
-      color: const Color(s_aquarium),
+      color: mapViewCardLineTwo,
       font: s_font_IBMPlexSans,
       decoration: TextDecoration.underline,
       weight: FontWeight.bold,
@@ -624,7 +624,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     return FormattedText(
       text: text,
       size: _popupDateFontSize,
-      color: const Color(s_blackBlue),
+      color: mapViewCardLineThree,
       font: s_font_IBMPlexSans,
       style: FontStyle.italic,
       weight: FontWeight.bold,
@@ -685,18 +685,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     return FormattedText(
       text: _languageServices.mapViewTitle,
       size: _titleTextFontSize,
-      color: Colors.white,
+      color: mapViewTitleText,
       font: s_font_BerkshireSwash,
-    );
-  }
-
-  Widget buttonText(String text, double fontSize) {
-    return FormattedText(
-      text: text,
-      size: fontSize,
-      color: Colors.white,
-      font: s_font_BonaNova,
-      weight: FontWeight.bold,
     );
   }
 
@@ -705,7 +695,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       text: text,
       align: TextAlign.center,
       size: _noAlertsYetText,
-      color: Color(s_darkSalmon),
+      color: mapViewNoAlertsText,
       font: s_font_BonaNova,
       weight: FontWeight.bold,
     );

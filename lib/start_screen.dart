@@ -603,7 +603,10 @@ class _StartScreenState extends State<StartScreen> {
           } else {
             __on_this_page__ = false;
             Navigator.of(context)
-                .push(createRoute(const GenericScreen(), 'from_right'))
+                .push(createRoute(
+                    SpecificScreen(
+                        screen: ScreenType.CREATE, alert: AlertObject.empty()),
+                    'from_right')) // was GenericScreen()
                 .then((value) => setState(() {
                       __on_this_page__ = true;
                     })); // This allows for page rebuilding upon pop

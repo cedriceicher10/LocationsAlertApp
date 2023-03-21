@@ -57,9 +57,9 @@ class SplashScreen extends StatelessWidget {
               // ),
             );
           } else {
-            return const Center(
+            return Center(
                 child: CircularProgressIndicator(
-              color: Color(s_darkSalmon),
+              color: splashScreenCircularProgressInidcator,
             ));
           }
         });

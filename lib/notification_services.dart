@@ -35,8 +35,8 @@ class NotificationServices {
           channelKey: 'basic_channel',
           channelName: 'Basic notifications',
           channelDescription: 'Notification channel for basic tests',
-          defaultColor: Color(s_aquariumLighter),
-          ledColor: Colors.white,
+          defaultColor: notificationChannel,
+          ledColor: notificationLed,
           importance: NotificationImportance.High,
           enableVibration: true)
     ]);
@@ -72,18 +72,18 @@ class NotificationServices {
         NotificationActionButton(
             key: 'Completed',
             label: _languageServices.notificationsMarkComplete,
-            color: Color(s_aquarium)),
+            color: notificationTextAccept),
         NotificationActionButton(
             key: 'Dismissed',
             label: _languageServices.notificationsDismiss,
-            color: Color(s_disabledGray),
+            color: notificationTextDismiss,
             buttonType: ActionButtonType.DisabledAction),
       ],
     );
   }
 
   Future<void> scheduleNewNotification() async {
-    // // This is
+    // // This was causing notification overload
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     // bool scheduledNotificationOn = false;
     // if (prefs.getBool('scheduledNotificationOn') == null) {

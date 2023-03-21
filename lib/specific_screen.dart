@@ -15,6 +15,8 @@ import 'trigger_slider.dart';
 import 'language_services.dart';
 import 'my_alerts_screen.dart';
 
+enum TriggerUnits { mi, km }
+
 enum ScreenType {
   CREATE,
   EDIT,
@@ -686,14 +688,14 @@ class _SpecificScreenState extends State<SpecificScreen> {
                 }
               }
             },
-            backgroundColor: Color(s_aquarium),
+            backgroundColor: editAlertUpdateButton,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(
                     Radius.circular(_largeButtonCornerRadius))),
             label: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Icon(
                 Icons.update,
-                color: Colors.white,
+                color: editAlertUpdateButtonIcon,
                 size: _updateButtonIconSize,
               ),
               SizedBox(
@@ -702,7 +704,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
               FormattedText(
                 text: _languageServices.editAlertUpdateAlertButton,
                 size: _updateButtonFontSize,
-                color: Colors.white,
+                color: editAlertUpdateButtonText,
                 font: s_font_BonaNova,
                 weight: FontWeight.bold,
               )
@@ -876,14 +878,14 @@ class _SpecificScreenState extends State<SpecificScreen> {
           Navigator.pop(context, false);
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: s_markCompleteButtonColor,
+            backgroundColor: editAlertDeleteButton,
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
             Icons.check_circle_rounded,
-            color: Color(s_darkSalmon),
+            color: editAlertMarkCompleteText,
             size: _markCompleteIconSize,
           ),
           SizedBox(
@@ -906,14 +908,14 @@ class _SpecificScreenState extends State<SpecificScreen> {
           Navigator.pop(context, false);
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: s_deleteButtonColor,
+            backgroundColor: editAlertMarkCompleteButton,
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
             Icons.delete_forever,
-            color: Color(s_darkSalmon),
+            color: editAlertDeleteAlertText,
             size: _deleteAlertIconSize,
           ),
           SizedBox(

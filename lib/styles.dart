@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 
 // Font Families
@@ -20,19 +19,6 @@ const double s_fontSizeMedium = 20;
 const double s_fontSizeSmall = 16;
 const double s_fontSizeExtraSmall = 12;
 
-// Colors Used in App
-const int s_aquarium = 0xFF1F7A8C; // 0xFF328396 (orig), 0xFF1F7A8C(second)
-const int s_aquariumLighter = 0xFF5A9BAB; // 0xFF5A9BAB
-const int s_darkSalmon = 0xFF022B3A; // 0xFFDD9787 (orig)
-const int s_declineRed = 0xFFf2301b; // 0xFFf2301b
-const int s_raisinBlack = 0xFFBFDBF7; // 0xFF2A2D34
-const int s_beauBlue = 0xFFBFDBF7;
-const int s_lavenderWeb = 0xFFE1E5F2;
-const int s_iconGreen = 0xFF2fa561;
-const int s_linkedin = 0xFF0077B5;
-const Color s_deleteButtonColor = Color.fromARGB(255, 248, 178, 178);
-const Color s_markCompleteButtonColor = Color.fromARGB(255, 178, 248, 184);
-
 // Colors
 const Color white = Colors.white;
 const Color black = Colors.black;
@@ -51,9 +37,8 @@ const Color skyBlue = Color.fromARGB(255, 112, 210, 255);
 const Color charcoal = Color.fromARGB(255, 117, 114, 114);
 const Color linkedin = Color(0xFF0077B5);
 const Color blue = Colors.blue;
-
-const Color s_pickOnMapColor = lightYellow;
-const Color s_myLocationColor = lightYellow;
+const Color lightRed = Color.fromARGB(255, 248, 178, 178);
+const Color lightGreen = Color.fromARGB(255, 178, 248, 184);
 
 Color startScreenAppBar = gunmetal;
 Color startScreenLoading = gunmetal;
@@ -86,24 +71,6 @@ Color startScreenLocationDisclosureAlertAcceptText = white;
 Color startScreenLocationOffText = black;
 Color startScreenLocationOffButton = deepGray;
 Color startScreenLocationDisclosureText = black;
-
-// Others
-const int s_jungleGreen = 0xFF2EAD65;
-const int s_grayGreen = 0xFF89A894;
-const int s_darkGray = 0xFF333333;
-const int s_jungleGreen_faded = 0xEEbac261;
-const int s_mustard = 0xFFFFD700;
-const int s_fadedDeclineRed = 0xCCbe5b50;
-const int s_periwinkleBlue = 0xFF4aa8ff;
-const int s_periwinkleBlueTransparent = 0xCC4aa8ff;
-const int s_lightPurple = 0xFF8565c4;
-const int s_cadmiumOrange = 0xFFFF6500;
-const int s_lightOrange = 0xFFFF8c69;
-const int s_disabledGray = 0xFFAAAEB1;
-const int s_seaFoam = 0xFF0A8C79;
-const int s_forrestGreen = 0xFF012B09;
-const int s_goldenrod = 0xC59849;
-const int s_blackBlue = 0xFF00171F;
 
 Color createAlertAppBar = gunmetal;
 Color createAlertTitleText = white;
@@ -167,6 +134,18 @@ Color createAlertCreateIcon = white;
 
 Color editAlertBackgroundTop = teal;
 Color editAlertBackgroundBottom = lavenderWeb;
+Color editAlertUpdateButton = gunmetal;
+Color editAlertUpdateButtonText = white;
+Color editAlertUpdateButtonIcon = white;
+Color editAlertMarkCompleteText = gunmetal;
+Color editAlertDeleteAlertText = gunmetal;
+Color editAlertMarkCompleteButton = lightRed;
+Color editAlertDeleteButton = lightGreen;
+
+Color notificationTextAccept = gunmetal;
+Color notificationTextDismiss = charcoal;
+Color notificationChannel = moonstone;
+Color notificationLed = white;
 
 Color myAlertsAppBar = gunmetal;
 Color myAlertsTitleText = white;
@@ -235,17 +214,18 @@ Color sideDrawerTitleText = white;
 Color sideDrawerTitleIcon = white;
 Color sideDrawerTitleBackground = gunmetal;
 Color sideDrawerSectionTitleText = gunmetal;
-Color sideDrawerSectionText = gunmetal;
+Color sideDrawerSectionText = black;
 Color sideDrawerDivider = charcoal;
-Color sideDrawerIcons = teal;
+Color sideDrawerIcons = black;
 Color sideDrawerDisclosureTitle = black;
 Color sideDrawerDisclosureText = gunmetal;
-Color sideDrawerDisclosureIcon = columbiaBlue;
+Color sideDrawerDisclosureIcon = black;
 Color sideDrawerDisclosureBackground = white;
 Color sideDrawerDisclosureCloseButton = gunmetal;
 Color sideDrawerDisclosureCloseText = white;
 Color sideDrawerDisclosureLinkedinButton = linkedin;
 Color sideDrawerDisclosureLinkedinText = white;
+Color sideDrawerChangeLanguageButton = gunmetal;
 Color sideDrawerChangeLanguageText = black;
 Color sideDrawerChangeLanguageUnderline = gunmetal;
 Color sideDrawerChangeLanguageDropDown = gunmetal;
@@ -254,6 +234,18 @@ Color sideDrawerChangeLanguageRestartButton = vibrantRed;
 Color sideDrawerChangeLanguageRestartButtonText = white;
 Color sideDrawerChangeLanguageCloseButton = gunmetal;
 Color sideDrawerChangeLanguageCloseButtonText = white;
+
+Color pickOnMapAppBar = gunmetal;
+Color pickOnMapCircularProgressIndicator = teal;
+Color pickOnMapLocationButton = vibrantRed;
+Color pickOnMapUserLocation = gunmetal;
+Color pickOnMapZoom = gunmetal;
+Color pickOnMapMarkerIcon = vibrantRed;
+Color pickOnMapTitleColor = white;
+
+Color splashScreenCircularProgressInidcator = teal;
+
+Color exceptionText = charcoal;
 
 // Color Swatch
 const MaterialColor s_whiteSwatch = const MaterialColor(

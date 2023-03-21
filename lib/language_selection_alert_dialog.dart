@@ -18,7 +18,7 @@ class _LanguageSelectionAlertDialogueState
   List<String> languageList = [];
   String dropDownValue = '';
 
-  Color _buttonColor = Color(s_darkSalmon);
+  Color _buttonColor = sideDrawerChangeLanguageButton;
   bool _firstTimePressed = false;
   bool _showRestartWarning = false;
 

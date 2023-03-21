@@ -62,7 +62,7 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
           home: Scaffold(
             appBar: AppBar(
               title: pickOnMapTitle(),
-              backgroundColor: const Color(s_aquariumLighter),
+              backgroundColor: pickOnMapAppBar,
               centerTitle: true,
             ),
             resizeToAvoidBottomInset: false,
@@ -72,9 +72,9 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
                   if (snapshot.hasData) {
                     return pickOnMapBody();
                   } else {
-                    return const Center(
+                    return Center(
                         child: CircularProgressIndicator(
-                      color: Color(s_darkSalmon),
+                      color: pickOnMapCircularProgressIndicator,
                     ));
                   }
                 }),
@@ -126,10 +126,10 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
     // Pick on the map
     return FlutterLocationPicker(
         initPosition: LatLong(initLat, initLon),
-        locationButtonsBackgroundColor: Color(s_declineRed),
-        selectLocationButtonColor: Color(s_aquariumLighter),
-        zoomButtonsBackgroundColor: Color(s_aquariumLighter),
-        markerIconColor: Color(s_declineRed),
+        locationButtonsBackgroundColor: pickOnMapLocationButton,
+        selectLocationButtonColor: pickOnMapUserLocation,
+        zoomButtonsBackgroundColor: pickOnMapZoom,
+        markerIconColor: pickOnMapMarkerIcon,
         markerIcon: Icons.location_on_sharp,
         selectLocationButtonText: _languageServices.pickOnMapSetAlertButton,
         initZoom: 15,
@@ -151,7 +151,7 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
     return FormattedText(
       text: _languageServices.pickOnMapTitle,
       size: _titleTextFontSize,
-      color: Colors.white,
+      color: pickOnMapTitleColor,
       font: s_font_BerkshireSwash,
     );
   }

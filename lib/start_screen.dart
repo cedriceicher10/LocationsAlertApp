@@ -636,7 +636,10 @@ class _StartScreenState extends State<StartScreen> {
           //     'Going to Specific Creat Alert');
           __on_this_page__ = false;
           Navigator.of(context)
-              .push(createRoute(const SpecificScreen(), 'from_right'))
+              .push(createRoute(
+                  SpecificScreen(
+                      screen: ScreenType.CREATE, alert: AlertObject.empty()),
+                  'from_right'))
               .then((value) => setState(() {
                     __on_this_page__ = true;
                   }));

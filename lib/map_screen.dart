@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:locationalertsapp/specific_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
@@ -361,7 +362,10 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                     _popupController.hideAllPopups();
                     Navigator.of(context)
                         .push(createRoute(
-                            EditAlertScreen(alert: findMarkerAlertObj(marker)),
+                            //EditAlertScreen(alert: findMarkerAlertObj(marker)),
+                            SpecificScreen(
+                                screen: ScreenType.EDIT,
+                                alert: findMarkerAlertObj(marker)),
                             'from_right'))
                         .then((value) => setState(() {
                               checkIfInstaPop(value);

@@ -165,61 +165,8 @@ Color createAlertCreateButton = teal;
 Color createAlertCreateText = white;
 Color createAlertCreateIcon = white;
 
-// editAlertAppBar
-// editAlertTitleText
-Color editAlertBackgroundTop = lavenderWeb;
-Color editAlertBackgroundBottom = teal;
-// editAlertRemindMeText
-// editAlertRemindMeFieldBorder
-// editAlertRemindMeFieldText
-// editAlertRemindMeFieldHintText
-// editAlertRemindMeError
-// editAlertLocationText
-// editAlertLocationFieldBorder
-// editAlertLocationFieldText
-// editAlertLocationFieldHintText
-// editAlertLocationError
-// editAlertPreviousLocations
-// editAlertPreviousLocationsText
-// editAlertMyLocationButton
-// editAlertMyLocationText
-// editAlertMyLocationIcon
-// editAlertPickOnMapButton
-// editAlertPickOnMapText
-// editAlertPickOnMapIcon
-// editAlertAtTriggerText
-// editAlertSliderSelection
-// editAlertSliderBackground
-// editAlertSliderTickMarksOn
-// editAlertSliderTickMarksOff
-// editAlertSliderText
-// editAlertMiButtonOn
-// editAlertMiButtonOff
-// editAlertMiTextOn
-// editAlertMiTextOff
-// editAlertMiBorderOn
-// editAlertMiBorderOff
-// editAlertKmButtonOn
-// editAlertKmButtonOff
-// editAlertKmTextOn
-// editAlertKmTextOff
-// editAlertKmBorderOn
-// editAlertKmBorderOff
-// editAlertRestoreButton
-// editAlertRestoreText
-// editAlertRestoreIcon
-// editAlertCancelButton
-// editAlertCancelText
-// editAlertCancelIcon
-// editAlertUpdateButton
-// editAlertUpdateText
-// editAlertUpdateIcon
-// editAlertMarkDoneButton
-// editAlertMarkDoneText
-// editAlertMarkDoneIcon
-// editAlertDeleteButton
-// editAlertDeleteText
-// editAlertDeleteIcon
+Color editAlertBackgroundTop = teal;
+Color editAlertBackgroundBottom = lavenderWeb;
 
 Color myAlertsAppBar = gunmetal;
 Color myAlertsTitleText = white;

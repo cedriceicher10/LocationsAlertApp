@@ -15,8 +15,16 @@ import 'trigger_slider.dart';
 import 'language_services.dart';
 import 'my_alerts_screen.dart';
 
+enum ScreenType {
+  CREATE,
+  EDIT,
+}
+
 class SpecificScreen extends StatefulWidget {
-  const SpecificScreen({Key? key}) : super(key: key);
+  final ScreenType screen;
+  final AlertObject alert;
+  SpecificScreen({required this.screen, required this.alert, Key? key})
+      : super(key: key);
 
   @override
   State<SpecificScreen> createState() => _SpecificScreenState();
@@ -82,6 +90,10 @@ class _SpecificScreenState extends State<SpecificScreen> {
   double _radioButtonsSpacerWidth = 0;
   double _restoreAlertsButtonWidth = 0;
   double _aboveRestoreAlertsSpacing = 0;
+  double _updateButtonIconSize = 0;
+  double _updateButtonFontSize = 0;
+  double _markCompleteIconSize = 0;
+  double _deleteAlertIconSize = 0;
 
   List<String> unitStrings = ['mi', 'km'];
   List<double> triggerRangeMiList = [0.25, 0.5, 1.0, 5.0, 10.0];
@@ -95,6 +107,61 @@ class _SpecificScreenState extends State<SpecificScreen> {
       TextEditingController();
   var _recentLocations = ['Make a few reminders to see their locations here!'];
   Map _recentLocationsMap = new Map();
+
+  String atLocationText = '';
+  String atLocationTextOpposite = '';
+  String _location = '';
+  bool _isGeneric = true;
+  bool _locationTextUserEntered = false;
+  bool _isStart = true;
+
+  @override
+  void initState() {
+    if (widget.alert.isSpecific) {
+      _isGeneric = false;
+    }
+    _location = widget.alert.location;
+    if (_isGeneric) {
+      atLocationText = 'generic';
+      atLocationTextOpposite = 'specific';
+    } else {
+      atLocationText = 'specific';
+      atLocationTextOpposite = 'generic';
+      // Assign trigger distance/units slider and radio buttons
+      // triggerDistance is equal to triggerRange*List[*]
+      // We must conver this to ((max - min) / num_divisions) * index
+      if (widget.alert.triggerUnits == unitStrings[1]) {
+        selectedKmTrigger =
+            (getTriggerDistanceKmIndex(widget.alert.triggerDistance) *
+                    ((triggerRangeKmList[triggerRangeKmList.length - 1] -
+                            triggerRangeKmList[0]) /
+                        (triggerRangeKmList.length - 1))) +
+                triggerRangeKmList[0];
+        _isMiles = false;
+        unitsMiBorderColor = unitsBorderColorInactive;
+        unitsMiButtonColor = unitsButtonColorInactive;
+        unitsMiTextColor = unitsTextColorInactive;
+        unitsKmBorderColor = unitsBorderColorActivated;
+        unitsKmButtonColor = unitsButtonColorActivated;
+        unitsKmTextColor = unitsTextColorActivated;
+      } else {
+        selectedMiTrigger =
+            (getTriggerDistanceMiIndex(widget.alert.triggerDistance) *
+                    ((triggerRangeMiList[triggerRangeMiList.length - 1] -
+                            triggerRangeMiList[0]) /
+                        (triggerRangeMiList.length - 1))) +
+                triggerRangeMiList[0];
+        _isMiles = true;
+        unitsMiBorderColor = unitsBorderColorActivated;
+        unitsMiButtonColor = unitsButtonColorActivated;
+        unitsMiTextColor = unitsTextColorActivated;
+        unitsKmBorderColor = unitsBorderColorInactive;
+        unitsKmButtonColor = unitsButtonColorInactive;
+        unitsKmTextColor = unitsTextColorInactive;
+      }
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +207,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
         child: Column(children: [
           cancelButtonFAB(_textWidth, _buttonHeight),
           SizedBox(height: _buttonSpacing),
-          submitButtonFAB(_textWidth, _buttonHeight),
+          (this.widget.screen == ScreenType.CREATE)
+              ? submitButtonFAB(_textWidth, _buttonHeight)
+              : updateButtonFAB(_textWidth, _buttonHeight),
         ]));
   }
 
@@ -179,6 +248,17 @@ class _SpecificScreenState extends State<SpecificScreen> {
                             pickOnMapButton(
                                 _locationButtonWidth, _locationButtonHeight),
                           ]),
+                      (this.widget.screen == ScreenType.EDIT)
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                  markCompleteButton(_locationButtonWidth,
+                                      _locationButtonHeight),
+                                  SizedBox(width: _buttonSpacing),
+                                  deleteButton(_locationButtonWidth,
+                                      _locationButtonHeight),
+                                ])
+                          : Container(),
                       SizedBox(height: _buttonSpacing),
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,8 +272,10 @@ class _SpecificScreenState extends State<SpecificScreen> {
                           child: unitsRadioButtons(
                               _radioButtonWidth, _locationButtonHeight)),
                       SizedBox(height: _aboveRestoreAlertsSpacing),
-                      restoreAlertsButton(
-                          _restoreAlertsButtonWidth, _locationButtonHeight),
+                      (this.widget.screen == ScreenType.CREATE)
+                          ? restoreAlertsButton(
+                              _restoreAlertsButtonWidth, _locationButtonHeight)
+                          : Container(),
                     ]))));
   }
 
@@ -340,6 +422,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
     return TextFormField(
         autofocus: true,
         textCapitalization: TextCapitalization.sentences,
+        initialValue: (this.widget.screen == ScreenType.EDIT)
+            ? widget.alert.reminder
+            : '',
         style: TextStyle(
             color: createAlertRemindMeFieldText, fontSize: _formFontSize),
         decoration: InputDecoration(
@@ -384,6 +469,27 @@ class _SpecificScreenState extends State<SpecificScreen> {
           TextPosition(offset: _controllerRecentLocations.text.length));
       _locationTextMapPick = false;
     } // Puts cursor at end of field
+    if (_isStart) {
+      _controllerRecentLocations.selection = TextSelection.fromPosition(
+          TextPosition(
+              offset: _controllerRecentLocations
+                  .text.length)); // Puts cursor at end of field
+    }
+    if (!_isGeneric) {
+      if (_locationTextUserEntered) {
+        // User entered text
+      } else if (_locationTextMapPick) {
+        _controllerRecentLocations.text = __pickOnMapLocation.location;
+        _locationTextMapPick = false;
+      } else {
+        if (_isStart) {
+          _controllerRecentLocations.text = widget.alert.location;
+          _isStart = false;
+        }
+      }
+    } else {
+      _controllerRecentLocations.text = '';
+    }
     return Row(children: <Widget>[
       Flexible(
         child: TextFormField(
@@ -435,6 +541,8 @@ class _SpecificScreenState extends State<SpecificScreen> {
             size: _dropDownIconSize, color: createAlertPreviousLocations),
         onSelected: (String value) {
           _controllerRecentLocations.text = value;
+          _locationTextUserEntered = true;
+          _locationTextMapPick = false;
         },
         itemBuilder: (BuildContext context) {
           return _recentLocations.map<PopupMenuItem<String>>((String value) {
@@ -515,6 +623,92 @@ class _SpecificScreenState extends State<SpecificScreen> {
             ])));
   }
 
+  Widget updateButtonFAB(double buttonWidth, double buttonHeight) {
+    return Container(
+        width: buttonWidth,
+        height: buttonHeight,
+        child: FloatingActionButton.extended(
+            heroTag: "submit",
+            onPressed: () async {
+              formKey.currentState?.save();
+              if (!_isGeneric) {
+                _usingRecentLocation = checkRecentLocationMap(_location);
+                String locationToUse;
+                if (_usingRecentLocation) {
+                  locationToUse = _recentLocationsMap[_location];
+                } else {
+                  locationToUse = _location;
+                }
+                _reverseGeolocateSuccess = await _locationServices
+                    .reverseGeolocateCheck(context, locationToUse);
+                // Ensure user has not exceeded quota of 150 reminders
+                bool lessThanLimit =
+                    await _dbServices.checkRemindersNum(context);
+                if (formKey.currentState!.validate() && lessThanLimit) {
+                  formKey.currentState?.save();
+                  // Update in db
+                  _dbServices.updateRemindersSpecificAlert(
+                    context,
+                    widget.alert.id,
+                    _reminderBody,
+                    locationToUse,
+                    _locationServices.alertLat,
+                    _locationServices.alertLon,
+                    !_isGeneric,
+                    determineSubmitTriggerDistance(),
+                    determineSubmitTriggerUnits(),
+                  );
+                  _dbServices.updateUsersReminderUpdated(context);
+                  // Save for previously chosen locations
+                  _rl.add(locationToUse);
+                  // Remove keyboard
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus) {
+                    currentFocus.unfocus();
+                  }
+                  Navigator.pop(context, false);
+                }
+              } else {
+                // Ensure user has not exceeded quota of 150 reminders
+                bool lessThanLimit =
+                    await _dbServices.checkRemindersNum(context);
+                if (formKey.currentState!.validate() && lessThanLimit) {
+                  formKey.currentState?.save();
+                  _dbServices.updateRemindersGenericAlert(context,
+                      widget.alert.id, _reminderBody, _location, !_isGeneric);
+                  _dbServices.updateUsersReminderUpdated(context);
+                  // Remove keyboard
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus) {
+                    currentFocus.unfocus();
+                  }
+                  Navigator.pop(context, false);
+                }
+              }
+            },
+            backgroundColor: Color(s_aquarium),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                    Radius.circular(_largeButtonCornerRadius))),
+            label: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(
+                Icons.update,
+                color: Colors.white,
+                size: _updateButtonIconSize,
+              ),
+              SizedBox(
+                width: _iconGapWidth,
+              ),
+              FormattedText(
+                text: _languageServices.editAlertUpdateAlertButton,
+                size: _updateButtonFontSize,
+                color: Colors.white,
+                font: s_font_BonaNova,
+                weight: FontWeight.bold,
+              )
+            ])));
+  }
+
   double determineSubmitTriggerDistance() {
     // selected*Trigger is equal to ((max - min) / num_divisions) * index
     // We must conver this to triggerRange*List[index]
@@ -550,6 +744,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
     __pickOnMapLocation.lat = pickOnMapLocation.lat;
     __pickOnMapLocation.lon = pickOnMapLocation.lon;
     _locationTextMapPick = true;
+    _locationTextUserEntered = false;
   }
 
   bool checkRecentLocationMap(String location) {
@@ -574,7 +769,11 @@ class _SpecificScreenState extends State<SpecificScreen> {
           bool? masterLocationToggle = prefs.getBool('masterLocationToggle');
           // Show location disclosure on the start screen
           if ((showLocationDisclosure != null) && (showLocationDisclosure)) {
-            Navigator.pop(context);
+            if (this.widget.screen == ScreenType.CREATE) {
+              Navigator.pop(context);
+            } else {
+              Navigator.pop(context, true);
+            }
           } else {
             // Set master location toggle if not set yet
             if (masterLocationToggle == null) {
@@ -594,6 +793,8 @@ class _SpecificScreenState extends State<SpecificScreen> {
                   ', ' +
                   placemarks[0].postalCode!;
               _controllerRecentLocations.text = _specificLocation;
+              _locationTextUserEntered = true;
+              _locationTextMapPick = false;
             }
           }
         },
@@ -624,11 +825,24 @@ class _SpecificScreenState extends State<SpecificScreen> {
             currentFocus.unfocus();
           }
           // Pick on map screen
-          Navigator.of(context)
-              .push(createRoute(PickOnMapScreen(), 'from_right'))
-              .then((value) => setState(() {
-                    populateLocationFromPickOnMap(value);
-                  }));
+          if (this.widget.screen == ScreenType.CREATE) {
+            Navigator.of(context)
+                .push(createRoute(PickOnMapScreen(), 'from_right'))
+                .then((value) => setState(() {
+                      populateLocationFromPickOnMap(value);
+                    }));
+          } else {
+            Navigator.of(context)
+                .push(createRoute(
+                    // Do I want this to be the location that's always in the location field?
+                    PickOnMapScreen(
+                        startLatitude: widget.alert.latitude,
+                        startLongitude: widget.alert.longitude),
+                    'from_right'))
+                .then((value) => setState(() {
+                      populateLocationFromPickOnMap(value);
+                    }));
+          }
         },
         style: ElevatedButton.styleFrom(
             backgroundColor: createAlertPickOnMapButton,
@@ -645,6 +859,67 @@ class _SpecificScreenState extends State<SpecificScreen> {
             width: _iconGapWidth,
           ),
           smallButtonText(_languageServices.createAlertPickOnMapButton)
+        ]));
+  }
+
+  Widget markCompleteButton(double buttonWidth, double buttonHeight) {
+    return ElevatedButton(
+        onPressed: () async {
+          _dbServices.completeRemindersAlertWithContext(
+              context, widget.alert.id);
+          _dbServices.updateUsersReminderComplete();
+          // Remove keyboard
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+          Navigator.pop(context, false);
+        },
+        style: ElevatedButton.styleFrom(
+            backgroundColor: s_markCompleteButtonColor,
+            fixedSize: Size(buttonWidth, buttonHeight),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Icon(
+            Icons.check_circle_rounded,
+            color: Color(s_darkSalmon),
+            size: _markCompleteIconSize,
+          ),
+          SizedBox(
+            width: _iconGapWidth,
+          ),
+          smallButtonText(_languageServices.editAlertMarkDoneButton)
+        ]));
+  }
+
+  Widget deleteButton(double buttonWidth, double buttonHeight) {
+    return ElevatedButton(
+        onPressed: () async {
+          _dbServices.deleteRemindersAlert(context, widget.alert.id);
+          _dbServices.updateUsersReminderDeleted(context);
+          // Remove keyboard
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+          Navigator.pop(context, false);
+        },
+        style: ElevatedButton.styleFrom(
+            backgroundColor: s_deleteButtonColor,
+            fixedSize: Size(buttonWidth, buttonHeight),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Icon(
+            Icons.delete_forever,
+            color: Color(s_darkSalmon),
+            size: _deleteAlertIconSize,
+          ),
+          SizedBox(
+            width: _iconGapWidth,
+          ),
+          smallButtonText(_languageServices.editAlertDeleteButton)
         ]));
   }
 
@@ -695,7 +970,12 @@ class _SpecificScreenState extends State<SpecificScreen> {
               if (!currentFocus.hasPrimaryFocus) {
                 currentFocus.unfocus();
               }
-              Navigator.pop(context);
+              if (this.widget.screen == ScreenType.CREATE) {
+                Navigator.pop(context);
+              } else {
+                Navigator.pop(context, false);
+              }
+              ;
             },
             backgroundColor: createAlertCancelButton,
             shape: RoundedRectangleBorder(
@@ -749,8 +1029,12 @@ class _SpecificScreenState extends State<SpecificScreen> {
   }
 
   Widget specificScreenTitle() {
+    String title = _languageServices.createAlertTitle;
+    if (this.widget.screen == ScreenType.EDIT) {
+      title = _languageServices.editAlertTitle;
+    }
     return FormattedText(
-      text: _languageServices.createAlertTitle,
+      text: title,
       size: _titleTextFontSize,
       color: createAlertTitleText,
       font: s_font_BerkshireSwash,
@@ -764,6 +1048,24 @@ class _SpecificScreenState extends State<SpecificScreen> {
         color: createAlertRemindMeText,
         font: s_font_BonaNova,
         weight: FontWeight.bold);
+  }
+
+  int getTriggerDistanceKmIndex(double triggerDistance) {
+    for (int index = 0; index < triggerRangeKmList.length; ++index) {
+      if (triggerDistance == triggerRangeKmList[index]) {
+        return index;
+      }
+    }
+    return 0;
+  }
+
+  int getTriggerDistanceMiIndex(double triggerDistance) {
+    for (int index = 0; index < triggerRangeMiList.length; ++index) {
+      if (triggerDistance == triggerRangeMiList[index]) {
+        return index;
+      }
+    }
+    return 0;
   }
 
   void generateLayout() {
@@ -800,6 +1102,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
     _submitButtonFontSize = (20 / 60) * _buttonHeight * langScale;
     _formErrorFontSize = (12 / 60) * _buttonHeight * langScale;
     _triggerUnitsFontSize = (16 / 60) * _buttonHeight * langScale;
+    _updateButtonFontSize = (20 / 60) * _buttonHeight * langScale;
 
     // Icons
     _atMyLocationIconSize = (16 / 30) * _locationButtonHeight;
@@ -807,6 +1110,9 @@ class _SpecificScreenState extends State<SpecificScreen> {
     _dropDownIconSize = 40;
     _submitButtonIconSize = (32 / 60) * _buttonHeight;
     _cancelIconSize = (24 / 60) * _buttonHeight;
+    _updateButtonIconSize = (32 / 60) * _buttonHeight;
+    _markCompleteIconSize = (18 / 60) * _buttonHeight;
+    _deleteAlertIconSize = (20 / 60) * _buttonHeight;
 
     // Styling
     _smallButtonCornerRadius = (20 / 30) * _locationButtonHeight;

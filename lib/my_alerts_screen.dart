@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:locationalertsapp/fab_bar.dart';
 import 'edit_alert_screen.dart';
+import 'specific_screen.dart';
 import 'start_screen.dart';
 import 'formatted_text.dart';
 import 'styles.dart';
@@ -43,6 +44,19 @@ class AlertObject {
       required this.userId,
       required this.triggerDistance,
       required this.triggerUnits});
+  AlertObject.empty()
+      : id = '',
+        dateTimeCreated = '',
+        dateTimeCompleted = '',
+        isCompleted = false,
+        isSpecific = true,
+        location = '',
+        latitude = 0,
+        longitude = 0,
+        reminder = '',
+        userId = '',
+        triggerDistance = 0,
+        triggerUnits = '';
 }
 
 class MyAlertsScreen extends StatefulWidget {
@@ -199,7 +213,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     );
   }
 
-  Card reminderCard(AlertObject AlertObject) {
+  Card reminderCard(AlertObject alertObject) {
     Icon icon;
     if (this.widget.alertList == AlertList.NOT_COMPLETED) {
       icon = Icon(
@@ -230,27 +244,30 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
                 _cardPaddingTopBottom,
                 _cardPaddingRightLeft),
             isThreeLine: true,
-            title: reminderCardTitleText(AlertObject.reminder),
+            title: reminderCardTitleText(alertObject.reminder),
             subtitle:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               reminderCardLocationText(
-                  '${_languageServices.myAlertsTileLocation}: ${AlertObject.location}'),
+                  '${_languageServices.myAlertsTileLocation}: ${alertObject.location}'),
               reminderCardDateText(
-                  '${_languageServices.myAlertsTileDate}: ${AlertObject.dateTimeCreated}')
+                  '${_languageServices.myAlertsTileDate}: ${alertObject.dateTimeCreated}')
             ]),
             trailing: icon,
             onTap: () {
               if (this.widget.alertList == AlertList.NOT_COMPLETED) {
                 Navigator.of(context)
                     .push(createRoute(
-                        EditAlertScreen(alert: AlertObject), 'from_right'))
+                        //EditAlertScreen(alert: alertObject), 'from_right'))
+                        SpecificScreen(
+                            screen: ScreenType.EDIT, alert: alertObject),
+                        'from_right'))
                     .then((value) => setState(() {
                           checkIfInstaPop(value);
                         }));
               } else {
                 // Set reminder field isComplete to false
                 _dbServices.updateRemindersSpecificAlertRestore(
-                    context, AlertObject.id);
+                    context, alertObject.id);
                 // Return to start screen
                 Navigator.popUntil(context, ModalRoute.withName('/'));
               }

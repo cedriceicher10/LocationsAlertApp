@@ -97,16 +97,6 @@ flutter:
   # https://flutter.dev/assets-and-images/#from-packages
 
   fonts:
-    - family: AmaticSC
-      fonts:
-        - asset: assets/fonts/AmaticSC-Regular.ttf
-          style: normal
-        - asset: assets/fonts/AmaticSC-Bold.ttf
-          weight: 400
-    - family: MajorMonoDisplay
-      fonts:
-        - asset: assets/fonts/MajorMonoDisplay-Regular.ttf
-          style: normal
     - family: BonaNova
       fonts:
         - asset: assets/fonts/BonaNova-Bold.ttf
@@ -114,14 +104,6 @@ flutter:
         - asset: assets/fonts/BonaNova-Italic.ttf
           style: italic
         - asset: assets/fonts/BonaNova-Regular.ttf
-          style: normal
-    - family: RedOctober
-      fonts:
-        - asset: assets/fonts/RedOctober.ttf
-          style: normal
-    - family: SpecialElite
-      fonts:
-        - asset: assets/fonts/SpecialElite-Regular.ttf
           style: normal
     - family: IBMPLexSans
       fonts:
@@ -133,17 +115,13 @@ flutter:
           weight: 500
         - asset: assets/fonts/IBMPlexSans-Italic.ttf
           style: italic
-    - family: NovaMono
-      fonts:
-        - asset: assets/fonts/NovaMono-Regular.ttf
-          style: normal
     - family: BerkshireSwash
       fonts:
         - asset: assets/fonts/BerkshireSwash-Regular.ttf
           style: normal
-    - family: Pompiere
+    - family: Righteous-Regular
       fonts:
-        - asset: assets/fonts/Pompiere-Regular.ttf
+        - asset: assets/fonts/Righteous-Regular.ttf
           style: normal
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

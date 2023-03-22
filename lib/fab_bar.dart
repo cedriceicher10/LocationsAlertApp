@@ -126,7 +126,7 @@ Widget buttonText(double fontSize) {
     text: _languageServices.myAlertsBackButton,
     size: fontSize,
     color: myAlertsBackText,
-    font: s_font_BonaNova,
+    font: font_bigButtonText,
     weight: FontWeight.bold,
   );
 }

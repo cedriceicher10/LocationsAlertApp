@@ -575,7 +575,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         text: _languageServices.mapViewYourLocation,
         size: _popupErrorFontSize,
         color: mapViewCardUserLocationText,
-        font: s_font_IBMPlexSans,
+        font: font_plainText,
         weight: FontWeight.bold,
         align: TextAlign.center,
       );
@@ -584,7 +584,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           text: _languageServices.mapViewNoAlertInformation,
           size: _popupErrorFontSize,
           color: mapViewCardNotFoundText,
-          font: s_font_IBMPlexSans,
+          font: font_plainText,
           weight: FontWeight.bold,
           align: TextAlign.center);
     }
@@ -608,7 +608,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       text: text,
       size: _popupTitleFontSize,
       color: mapViewCardLineOne,
-      font: s_font_IBMPlexSans,
+      font: font_plainText,
       weight: FontWeight.bold,
     );
   }
@@ -618,7 +618,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       text: text,
       size: _popupLocationFontSize,
       color: mapViewCardLineTwo,
-      font: s_font_IBMPlexSans,
+      font: font_plainText,
       decoration: TextDecoration.underline,
       weight: FontWeight.bold,
     );
@@ -629,7 +629,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       text: text,
       size: _popupDateFontSize,
       color: mapViewCardLineThree,
-      font: s_font_IBMPlexSans,
+      font: font_plainText,
       style: FontStyle.italic,
       weight: FontWeight.bold,
     );
@@ -690,7 +690,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       text: _languageServices.mapViewTitle,
       size: _titleTextFontSize,
       color: mapViewTitleText,
-      font: s_font_BerkshireSwash,
+      font: font_appBarText,
     );
   }
 
@@ -700,7 +700,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       align: TextAlign.center,
       size: _noAlertsYetText,
       color: mapViewNoAlertsText,
-      font: s_font_BonaNova,
+      font: font_nakedText,
       weight: FontWeight.bold,
     );
   }

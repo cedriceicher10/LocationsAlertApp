@@ -104,7 +104,7 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
     return TextStyle(
         color: introSlidesTitleTextSlide1,
         fontSize: _titleFontSize,
-        fontFamily: s_font_BonaNova,
+        fontFamily: font_bigButtonText,
         fontWeight: FontWeight.bold);
   }
 
@@ -112,7 +112,7 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
     return TextStyle(
         color: introSlidesTitleTextSlide2,
         fontSize: _titleFontSize,
-        fontFamily: s_font_BonaNova,
+        fontFamily: font_bigButtonText,
         fontWeight: FontWeight.bold);
   }
 
@@ -120,7 +120,7 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
     return TextStyle(
         color: introSlidesTextSlide1,
         fontSize: _textFontSize,
-        fontFamily: s_font_IBMPlexSans,
+        fontFamily: font_plainText,
         fontWeight: FontWeight.bold);
   }
 
@@ -128,7 +128,7 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
     return TextStyle(
         color: introSlidesTextSlide2,
         fontSize: _textFontSize,
-        fontFamily: s_font_IBMPlexSans,
+        fontFamily: font_plainText,
         fontWeight: FontWeight.bold);
   }
 

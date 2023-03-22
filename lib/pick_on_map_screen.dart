@@ -152,7 +152,7 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
       text: _languageServices.pickOnMapTitle,
       size: _titleTextFontSize,
       color: pickOnMapTitleColor,
-      font: s_font_BerkshireSwash,
+      font: font_appBarText,
     );
   }
 

@@ -533,7 +533,7 @@ class _StartScreenState extends State<StartScreen> {
         text: _languageServices.startScreenExplainer,
         size: _explainerFontSize,
         color: startScreenExplainerText,
-        font: s_font_BonaNova,
+        font: font_nakedText,
         weight: FontWeight.bold,
         align: TextAlign.center);
   }
@@ -545,7 +545,7 @@ class _StartScreenState extends State<StartScreen> {
           text: _languageServices.startScreenLocationToggle,
           size: _locationToggleFontSize,
           color: _masterLocationColor,
-          font: s_font_IBMPlexSans,
+          font: font_plainText,
           weight: FontWeight.bold,
           align: TextAlign.center),
       SizedBox(width: _locationToggleGapWidth),
@@ -721,7 +721,7 @@ class _StartScreenState extends State<StartScreen> {
       text: _languageServices.startScreenTitle,
       size: _titleTextFontSize,
       color: startScreenTitleText,
-      font: s_font_BerkshireSwash,
+      font: font_appBarText,
     );
   }
 
@@ -730,7 +730,7 @@ class _StartScreenState extends State<StartScreen> {
         text: title,
         size: _submitButtonFontSize,
         color: startScreenCreateAlertText,
-        font: s_font_BonaNova,
+        font: font_bigButtonText,
         weight: FontWeight.bold);
   }
 
@@ -739,7 +739,7 @@ class _StartScreenState extends State<StartScreen> {
       text: TextSpan(
           style: TextStyle(
               color: startScreenSignatureText,
-              fontFamily: s_font_IBMPlexSans,
+              fontFamily: font_plainText,
               fontSize: _signatureFontSize,
               fontWeight: FontWeight.bold,
               decoration: TextDecoration.underline),
@@ -811,7 +811,7 @@ class _StartScreenState extends State<StartScreen> {
         text: _languageServices.startScreenLocationDisclosure,
         size: _locationDisclosureFontSize,
         color: startScreenLocationDisclosureButtonText,
-        font: s_font_IBMPlexSans,
+        font: font_plainText,
         weight: FontWeight.bold);
   }
 

@@ -331,7 +331,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
       text: text,
       size: _cardTitleFontSize,
       color: myAlertsFirstLine,
-      font: s_font_IBMPlexSans,
+      font: font_plainText,
       weight: FontWeight.bold,
     );
   }
@@ -341,7 +341,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
       text: text,
       size: _cardBodyFontSize,
       color: myAlertsSecondLine,
-      font: s_font_IBMPlexSans,
+      font: font_plainText,
       decoration: TextDecoration.underline,
       weight: FontWeight.bold,
     );
@@ -352,7 +352,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
       text: text,
       size: _cardSubtitleFontSize,
       color: myAlertsThirdLine,
-      font: s_font_IBMPlexSans,
+      font: font_plainText,
       style: FontStyle.italic,
       weight: FontWeight.bold,
     );
@@ -369,7 +369,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
       text: text,
       size: _titleTextFontSize,
       color: myAlertsTitleText,
-      font: s_font_BerkshireSwash,
+      font: font_appBarText,
     );
   }
 
@@ -385,7 +385,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
       size: _explainerTextFontSize,
       color: myAlertsExplainerText,
       align: TextAlign.center,
-      font: s_font_IBMPlexSans,
+      font: font_nakedText,
     );
   }
 
@@ -400,7 +400,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
       text: text,
       size: _noAlertsYetText,
       color: myAlertsNoneYetText,
-      font: s_font_BonaNova,
+      font: font_nakedText,
       weight: FontWeight.bold,
       align: TextAlign.center,
     );

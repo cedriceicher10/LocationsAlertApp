@@ -1,31 +1,25 @@
 import 'package:flutter/material.dart';
 
 // Font Families
-const String s_font_MajorMonoDisplay = 'MajorMonoDisplay';
 const String s_font_BonaNova = 'BonaNova';
-const String s_font_AmaticSC = 'AmaticSC';
-const String s_font_RedOctober = "RedOctober";
-const String s_font_SpecialElite = "SpecialElite";
-const String s_font_IBMPlexSans = "IBMPlexSans";
-const String s_font_NovaMono = "NovaMono";
-const String s_font_BerkshireSwash = "BerkshireSwash";
-const String s_font_Pompiere = "Pompiere";
+const String s_font_IBMPlexSans = 'IBMPlexSans';
+const String s_font_BerkshireSwash = 'BerkshireSwash';
+const String s_font_RighteousRegular = 'Righteous-Regular';
 
-// Font Sizes
-const double s_fontSizeExtraLarge = 44;
-const double s_fontSizeLarge = 32;
-const double s_fontSizeMedLarge = 26;
-const double s_fontSizeMedium = 20;
-const double s_fontSizeSmall = 16;
-const double s_fontSizeExtraSmall = 12;
+// Font Selections
+const String font_appBarText = s_font_RighteousRegular;
+const String font_bigButtonText = s_font_BonaNova;
+const String font_smallButtonText = s_font_BonaNova;
+const String font_plainText = s_font_IBMPlexSans;
+const String font_nakedText = s_font_BonaNova;
 
 // Colors
 const Color white = Colors.white;
 const Color black = Colors.black;
-const Color moonstone = Color(0xFF5A9BAB); // aquariumLighter
-const Color teal = Color(0xFF1F7A8C); // aquarium
-const Color gunmetal = Color(0xFF022B3A); // darkSalmon
-const Color columbiaBlue = Color(0xFFBFDBF7); // beauBlue
+const Color moonstone = Color(0xFF5A9BAB);
+const Color teal = Color(0xFF1F7A8C);
+const Color gunmetal = Color(0xFF022B3A);
+const Color columbiaBlue = Color(0xFFBFDBF7);
 const Color lavenderWeb = Color(0xFFE1E5F2);
 const Color blueBlack = Color(0xFF00171F);
 const Color lightYellow = Color.fromARGB(255, 243, 245, 159);
@@ -40,6 +34,7 @@ const Color blue = Colors.blue;
 const Color lightRed = Color.fromARGB(255, 248, 178, 178);
 const Color lightGreen = Color.fromARGB(255, 178, 248, 184);
 
+// Color Selections
 Color startScreenAppBar = gunmetal;
 Color startScreenLoading = gunmetal;
 Color startScreenTitleText = white;
@@ -177,7 +172,7 @@ Color mapViewTitleText = white;
 Color mapViewCluster = gunmetal;
 Color mapViewTilesUnloaded = white;
 Color mapViewClusterText = white;
-Color mapViewAlertMarker = gunmetal;
+Color mapViewAlertMarker = teal;
 Color mapViewUserLocation = vibrantRed;
 Color mapViewTriggerRadius = blue;
 Color mapViewMyLocationButton = vibrantRed;
@@ -246,35 +241,3 @@ Color pickOnMapTitleColor = white;
 Color splashScreenCircularProgressInidcator = teal;
 
 Color exceptionText = charcoal;
-
-// Color Swatch
-const MaterialColor s_whiteSwatch = const MaterialColor(
-  0xFFFFFFFF,
-  const <int, Color>{
-    50: const Color(0xFFFFFFFF),
-    100: const Color(0xFFFFFFFF),
-    200: const Color(0xFFFFFFFF),
-    300: const Color(0xFFFFFFFF),
-    400: const Color(0xFFFFFFFF),
-    500: const Color(0xFFFFFFFF),
-    600: const Color(0xFFFFFFFF),
-    700: const Color(0xFFFFFFFF),
-    800: const Color(0xFFFFFFFF),
-    900: const Color(0xFFFFFFFF),
-  },
-);
-const MaterialColor s_blackSwatch = const MaterialColor(
-  0xFF000000,
-  const <int, Color>{
-    50: const Color(0xFF000000),
-    100: const Color(0xFF000000),
-    200: const Color(0xFF000000),
-    300: const Color(0xFF000000),
-    400: const Color(0xFF000000),
-    500: const Color(0xFF000000),
-    600: const Color(0xFF000000),
-    700: const Color(0xFF000000),
-    800: const Color(0xFF000000),
-    900: const Color(0xFF000000),
-  },
-);

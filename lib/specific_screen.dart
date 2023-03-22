@@ -619,7 +619,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
                 text: _languageServices.createAlertCreateAlertButton,
                 size: _submitButtonFontSize,
                 color: createAlertCreateText,
-                font: s_font_BonaNova,
+                font: font_bigButtonText,
                 weight: FontWeight.bold,
               )
             ])));
@@ -705,7 +705,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
                 text: _languageServices.editAlertUpdateAlertButton,
                 size: _updateButtonFontSize,
                 color: editAlertUpdateButtonText,
-                font: s_font_BonaNova,
+                font: font_bigButtonText,
                 weight: FontWeight.bold,
               )
             ])));
@@ -1005,7 +1005,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
       text: _languageServices.createAlertCancelButton,
       size: fontSize,
       color: createAlertCancelText,
-      font: s_font_BonaNova,
+      font: font_bigButtonText,
       weight: FontWeight.bold,
     );
   }
@@ -1015,7 +1015,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
         text: text,
         size: _triggerUnitsFontSize,
         color: color,
-        font: s_font_IBMPlexSans,
+        font: font_plainText,
         weight: FontWeight.bold,
         align: TextAlign.center);
   }
@@ -1025,7 +1025,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
       text: text,
       size: _locationButtonTextFontSize,
       color: createAlertMyLocationText,
-      font: s_font_BonaNova,
+      font: font_smallButtonText,
       weight: FontWeight.bold,
     );
   }
@@ -1039,7 +1039,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
       text: title,
       size: _titleTextFontSize,
       color: createAlertTitleText,
-      font: s_font_BerkshireSwash,
+      font: font_appBarText,
     );
   }
 
@@ -1048,7 +1048,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
         text: title,
         size: _guideTextFontSize,
         color: createAlertRemindMeText,
-        font: s_font_BonaNova,
+        font: font_nakedText,
         weight: FontWeight.bold);
   }
 

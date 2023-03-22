@@ -497,7 +497,7 @@ class SideDrawer extends StatelessWidget {
         text: text,
         size: _sideDrawerItemFontSize,
         color: sideDrawerSectionTitleText,
-        font: s_font_IBMPlexSans,
+        font: font_plainText,
         weight: FontWeight.bold);
   }
 
@@ -506,7 +506,7 @@ class SideDrawer extends StatelessWidget {
         text: text,
         size: _sideDrawerDividerFontSize,
         color: sideDrawerDivider,
-        font: s_font_IBMPlexSans,
+        font: font_plainText,
         weight: FontWeight.bold);
   }
 
@@ -559,7 +559,7 @@ class SideDrawer extends StatelessWidget {
               text: _languageServices.sideDrawerTitle,
               size: _sideDrawerTitleFontSize,
               color: sideDrawerTitleText,
-              font: s_font_IBMPlexSans,
+              font: font_bigButtonText,
               align: TextAlign.center,
               weight: FontWeight.bold)
         ]);
@@ -570,7 +570,7 @@ class SideDrawer extends StatelessWidget {
         text: text,
         size: _sideDrawerItemFontSize,
         color: sideDrawerSectionText,
-        font: s_font_IBMPlexSans,
+        font: font_plainText,
         weight: FontWeight.bold);
   }
 

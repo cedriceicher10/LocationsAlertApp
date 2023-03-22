@@ -142,8 +142,8 @@ Color editAlertDeleteAlertText = gunmetal;
 Color editAlertMarkCompleteButton = lightRed;
 Color editAlertDeleteButton = lightGreen;
 
-Color notificationTextAccept = gunmetal;
-Color notificationTextDismiss = charcoal;
+Color notificationTextAccept = white;
+Color notificationTextDismiss = white;
 Color notificationChannel = moonstone;
 Color notificationLed = white;
 

@@ -281,13 +281,13 @@ class _StartScreenState extends State<StartScreen> {
         message: _languageServices.notificationsBody,
         icon: '@mipmap/ic_launcher',
       );
-      await BackgroundLocation.setAndroidConfiguration(1000);
+      await BackgroundLocation.setAndroidConfiguration(10000); // interval in ms
       await BackgroundLocation.startLocationService(distanceFilter: 0);
       BackgroundLocation.getLocationUpdates((bgLocationData) {
         _userBgLat = bgLocationData.latitude!;
         _userBgLon = bgLocationData.longitude!;
         setState(() async {
-          // print('BACKGROUND LOCATION TRIGGERED ==============');
+          print('BACKGROUND LOCATION TRIGGERED ==============');
           // print('Latitude : ${bgLocationData.latitude}');
           // print('Longitude: ${bgLocationData.longitude}');
           // print('Accuracy : ${bgLocationData.accuracy}');

@@ -370,6 +370,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
       size: _titleTextFontSize,
       color: myAlertsTitleText,
       font: font_appBarText,
+      weight: FontWeight.bold,
     );
   }
 
@@ -385,7 +386,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
       size: _explainerTextFontSize,
       color: myAlertsExplainerText,
       align: TextAlign.center,
-      font: font_nakedText,
+      font: font_plainText,
     );
   }
 

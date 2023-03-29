@@ -153,6 +153,7 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
       size: _titleTextFontSize,
       color: pickOnMapTitleColor,
       font: font_appBarText,
+      weight: FontWeight.bold,
     );
   }
 

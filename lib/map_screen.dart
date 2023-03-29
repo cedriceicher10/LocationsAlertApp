@@ -691,6 +691,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       size: _titleTextFontSize,
       color: mapViewTitleText,
       font: font_appBarText,
+      weight: FontWeight.bold,
     );
   }
 

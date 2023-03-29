@@ -1040,6 +1040,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
       size: _titleTextFontSize,
       color: createAlertTitleText,
       font: font_appBarText,
+      weight: FontWeight.bold,
     );
   }
 

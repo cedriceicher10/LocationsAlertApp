@@ -106,6 +106,9 @@ class _StartScreenState extends State<StartScreen> {
   Color _masterLocationColorOn = startScreenToggleSliderOn;
   Color _masterLocationColorOff = startScreenToggleSliderOff;
   Color _masterLocationColor = startScreenToggleSliderOff;
+  Color _masterLocationTextOn = startScreenLocationToggleTextOn;
+  Color _masterLocationTextOff = startScreenLocationToggleTextOff;
+  Color _masterLocationText = startScreenLocationToggleTextOff;
 
   // Layout
   double _topPadding = 0;
@@ -136,7 +139,7 @@ class _StartScreenState extends State<StartScreen> {
   double _locationToggleGapWidth = 0;
   double _bottomPadding = 0;
   double _alertPaddingRight = 0;
-  double _logoSize = 0;
+  double _mainImageSize = 0;
   double _logoBorderRadius = 0;
 
   @override
@@ -253,10 +256,12 @@ class _StartScreenState extends State<StartScreen> {
             _masterLocationToggle = true;
             prefs.setBool('masterLocationToggle', true);
             _masterLocationColor = _masterLocationColorOn;
+            _masterLocationText = _masterLocationTextOn;
           } else {
             _masterLocationToggle = false;
             prefs.setBool('masterLocationToggle', false);
             _masterLocationColor = _masterLocationColorOff;
+            _masterLocationText = _masterLocationTextOff;
           }
         }
       }
@@ -479,23 +484,23 @@ class _StartScreenState extends State<StartScreen> {
                   // ),
                   Container(
                       decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(_logoBorderRadius),
-                          boxShadow: [
-                            BoxShadow(
-                              color: startScreenLogoGlow,
-                              spreadRadius: 4,
-                              blurRadius: 8,
-                              offset: Offset(0, 0),
-                            ),
-                          ]),
+                        borderRadius: BorderRadius.circular(_logoBorderRadius),
+                        // boxShadow: [
+                        //   BoxShadow(
+                        //     color: startScreenLogoGlow,
+                        //     spreadRadius: 2,
+                        //     blurRadius: 200,
+                        //     offset: Offset(0, 0),
+                        //   ),
+                        // ]
+                      ),
                       child: ClipRRect(
                           borderRadius:
                               BorderRadius.circular(_logoBorderRadius),
                           child: Image(
-                              width: _logoSize,
-                              image:
-                                  AssetImage('assets/images/app_icon.png')))),
+                              width: _mainImageSize,
+                              image: AssetImage(
+                                  'assets/images/MainScreenImage_TransparentBackground.png')))),
                   SizedBox(height: _gapAfterTitleIcon),
                   locationToggle(),
                   // Turning off generic alerts for first prod version
@@ -544,7 +549,7 @@ class _StartScreenState extends State<StartScreen> {
           //text: 'Allow My Location: ',
           text: _languageServices.startScreenLocationToggle,
           size: _locationToggleFontSize,
-          color: _masterLocationColor,
+          color: _masterLocationText,
           font: font_plainText,
           weight: FontWeight.bold,
           align: TextAlign.center),
@@ -552,7 +557,7 @@ class _StartScreenState extends State<StartScreen> {
       Transform.scale(
           scale: _locationToggleScale,
           child: Switch(
-            inactiveThumbColor: columbiaBlue,
+            inactiveThumbColor: startScreenToggleSliderOff,
             activeTrackColor: startScreenToggleSliderOn,
             activeColor: startScreenToggleOn,
             value: _masterLocationToggle,
@@ -568,6 +573,7 @@ class _StartScreenState extends State<StartScreen> {
                   setState(() {
                     if (_locationServices.permitted) {
                       _masterLocationColor = startScreenToggleOn;
+                      _masterLocationText = _masterLocationTextOn;
                       prefs.setBool(
                           'masterLocationToggle', _masterLocationToggle);
                     } else {
@@ -582,6 +588,7 @@ class _StartScreenState extends State<StartScreen> {
               } else {
                 setState(() {
                   _masterLocationColor = startScreenToggleSliderOff;
+                  _masterLocationText = _masterLocationTextOff;
                   prefs.setBool('masterLocationToggle', _masterLocationToggle);
                 });
               }
@@ -709,7 +716,7 @@ class _StartScreenState extends State<StartScreen> {
             )),
             Icon(
               Icons.arrow_forward_ios_rounded,
-              color: startScreenMyAlertsIcon1,
+              color: startScreenMyAlertsIcon2,
               size: _specificLocationIconSize,
             )
           ],
@@ -722,6 +729,7 @@ class _StartScreenState extends State<StartScreen> {
       size: _titleTextFontSize,
       color: startScreenTitleText,
       font: font_appBarText,
+      weight: FontWeight.bold,
     );
   }
 
@@ -824,15 +832,15 @@ class _StartScreenState extends State<StartScreen> {
     // and a 56 height appBar
 
     // Height
-    _topPadding = (80 / 781) * _screenHeight;
+    _topPadding = (60 / 781) * _screenHeight;
     _buttonHeight = (60 / 781) * _screenHeight;
     _locationDisclosureButtonHeight = (30 / 781) * _screenHeight;
-    _gapBeforeTitleIcon = (50 / 781) * _screenHeight;
-    _gapAfterTitleIcon = (45 / 781) * _screenHeight;
+    _gapBeforeTitleIcon = (10 / 781) * _screenHeight;
+    _gapAfterTitleIcon = (10 / 781) * _screenHeight;
     _gapBeforeButtons = (5 / 781) * _screenHeight;
     _gapAfterButtons = (20 / 781) * _screenHeight;
     _bottomPadding = (20 / 781) * _screenHeight;
-    _logoSize = (190 / 781) * _screenHeight;
+    _mainImageSize = (410 / 781) * _screenHeight;
 
     // Width
     _buttonWidth = (325 / 392) * _screenWidth;
@@ -863,6 +871,6 @@ class _StartScreenState extends State<StartScreen> {
         (50 / 30) * _locationDisclosureButtonHeight;
     _submitButtonCornerRadius = (10 / 60) * _buttonHeight;
     _locationToggleScale = (_screenHeight / 781) * 1.15;
-    _logoBorderRadius = (10 / 250) * _logoSize;
+    _logoBorderRadius = (10 / 250) * _mainImageSize;
   }
 }

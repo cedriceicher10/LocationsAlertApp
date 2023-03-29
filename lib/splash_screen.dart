@@ -94,7 +94,7 @@ class SplashScreen extends StatelessWidget {
   double getImageWidth(BuildContext context) {
     _screenWidth = MediaQuery.of(context).size.width;
     _screenHeight = MediaQuery.of(context).size.height;
-    double _imageWidth = (185 / 392) * _screenWidth;
+    double _imageWidth = (200 / 392) * _screenWidth;
     return _imageWidth;
   }
 }

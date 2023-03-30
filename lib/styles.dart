@@ -5,13 +5,16 @@ const String s_font_BonaNova = 'BonaNova';
 const String s_font_IBMPlexSans = 'IBMPlexSans';
 const String s_font_BerkshireSwash = 'BerkshireSwash';
 const String s_font_RighteousRegular = 'Righteous-Regular';
+const String s_font_LeagueSpartan = 'LeagueSpartan';
 
 // Font Selections
-const String font_appBarText = s_font_BonaNova;
-const String font_bigButtonText = s_font_BonaNova;
-const String font_smallButtonText = s_font_BonaNova;
+const String font_appBarText = s_font_LeagueSpartan;
+const String font_bigButtonText = s_font_LeagueSpartan;
+const String font_smallButtonText = s_font_LeagueSpartan;
+const String font_nakedText = s_font_LeagueSpartan;
+const String font_sideDrawer = s_font_LeagueSpartan;
+const String font_cards = s_font_LeagueSpartan;
 const String font_plainText = s_font_IBMPlexSans;
-const String font_nakedText = s_font_BonaNova;
 
 // Colors
 const Color white = Colors.white;
@@ -43,16 +46,26 @@ const Color googleBlue = Color(0xFF4A89F3);
 const Color googleGrey = Color(0xFFD3D3D3);
 const Color googleRed = Color(0xFFDD4B3E);
 const Color googleDarkRed = Color(0xFF822F2B);
+const Color royalPurpleLight = Color.fromARGB(255, 70, 59, 192);
+const Color googleGreenLight = Color.fromARGB(255, 117, 236, 178);
+const Color googleYellowLight = Color.fromARGB(255, 255, 241, 170);
+const Color googleBlueLight = Color.fromARGB(255, 135, 178, 252);
+const Color googleGreyLight = Color.fromARGB(255, 243, 243, 243);
+const Color googleRedLight = Color.fromARGB(255, 241, 163, 156);
 
 // Color Selections
 
 // Background fades
-Color startScreenBackgroundTop = googleBlue;
+Color startScreenBackgroundTop = royalPurpleLight;
 Color startScreenBackgroundBottom = googleGrey;
-Color createAlertBackgroundTop = googleBlue;
+Color createAlertBackgroundTop = royalPurpleLight;
 Color createAlertBackgroundBottom = googleGrey;
-Color editAlertBackgroundTop = googleBlue;
+Color editAlertBackgroundTop = royalPurpleLight;
 Color editAlertBackgroundBottom = googleGrey;
+Color myAlertsBackgroundTop = royalPurpleLight;
+Color myAlertsBackgroundBottom = googleGrey;
+Color mapViewBackgroundTop = royalPurpleLight;
+Color mapViewBackgroundBottom = googleGrey;
 
 // Top app bar
 Color startScreenAppBar = black;
@@ -60,6 +73,7 @@ Color pickOnMapAppBar = black;
 Color createAlertAppBar = black;
 Color myAlertsAppBar = black;
 Color mapViewAppBar = black;
+Color sideDrawerTitleBackground = royalPurple;
 
 // Circular progress indicator (loading wheel)
 Color startScreenLoading = googleBlue;
@@ -67,6 +81,7 @@ Color sideDrawerCircularProgressIndicator = googleBlue;
 Color mapViewCircularProgressIndicator = googleBlue;
 Color pickOnMapCircularProgressIndicator = googleBlue;
 Color splashScreenCircularProgressInidcator = googleBlue;
+Color myAlertsProgressIndicator = googleBlue;
 
 // Big buttons
 Color startScreenCreateAlertButton = googleBlue;
@@ -80,46 +95,33 @@ Color restoreAlertsBackButton = googleRed;
 
 // Small Buttons
 Color startScreenLocationDisclosureButton = googleRed;
-Color createAlertMyLocationButton = lightYellow;
-Color createAlertPickOnMapButton = lightYellow;
-Color createAlertRestoreButton = skyBlue;
-Color editAlertMarkCompleteButton = lightRed;
-Color editAlertDeleteButton = lightGreen;
-
-// Map Buttons
-Color mapViewResetNorthButton = white;
-Color mapViewMyLocationButton = vibrantRed;
-Color mapViewZoomInButton = moonstone;
-Color mapViewZoomOutButton = moonstone;
-Color pickOnMapLocationButton = vibrantRed;
-Color pickOnMapUserLocation = gunmetal;
-Color pickOnMapZoom = gunmetal;
+Color createAlertMyLocationButton = googleBlue;
+Color createAlertPickOnMapButton = googleGreen;
+Color createAlertRestoreButton = royalPurple;
+Color editAlertMarkCompleteButton = googleYellow;
+Color editAlertDeleteButton = googleRed;
 
 // Screen specific
 Color startScreenTitleText = white;
-Color startScreenExplainerText = black;
+Color startScreenExplainerText = white;
 Color startScreenLogoGlow = white;
-
 Color startScreenLocationToggleTextOn = googleYellow;
 Color startScreenLocationToggleTextOff = white;
-
 Color startScreenToggleOn = googleYellow;
 Color startScreenToggleOff = googleGrey;
-
 Color startScreenToggleSliderOn = googleGreen;
 Color startScreenToggleSliderOff = white;
-
 Color startScreenCreateAlertText = white;
 Color startScreenCreateAlertIcon1 = googleYellow;
 Color startScreenCreateAlertIcon2 = white;
 Color startScreenMyAlertsText = white;
 Color startScreenMyAlertsIcon1 = googleYellow;
 Color startScreenMyAlertsIcon2 = white;
-Color startScreenLocationDisclosureButtonText = black;
+Color startScreenLocationDisclosureButtonText = white;
 Color startScreenLocationDisclosureIcon = googleYellow;
 Color startScreenSignatureText = black;
 Color startScreenLocationDisclosureAlertText = black;
-Color startScreenLocationDisclosureAlertDeclineText = googleDarkRed;
+Color startScreenLocationDisclosureAlertDeclineText = vibrantRed;
 Color startScreenLocationDisclosureAlertAccept = deepGreen;
 Color startScreenLocationDisclosureAlertAcceptText = white;
 Color startScreenLocationOffText = black;
@@ -127,52 +129,54 @@ Color startScreenLocationOffButton = deepGray;
 Color startScreenLocationDisclosureText = black;
 
 Color createAlertTitleText = white;
-Color createAlertRemindMeText = white;
-Color createAlertRemindMeFieldFocusedBorder = gunmetal;
+Color createAlertRemindMeText = black;
+Color createAlertRemindMeFieldFocusedBorder = googleYellow;
 Color createAlertRemindMeFieldUnfocusedBorder = columbiaBlue;
 Color createAlertRemindMeFieldText = black;
-Color createAlertRemindMeFieldHintText = deepGray;
+Color createAlertRemindMeFieldHintText = googleGrey;
 Color createAlertRemindMeError = vibrantRed;
 Color createAlertRemindMeLabel = teal;
 Color createAlertRemindMeFieldBackground = white;
-Color createAlertLocationText = white;
-Color createAlertLocationFieldFocusedBorder = gunmetal;
+Color createAlertLocationText = black;
+Color createAlertLocationFieldFocusedBorder = googleYellow;
 Color createAlertLocationFieldUnfocusedBorder = columbiaBlue;
 Color createAlertLocationFieldText = black;
-Color createAlertLocationFieldHintText = deepGray;
+Color createAlertLocationFieldHintText = googleGrey;
 Color createAlertLocationError = vibrantRed;
 Color createAlertLocationLabel = teal;
 Color createAlertLocationFieldBackground = white;
 Color createAlertPreviousLocations = white;
 Color createAlertPreviousLocationsText = black;
-Color createAlertMyLocationText = blueBlack;
-Color createAlertMyLocationIcon = blueBlack;
-Color createAlertPickOnMapText = blueBlack;
-Color createAlertPickOnMapIcon = blueBlack;
-Color createAlertAtTriggerText = white;
-Color createAlertSliderThumb = lightYellow;
-Color createAlertSliderTickMarksOn = gunmetal;
-Color createAlertSliderTickMarksOff = white;
+Color createAlertMyLocationText = white;
+Color createAlertMyLocationIcon = white;
+Color createAlertPickOnMapText = white;
+Color createAlertPickOnMapIcon = white;
+Color createAlertAtTriggerText = black;
+Color createAlertSliderThumb = googleYellow;
+Color createAlertSliderTickMarksOn = midYellow;
+Color createAlertSliderTickMarksOff = black;
+Color createAlertSliderTrackOn = midYellow;
+Color createAlertSliderTrackOff = googleGrey;
 Color createAlertMiButtonOn = gunmetal;
 Color createAlertMiButtonOff = gunmetal;
-Color createAlertMiTextOn = midYellow;
-Color createAlertMiTextOff = teal;
+Color createAlertMiTextOn = googleYellow;
+Color createAlertMiTextOff = googleGrey;
 Color createAlertMiBorderOn = midYellow;
-Color createAlertMiBorderOff = teal;
+Color createAlertMiBorderOff = googleGrey;
 Color createAlertKmButtonOn = gunmetal;
 Color createAlertKmButtonOff = gunmetal;
-Color createAlertKmTextOn = midYellow;
-Color createAlertKmTextOff = teal;
+Color createAlertKmTextOn = googleYellow;
+Color createAlertKmTextOff = googleGrey;
 Color createAlertKmBorderOn = midYellow;
-Color createAlertKmBorderOff = teal;
-Color createAlertUnitsOn = gunmetal;
-Color createAlertUnitsOff = gunmetal;
-Color createAlertBorderOn = midYellow;
-Color createAlertBorderOff = teal;
+Color createAlertKmBorderOff = googleGrey;
+Color createAlertUnitsOn = googleBlue;
+Color createAlertUnitsOff = googleBlue;
+Color createAlertBorderOn = googleYellow;
+Color createAlertBorderOff = googleGrey;
 Color createAlertTextOn = midYellow;
-Color createAlertTextOff = teal;
-Color createAlertRestoreText = blueBlack;
-Color createAlertRestoreIcon = blueBlack;
+Color createAlertTextOff = googleGrey;
+Color createAlertRestoreText = white;
+Color createAlertRestoreIcon = white;
 Color createAlertCancelText = white;
 Color createAlertCancelIcon = white;
 Color createAlertCreateText = white;
@@ -180,8 +184,8 @@ Color createAlertCreateIcon = white;
 
 Color editAlertUpdateButtonText = white;
 Color editAlertUpdateButtonIcon = white;
-Color editAlertMarkCompleteText = gunmetal;
-Color editAlertDeleteAlertText = gunmetal;
+Color editAlertMarkCompleteText = black;
+Color editAlertDeleteAlertText = white;
 
 Color notificationTextAccept = white;
 Color notificationTextDismiss = white;
@@ -189,83 +193,84 @@ Color notificationChannel = moonstone;
 Color notificationLed = white;
 
 Color myAlertsTitleText = white;
-Color myAlertsBackgroundTop = goldenYellow;
-Color myAlertsBackgroundBottom = vibrantBlue;
-Color myAlertsCardBorder = gunmetal;
+Color myAlertsCardBorder = royalPurple;
 Color myAlertsCardBackground = white;
-Color myAlertsFirstLine = blueBlack;
-Color myAlertsSecondLine = teal;
-Color myAlertsThirdLine = blueBlack;
-Color myAlertsCardIcon = gunmetal;
-Color myAlertsExplainerText = gunmetal;
+Color myAlertsFirstLine = black;
+Color myAlertsSecondLine = googleBlue;
+Color myAlertsThirdLine = black;
+Color myAlertsCardIcon = royalPurple;
+Color myAlertsExplainerText = black;
 Color myAlertsBackText = white;
 Color myAlertsBackIcon = white;
-
-Color myAlertsMapViewText = gunmetal;
-Color myAlertsMapViewIcon = gunmetal;
-Color myAlertsNoneYetText = gunmetal;
-Color myAlertsProgressIndicator = gunmetal;
+Color myAlertsMapViewText = black;
+Color myAlertsMapViewIcon = black;
+Color myAlertsNoneYetText = white;
 
 Color restoreAlertsCardIcon = gunmetal;
 Color restoreAlertsBackText = white;
 Color restoreAlertsBackIcon = white;
 
+Color pickOnMapLocationButton = googleYellow;
+Color pickOnMapSelectLocation = googleGreen;
+Color pickOnMapZoom = googleGreen;
+Color pickOnMapMarkerIcon = googleYellow;
+Color pickOnMapTitleColor = white;
+
 Color mapViewTitleText = white;
-Color mapViewCluster = gunmetal;
+Color mapViewCluster = royalPurpleLight;
 Color mapViewTilesUnloaded = white;
 Color mapViewClusterText = white;
-Color mapViewAlertMarker = teal;
-Color mapViewUserLocation = vibrantRed;
-Color mapViewTriggerRadius = blue;
-Color mapViewMyLocationIcon = white;
-Color mapViewResetNorthIcon = teal;
+Color mapViewAlertMarker = royalPurple;
+Color mapViewUserLocation = googleYellow;
+Color mapViewTriggerRadius = royalPurpleLight;
+Color mapViewMyLocationIcon = googleYellow;
+Color mapViewResetNorthIcon = black;
 Color mapViewZoomInIcon = white;
 Color mapViewZoomOutIcon = white;
-Color mapViewCardBorder = blueBlack;
+Color mapViewCardBorder = royalPurple;
 Color mapViewCardBackground = white;
-Color mapViewCardLineOne = blueBlack;
-Color mapViewCardLineTwo = teal;
-Color mapViewCardLineThree = blueBlack;
-Color mapViewCardIcon = blueBlack;
+Color mapViewCardLineOne = black;
+Color mapViewCardLineTwo = googleBlue;
+Color mapViewCardLineThree = black;
+Color mapViewCardIcon = royalPurple;
 Color mapViewCardNotFoundBorder = vibrantRed;
 Color mapViewCardNotFoundText = vibrantRed;
 Color mapViewCardUserLocationText = black;
-Color mapViewNoAlertsText = gunmetal;
+Color mapViewNoAlertsText = white;
+Color mapViewResetNorthButton = black;
+Color mapViewMyLocationButton = googleRed;
+Color mapViewZoomInButton = googleGreen;
+Color mapViewZoomOutButton = googleGreen;
 
-Color introSlidesBackgroundSlide1 = columbiaBlue;
-Color introSlidesBackgroundSlide2 = gunmetal;
-Color introSlidesBackgroundSlide3 = columbiaBlue;
-Color introSlidesBackgroundSlide4 = gunmetal;
-Color introSlidesTitleTextSlide1 = gunmetal;
-Color introSlidesTitleTextSlide2 = columbiaBlue;
-Color introSlidesTextSlide1 = columbiaBlue;
-Color introSlidesTextSlide2 = gunmetal;
+Color introSlidesBackgroundSlide1 = googleBlueLight;
+Color introSlidesBackgroundSlide2 = googleGreenLight;
+Color introSlidesBackgroundSlide3 = googleRedLight;
+Color introSlidesBackgroundSlide4 = googleYellowLight;
+Color introSlidesTitleTextSlide1 = black;
+Color introSlidesTitleTextSlide2 = black;
+Color introSlidesTextSlide1 = black;
+Color introSlidesTextSlide2 = black;
 
 Color sideDrawerTitleText = white;
 Color sideDrawerTitleIcon = white;
-Color sideDrawerTitleBackground = gunmetal;
-Color sideDrawerSectionTitleText = gunmetal;
-Color sideDrawerSectionText = black;
-Color sideDrawerDivider = charcoal;
-Color sideDrawerIcons = black;
-Color sideDrawerDisclosureTitle = black;
-Color sideDrawerDisclosureText = gunmetal;
-Color sideDrawerDisclosureIcon = black;
+Color sideDrawerSectionTitleText = black;
+Color sideDrawerSectionText = googleBlue;
+Color sideDrawerIcons = royalPurple;
+Color sideDrawerDisclosureTitle = googleBlue;
+Color sideDrawerDisclosureText = black;
 Color sideDrawerDisclosureBackground = white;
-Color sideDrawerDisclosureCloseButton = gunmetal;
+Color sideDrawerDisclosureCloseButton = googleBlue;
 Color sideDrawerDisclosureCloseText = white;
 Color sideDrawerDisclosureLinkedinButton = linkedin;
 Color sideDrawerDisclosureLinkedinText = white;
-Color sideDrawerChangeLanguageButton = gunmetal;
+Color sideDrawerChangeLanguageButton = googleBlue;
 Color sideDrawerChangeLanguageText = black;
-Color sideDrawerChangeLanguageUnderline = gunmetal;
+Color sideDrawerChangeLanguageUnderline = googleBlue;
 Color sideDrawerChangeLanguageDropDown = gunmetal;
 Color sideDrawerChangeLanguageRestartText = vibrantRed;
 Color sideDrawerChangeLanguageRestartButton = vibrantRed;
 Color sideDrawerChangeLanguageRestartButtonText = white;
-Color sideDrawerChangeLanguageCloseButton = gunmetal;
+Color sideDrawerChangeLanguageCloseButton = googleBlue;
 Color sideDrawerChangeLanguageCloseButtonText = white;
-Color pickOnMapMarkerIcon = vibrantRed;
-Color pickOnMapTitleColor = white;
 
 Color exceptionText = black;

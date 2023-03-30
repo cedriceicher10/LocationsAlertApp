@@ -123,5 +123,15 @@ flutter:
       fonts:
         - asset: assets/fonts/Righteous-Regular.ttf
           style: normal
+    - family: LeagueSpartan
+      fonts:
+        - asset: assets/fonts/LeagueSpartan-Regular.ttf
+          style: normal
+        - asset: assets/fonts/LeagueSpartan-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/LeagueSpartan-SemiBold.ttf
+          weight: 500
+        - asset: assets/fonts/LeagueSpartan-Medium.ttf
+          weight: 300
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

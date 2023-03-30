@@ -36,8 +36,6 @@ class _SpecificScreenState extends State<SpecificScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final LocationServices _locationServices = LocationServices();
   final DatabaseServices _dbServices = DatabaseServices();
-  final BackgroundTheme _background =
-      BackgroundTheme(Screen.SPECIFIC_ALERT_SCREEN);
   final LanguageServices _languageServices = LanguageServices();
   RecentLocations _rl = RecentLocations();
   String _reminderBody = '';
@@ -216,6 +214,12 @@ class _SpecificScreenState extends State<SpecificScreen> {
   }
 
   Widget specificScreenBody() {
+    BackgroundTheme _background;
+    if (this.widget.screen == ScreenType.CREATE) {
+      _background = BackgroundTheme(Screen.SPECIFIC_ALERT_SCREEN);
+    } else {
+      _background = BackgroundTheme(Screen.EDIT_ALERTS_SCREEN);
+    }
     return SafeArea(
         child: Container(
             decoration: _background.getBackground(),
@@ -296,8 +300,10 @@ class _SpecificScreenState extends State<SpecificScreen> {
           selectedMiTrigger = val;
         }
       }),
-      activeColor: createAlertSliderTickMarksOn,
-      inactiveColor: createAlertSliderTickMarksOff,
+      activeTickColor: createAlertSliderTickMarksOn,
+      inactiveTickColor: createAlertSliderTickMarksOff,
+      activeTrackColor: createAlertSliderTrackOn,
+      inactiveTrackColor: createAlertSliderTrackOff,
       linearStep: true,
       steps: determineSteps(),
       unit: determineUnits(),
@@ -878,7 +884,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           Navigator.pop(context, false);
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: editAlertDeleteButton,
+            backgroundColor: editAlertMarkCompleteButton,
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
@@ -908,7 +914,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           Navigator.pop(context, false);
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: editAlertMarkCompleteButton,
+            backgroundColor: editAlertDeleteButton,
             fixedSize: Size(buttonWidth, buttonHeight),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_smallButtonCornerRadius))),
@@ -956,7 +962,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           SizedBox(
             width: _iconGapWidth,
           ),
-          smallButtonText(_languageServices.restoreAlertsButton)
+          restoreAlertsButtonText(_languageServices.restoreAlertsButton)
         ]));
   }
 
@@ -1025,6 +1031,16 @@ class _SpecificScreenState extends State<SpecificScreen> {
       text: text,
       size: _locationButtonTextFontSize,
       color: createAlertMyLocationText,
+      font: font_smallButtonText,
+      weight: FontWeight.bold,
+    );
+  }
+
+  Widget restoreAlertsButtonText(String text) {
+    return FormattedText(
+      text: text,
+      size: _locationButtonTextFontSize,
+      color: createAlertRestoreText,
       font: font_smallButtonText,
       weight: FontWeight.bold,
     );

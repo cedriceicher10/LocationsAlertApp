@@ -8,8 +8,10 @@ class TriggerSlider extends StatelessWidget {
   final int majorTick;
   final int minorTick;
   final Function(double)? onChanged;
-  final Color? activeColor;
-  final Color? inactiveColor;
+  final Color? activeTickColor;
+  final Color? inactiveTickColor;
+  final Color? activeTrackColor;
+  final Color? inactiveTrackColor;
   final int labelValuePrecision;
   final bool linearStep;
   final List<double>? steps;
@@ -23,8 +25,10 @@ class TriggerSlider extends StatelessWidget {
     required this.minorTick,
     required this.onChanged,
     required this.unit,
-    this.activeColor,
-    this.inactiveColor,
+    this.activeTickColor,
+    this.inactiveTickColor,
+    this.activeTrackColor,
+    this.inactiveTrackColor,
     this.labelValuePrecision = 2,
     this.linearStep = true,
     this.steps,
@@ -78,7 +82,7 @@ class TriggerSlider extends StatelessWidget {
                       color: index ==
                               ((value - minValue) /
                                   ((maxValue - minValue) / (divisions - 1)))
-                          ? activeColor ?? Colors.orange
+                          ? activeTickColor ?? Colors.orange
                           : Colors.grey.shade300,
                     ),
                   ),
@@ -93,14 +97,15 @@ class TriggerSlider extends StatelessWidget {
             data: SliderThemeData(
               trackHeight:
                   allocatedHeight * 0.011 < 9 ? 9 : allocatedHeight * 0.011,
-              activeTickMarkColor: activeColor ?? Colors.orange,
-              inactiveTickMarkColor: inactiveColor ?? Colors.orange.shade50,
-              activeTrackColor: activeColor ?? Colors.orange,
-              inactiveTrackColor: inactiveColor ?? Colors.orange.shade50,
+              activeTickMarkColor: activeTrackColor ?? Colors.orange,
+              inactiveTickMarkColor:
+                  inactiveTrackColor ?? Colors.orange.shade50,
+              activeTrackColor: activeTrackColor ?? Colors.orange,
+              inactiveTrackColor: inactiveTrackColor ?? Colors.orange.shade50,
               thumbColor: createAlertSliderThumb,
-              overlayColor: activeColor == null
+              overlayColor: activeTickColor == null
                   ? Colors.orange.withOpacity(0.1)
-                  : activeColor!.withOpacity(0.1),
+                  : activeTickColor!.withOpacity(0.1),
               thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12.0),
               trackShape: CustomTrackShape(),
               showValueIndicator: ShowValueIndicator.never,

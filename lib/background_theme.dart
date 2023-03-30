@@ -6,7 +6,8 @@ enum Screen {
   SPECIFIC_ALERT_SCREEN,
   GENERIC_ALERT_SCREEN,
   MY_ALERTS_SCREEN,
-  EDIT_ALERTS_SCREEN
+  EDIT_ALERTS_SCREEN,
+  MAP_SCREEN,
 }
 
 class BackgroundTheme {
@@ -37,6 +38,12 @@ class BackgroundTheme {
         {
           topColor = myAlertsBackgroundTop;
           bottomColor = myAlertsBackgroundBottom;
+        }
+        break;
+      case Screen.MAP_SCREEN:
+        {
+          topColor = mapViewBackgroundTop;
+          bottomColor = mapViewBackgroundBottom;
         }
         break;
       case Screen.EDIT_ALERTS_SCREEN:

@@ -101,6 +101,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   double _fabMapWidth = 0;
   double _buttonWidthMaster = 0;
   double _mapButtonIconSize = 0;
+  double _toggleButtonFontSize = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -239,10 +240,10 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
             borderRadius: BorderRadius.circular(_cardCornerRadius)),
         child: ListTile(
             contentPadding: EdgeInsets.fromLTRB(
-                _cardPaddingTopBottom,
                 _cardPaddingRightLeft,
                 _cardPaddingTopBottom,
-                _cardPaddingRightLeft),
+                _cardPaddingRightLeft,
+                _cardPaddingTopBottom),
             isThreeLine: true,
             title: reminderCardTitleText(alertObject.reminder),
             subtitle:
@@ -252,7 +253,9 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
               reminderCardDateText(
                   '${_languageServices.myAlertsTileDate}: ${alertObject.dateTimeCreated}')
             ]),
-            trailing: icon,
+            trailing: Container(
+                height: double.infinity,
+                child: icon), // This vertically centers the icon
             onTap: () {
               if (this.widget.alertList == AlertList.NOT_COMPLETED) {
                 Navigator.of(context)
@@ -288,6 +291,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
           _buttonHeight,
           _buttonWidth,
           _backButtonFontSize,
+          _toggleButtonFontSize,
           _backButtonIconSize,
           _backButtonCornerRadius,
           _fabSpacing,
@@ -331,7 +335,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
       text: text,
       size: _cardTitleFontSize,
       color: myAlertsFirstLine,
-      font: font_plainText,
+      font: font_cards,
       weight: FontWeight.bold,
     );
   }
@@ -341,7 +345,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
       text: text,
       size: _cardBodyFontSize,
       color: myAlertsSecondLine,
-      font: font_plainText,
+      font: font_cards,
       decoration: TextDecoration.underline,
       weight: FontWeight.bold,
     );
@@ -352,7 +356,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
       text: text,
       size: _cardSubtitleFontSize,
       color: myAlertsThirdLine,
-      font: font_plainText,
+      font: font_cards,
       style: FontStyle.italic,
       weight: FontWeight.bold,
     );
@@ -386,7 +390,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
       size: _explainerTextFontSize,
       color: myAlertsExplainerText,
       align: TextAlign.center,
-      font: font_plainText,
+      font: font_cards,
     );
   }
 
@@ -418,8 +422,8 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     // Height
     _buttonHeight = (60 / 781) * _screenHeight;
     _listViewPaddingTop = (10 / 781) * _screenHeight;
-    _cardGap = (4 / 781) * _screenHeight;
-    _cardPaddingTopBottom = (10 / 781) * _screenHeight;
+    _cardGap = (3 / 781) * _screenHeight;
+    _cardPaddingTopBottom = (8 / 781) * _screenHeight;
     _bottomPadding = (90 / 781) * _screenHeight;
 
     // Width
@@ -430,16 +434,17 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     _buttonSpacing = (10 / 392) * _screenWidth;
     _explainerTextPadding = (12 / 392) * _screenWidth;
     _listViewPaddingSides = (12 / 392) * _screenWidth;
-    _cardPaddingRightLeft = (5 / 392) * _screenWidth;
+    _cardPaddingRightLeft = (12 / 392) * _screenWidth;
 
     // Font
     _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height * langScale;
-    _cardTitleFontSize = (20 / 60) * _buttonHeight * langScale;
-    _cardBodyFontSize = (14 / 60) * _buttonHeight * langScale;
-    _cardSubtitleFontSize = (12 / 60) * _buttonHeight * langScale;
+    _cardTitleFontSize = (22 / 60) * _buttonHeight * langScale;
+    _cardBodyFontSize = (16 / 60) * _buttonHeight * langScale;
+    _cardSubtitleFontSize = (14 / 60) * _buttonHeight * langScale;
     _explainerTextFontSize = (14 / 781) * _screenHeight * langScale;
     _backButtonFontSize = (20 / 60) * _buttonHeight * langScale;
     _noAlertsYetText = (26 / 781) * _screenHeight * langScale;
+    _toggleButtonFontSize = (14 / 781) * _screenHeight;
 
     // Icons
     _cardIconSize = (30 / 60) * _buttonHeight;

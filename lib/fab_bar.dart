@@ -15,6 +15,7 @@ Widget fabBar(
     double buttonHeight,
     double buttonWidth,
     double buttonFontSize,
+    double toggleFontSize,
     double buttonIconWidth,
     double cornerRadius,
     double iconSpacing,
@@ -102,7 +103,10 @@ Widget fabBar(
                   label: Column(children: [
                     Text(
                       fabToggleText,
-                      style: TextStyle(color: myAlertsMapViewText),
+                      style: TextStyle(
+                          color: myAlertsMapViewText,
+                          fontSize: toggleFontSize,
+                          fontFamily: font_smallButtonText),
                     ),
                     Icon(
                       iconSelection,

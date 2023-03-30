@@ -127,7 +127,7 @@ class _PickOnMapScreenState extends State<PickOnMapScreen> {
     return FlutterLocationPicker(
         initPosition: LatLong(initLat, initLon),
         locationButtonsBackgroundColor: pickOnMapLocationButton,
-        selectLocationButtonColor: pickOnMapUserLocation,
+        selectLocationButtonColor: pickOnMapSelectLocation,
         zoomButtonsBackgroundColor: pickOnMapZoom,
         markerIconColor: pickOnMapMarkerIcon,
         markerIcon: Icons.location_on_sharp,

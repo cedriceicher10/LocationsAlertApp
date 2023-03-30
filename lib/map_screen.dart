@@ -28,7 +28,7 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   final DatabaseServices _dbServices = DatabaseServices();
-  final BackgroundTheme _background = BackgroundTheme(Screen.MY_ALERTS_SCREEN);
+  final BackgroundTheme _background = BackgroundTheme(Screen.MAP_SCREEN);
   final LocationServices _locationServices = LocationServices();
   final LanguageServices _languageServices = LanguageServices();
   List<AlertObject> _alertObjs = [];
@@ -73,6 +73,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   double _editIconSize = 0;
   double _popupUserLocationWidth = 0;
   double _clusterAlertNumFontSize = 0;
+  double _toggleButtonFontSize = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -349,8 +350,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           builder: (context, markers) {
             return Container(
               alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  color: mapViewAlertMarker, shape: BoxShape.circle),
+              decoration:
+                  BoxDecoration(color: mapViewCluster, shape: BoxShape.circle),
               child: clusteringText(markers),
             );
           },
@@ -561,6 +562,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         _buttonHeight,
         _buttonWidth,
         _backButtonFontSize,
+        _toggleButtonFontSize,
         _backButtonIconSize,
         _backButtonCornerRadius,
         _fabSpacing,
@@ -575,7 +577,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         text: _languageServices.mapViewYourLocation,
         size: _popupErrorFontSize,
         color: mapViewCardUserLocationText,
-        font: font_plainText,
+        font: font_cards,
         weight: FontWeight.bold,
         align: TextAlign.center,
       );
@@ -584,7 +586,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           text: _languageServices.mapViewNoAlertInformation,
           size: _popupErrorFontSize,
           color: mapViewCardNotFoundText,
-          font: font_plainText,
+          font: font_cards,
           weight: FontWeight.bold,
           align: TextAlign.center);
     }
@@ -608,7 +610,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       text: text,
       size: _popupTitleFontSize,
       color: mapViewCardLineOne,
-      font: font_plainText,
+      font: font_cards,
       weight: FontWeight.bold,
     );
   }
@@ -618,7 +620,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       text: text,
       size: _popupLocationFontSize,
       color: mapViewCardLineTwo,
-      font: font_plainText,
+      font: font_cards,
       decoration: TextDecoration.underline,
       weight: FontWeight.bold,
     );
@@ -629,7 +631,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       text: text,
       size: _popupDateFontSize,
       color: mapViewCardLineThree,
-      font: font_plainText,
+      font: font_cards,
       style: FontStyle.italic,
       weight: FontWeight.bold,
     );
@@ -734,6 +736,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     _popupDateFontSize = (12 / 781) * _screenHeight * langScale;
     _popupErrorFontSize = (16 / 781) * _screenHeight * langScale;
     _clusterAlertNumFontSize = (20 / 781) * _screenHeight * langScale;
+    _toggleButtonFontSize = (14 / 781) * _screenHeight;
 
     // Icons
     _backButtonIconSize = (24 / 60) * _buttonHeight;

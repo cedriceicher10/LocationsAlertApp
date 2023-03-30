@@ -377,7 +377,7 @@ class SideDrawer extends StatelessWidget {
         //crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(Icons.dashboard_outlined,
-              size: _dataDisclosureIconSize, color: sideDrawerDisclosureIcon),
+              size: _dataDisclosureIconSize, color: sideDrawerIcons),
           SizedBox(width: _dataIconSpacer),
           listText(_languageServices.sideDrawerDataDisclosureTitle)
         ]);
@@ -496,8 +496,8 @@ class SideDrawer extends StatelessWidget {
     return FormattedText(
         text: text,
         size: _sideDrawerItemFontSize,
-        color: sideDrawerSectionTitleText,
-        font: font_plainText,
+        color: sideDrawerSectionText,
+        font: font_sideDrawer,
         weight: FontWeight.bold);
   }
 
@@ -505,8 +505,8 @@ class SideDrawer extends StatelessWidget {
     return FormattedText(
         text: text,
         size: _sideDrawerDividerFontSize,
-        color: sideDrawerDivider,
-        font: font_plainText,
+        color: sideDrawerSectionTitleText,
+        font: font_sideDrawer,
         weight: FontWeight.bold);
   }
 
@@ -570,7 +570,7 @@ class SideDrawer extends StatelessWidget {
         text: text,
         size: _sideDrawerItemFontSize,
         color: sideDrawerSectionText,
-        font: font_plainText,
+        font: font_sideDrawer,
         weight: FontWeight.bold);
   }
 

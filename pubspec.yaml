@@ -36,9 +36,9 @@ dependencies:
   animated_splash_screen: ^1.2.0
   #flutter_bloc: ^8.0.1
   intl: 
-  location: 
+  location: 4.4.0
   background_location: ^0.8.1
-  geocoding: 
+  geocoding: 2.1.0
   #flutter_local_notifications: 
   awesome_notifications: 0.6.20
   location_picker_flutter_map: 1.0.3
@@ -49,6 +49,7 @@ dependencies:
   flutter_map_marker_cluster: 
   latlong2: 
   translator: 0.1.7
+  file: 6.1.4
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

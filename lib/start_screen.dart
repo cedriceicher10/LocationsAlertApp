@@ -292,7 +292,7 @@ class _StartScreenState extends State<StartScreen> {
         _userBgLat = bgLocationData.latitude!;
         _userBgLon = bgLocationData.longitude!;
         setState(() async {
-          print('BACKGROUND LOCATION TRIGGERED ==============');
+          // print('BACKGROUND LOCATION TRIGGERED ==============');
           // print('Latitude : ${bgLocationData.latitude}');
           // print('Longitude: ${bgLocationData.longitude}');
           // print('Accuracy : ${bgLocationData.accuracy}');

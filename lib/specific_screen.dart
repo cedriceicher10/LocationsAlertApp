@@ -647,6 +647,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
 
                 // ADD INTERSTITIAL AD HERE
                 if ((isAdLoaded) && (_interstitialAd != null)) {
+                  _dbServices.updateUsersAdsServed(context);
                   _interstitialAd.show();
                 } else {
                   Navigator.pop(context);
@@ -724,6 +725,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
 
                   // ADD INTERSTITIAL AD HERE
                   if ((isAdLoaded) && (_interstitialAd != null)) {
+                    _dbServices.updateUsersAdsServed(context);
                     _interstitialAd.show();
                   } else {
                     Navigator.pop(context, false);

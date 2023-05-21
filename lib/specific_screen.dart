@@ -3,6 +3,7 @@ import 'package:locationalertsapp/recent_locations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'database_services.dart';
 import 'location_services.dart';
 import 'formatted_text.dart';
@@ -14,6 +15,7 @@ import 'background_theme.dart';
 import 'trigger_slider.dart';
 import 'language_services.dart';
 import 'my_alerts_screen.dart';
+import 'ad_services.dart';
 
 enum TriggerUnits { mi, km }
 
@@ -38,6 +40,39 @@ class _SpecificScreenState extends State<SpecificScreen> {
   final DatabaseServices _dbServices = DatabaseServices();
   final LanguageServices _languageServices = LanguageServices();
   RecentLocations _rl = RecentLocations();
+
+  // AD STUFF ---------
+  AdServices _adServices = AdServices();
+  late InterstitialAd _interstitialAd;
+  bool isAdLoaded = false;
+
+  loadInterstitialAd() {
+    InterstitialAd.load(
+        adUnitId: _adServices.getInterstitialAdUnitId(),
+        request: AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (ad) {
+              Navigator.pop(context, false);
+            },
+          );
+          setState(() {
+            _interstitialAd = ad;
+            isAdLoaded = true;
+          });
+        }, onAdFailedToLoad: (error) {
+          print('Failed to load interstitial ad: ${error.message}');
+          _interstitialAd.dispose();
+        }));
+  }
+
+  @override
+  void dispose() {
+    _interstitialAd.dispose();
+    super.dispose();
+  }
+  // ------------------
+
   String _reminderBody = '';
   String _specificLocation = '';
   bool _reverseGeolocateSuccess = false;
@@ -117,6 +152,8 @@ class _SpecificScreenState extends State<SpecificScreen> {
 
   @override
   void initState() {
+    // Load ads
+    loadInterstitialAd();
     if (widget.alert.isSpecific) {
       _isGeneric = false;
     }
@@ -605,7 +642,15 @@ class _SpecificScreenState extends State<SpecificScreen> {
                 if (!currentFocus.hasPrimaryFocus) {
                   currentFocus.unfocus();
                 }
-                Navigator.pop(context);
+                // Return to home
+                //Navigator.pop(context); // Old way of just going back to home before ads
+
+                // ADD INTERSTITIAL AD HERE
+                if ((isAdLoaded) && (_interstitialAd != null)) {
+                  _interstitialAd.show();
+                } else {
+                  Navigator.pop(context);
+                }
               }
             },
             backgroundColor: createAlertCreateButton,
@@ -674,7 +719,15 @@ class _SpecificScreenState extends State<SpecificScreen> {
                   if (!currentFocus.hasPrimaryFocus) {
                     currentFocus.unfocus();
                   }
-                  Navigator.pop(context, false);
+                  // Return to home
+                  //Navigator.pop(context, false); // Old way of just going back to home before ads
+
+                  // ADD INTERSTITIAL AD HERE
+                  if ((isAdLoaded) && (_interstitialAd != null)) {
+                    _interstitialAd.show();
+                  } else {
+                    Navigator.pop(context, false);
+                  }
                 }
               } else {
                 // Ensure user has not exceeded quota of 150 reminders

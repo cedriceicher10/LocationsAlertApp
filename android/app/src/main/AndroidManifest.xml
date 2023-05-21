@@ -8,6 +8,10 @@
    <application
         android:label="Location Alerts"
         android:icon="@mipmap/ic_launcher">
+        <meta-data
+          	android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3290345787469920~6318630876"
+        />        
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

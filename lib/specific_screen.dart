@@ -875,7 +875,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           SizedBox(
             width: _iconGapWidth,
           ),
-          smallButtonText(_languageServices.createAlertMyLocationButton)
+          smallButtonWhiteText(_languageServices.createAlertMyLocationButton)
         ]));
   }
 
@@ -921,7 +921,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           SizedBox(
             width: _iconGapWidth,
           ),
-          smallButtonText(_languageServices.createAlertPickOnMapButton)
+          smallButtonWhiteText(_languageServices.createAlertPickOnMapButton)
         ]));
   }
 
@@ -952,7 +952,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           SizedBox(
             width: _iconGapWidth,
           ),
-          smallButtonText(_languageServices.editAlertMarkDoneButton)
+          smallButtonBlackText(_languageServices.editAlertMarkDoneButton)
         ]));
   }
 
@@ -982,7 +982,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
           SizedBox(
             width: _iconGapWidth,
           ),
-          smallButtonText(_languageServices.editAlertDeleteButton)
+          smallButtonWhiteText(_languageServices.editAlertDeleteButton)
         ]));
   }
 
@@ -1081,11 +1081,21 @@ class _SpecificScreenState extends State<SpecificScreen> {
         align: TextAlign.center);
   }
 
-  Widget smallButtonText(String text) {
+  Widget smallButtonWhiteText(String text) {
     return FormattedText(
       text: text,
       size: _locationButtonTextFontSize,
-      color: createAlertMyLocationText,
+      color: editAlertDeleteAlertText,
+      font: font_smallButtonText,
+      weight: FontWeight.bold,
+    );
+  }
+
+  Widget smallButtonBlackText(String text) {
+    return FormattedText(
+      text: text,
+      size: _locationButtonTextFontSize,
+      color: editAlertMarkCompleteText,
       font: font_smallButtonText,
       weight: FontWeight.bold,
     );

@@ -382,7 +382,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                         decoration: BoxDecoration(
                             color: mapViewCardBackground,
                             shape: BoxShape.rectangle,
-                            border: (_userPin)
+                            border: (useSmallPopupMarker(marker))
                                 ? Border.all(
                                     color: mapViewCardUserLocationBorder,
                                     width: 3)

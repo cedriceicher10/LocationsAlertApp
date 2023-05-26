@@ -854,17 +854,17 @@ class _StartScreenState extends State<StartScreen> {
     // Font
     _submitButtonFontSize = (24 / 60) * _buttonHeight * langScale;
     _locationDisclosureFontSize =
-        (12 / 30) * _locationDisclosureButtonHeight * langScale;
+        (11 / 30) * _locationDisclosureButtonHeight * langScale;
     _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height * langScale;
     _explainerFontSize = (30 / 781) * _screenHeight * langScale;
     _helpFontSize = (16 / 781) * _screenHeight * langScale;
-    _signatureFontSize = (12 / 781) * _screenHeight * langScale;
+    _signatureFontSize = (13 / 781) * _screenHeight * langScale;
     _locationToggleFontSize = (18 / 781) * _screenHeight * langScale;
 
     // Icons
     _titleIconSize = (175 / 781) * _screenHeight;
     _specificLocationIconSize = (28 / 60) * _buttonHeight;
-    _locationDisclosureIconSize = (13 / 30) * _locationDisclosureButtonHeight;
+    _locationDisclosureIconSize = (12 / 30) * _locationDisclosureButtonHeight;
 
     // Styling
     _locationDisclosureButtonCornerRadius =

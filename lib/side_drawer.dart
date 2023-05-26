@@ -589,9 +589,9 @@ class SideDrawer extends StatelessWidget {
     // and a 56 height appBar
 
     // Height
-    _sideDrawerHeaderHeight = (80 / 781) * _screenHeight;
-    _sideDrawerDividerTextPaddingTop = (10 / 781) * _screenHeight;
-    _sideDrawerDividerTextPaddingBottom = (10 / 781) * _screenHeight;
+    _sideDrawerHeaderHeight = (90 / 781) * _screenHeight;
+    _sideDrawerDividerTextPaddingTop = (5 / 781) * _screenHeight;
+    _sideDrawerDividerTextPaddingBottom = (5 / 781) * _screenHeight;
     _sideDrawerDividerBottomPadding = (0 / 781) * _screenHeight;
 
     // Width
@@ -602,9 +602,9 @@ class SideDrawer extends StatelessWidget {
     _sideDrawerDividerTextPaddingLeft = 6;
 
     // Font
-    _sideDrawerTitleFontSize = (18 / 392) * _screenWidth * langScale;
-    _sideDrawerItemFontSize = (14 / 392) * _screenWidth * langScale;
-    _sideDrawerDividerFontSize = (14 / 392) * _screenWidth * langScale;
+    _sideDrawerTitleFontSize = (20 / 392) * _screenWidth * langScale;
+    _sideDrawerItemFontSize = (18 / 392) * _screenWidth * langScale;
+    _sideDrawerDividerFontSize = (20 / 392) * _screenWidth * langScale;
 
     // Icons
     _sideDrawerIconSize = (20 / 80) * _sideDrawerHeaderHeight;

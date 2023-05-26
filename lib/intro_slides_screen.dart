@@ -22,10 +22,22 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
 
   List<ContentConfig> listContentConfig = [];
 
-  double _titleFontSize = 0;
-  double _textFontSize = 0;
-  double _imageWidth = 0;
-  double _imageHeight = 0;
+  double _titleFontSizeSlide1 = 0;
+  double _titleFontSizeSlide2 = 0;
+  double _titleFontSizeSlide3 = 0;
+  double _titleFontSizeSlide4 = 0;
+  double _textFontSizeSlide1 = 0;
+  double _textFontSizeSlide2 = 0;
+  double _textFontSizeSlide3 = 0;
+  double _textFontSizeSlide4 = 0;
+  double _imageWidthSlide1 = 0;
+  double _imageHeightSlide1 = 0;
+  double _imageWidthSlide2 = 0;
+  double _imageHeightSlide2 = 0;
+  double _imageWidthSlide3 = 0;
+  double _imageHeightSlide3 = 0;
+  double _imageWidthSlide4 = 0;
+  double _imageHeightSlide4 = 0;
 
   @override
   void initState() {
@@ -33,12 +45,12 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
     listContentConfig.add(
       ContentConfig(
         title: _languageServices.introSlidesGettingStartedTitle,
-        styleTitle: titleTextStyleDark(),
+        styleTitle: titleTextStyleSlide1(),
         description: _languageServices.introSlidesGettingStartedDesc,
-        styleDescription: textStyleDark(),
+        styleDescription: textStyleSlide1(),
         pathImage: "assets/images/IntroSlide_CreateAlert.png",
-        widthImage: _imageWidth,
-        heightImage: _imageHeight,
+        widthImage: _imageWidthSlide1,
+        heightImage: _imageHeightSlide1,
         foregroundImageFit: BoxFit.fitWidth,
         backgroundColor: introSlidesBackgroundSlide1,
       ),
@@ -46,36 +58,39 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
     listContentConfig.add(
       ContentConfig(
         title: _languageServices.introSlidesCreatingAlertTitle,
-        styleTitle: titleTextStyleLight(),
+        styleTitle: titleTextStyleSlide2(),
         description: _languageServices.introSlidesCreatingAlertDesc,
-        styleDescription: textStyleLight(),
+        styleDescription: textStyleSlide2(),
         pathImage: "assets/images/IntroSlide_WriteAlert.png",
-        widthImage: _imageWidth,
-        heightImage: _imageHeight,
+        widthImage: _imageWidthSlide2,
+        heightImage: _imageHeightSlide2,
+        foregroundImageFit: BoxFit.fitHeight,
         backgroundColor: introSlidesBackgroundSlide2,
       ),
     );
     listContentConfig.add(
       ContentConfig(
         title: _languageServices.introSlidesAlertTriggersTitle,
-        styleTitle: titleTextStyleDark(),
+        styleTitle: titleTextStyleSlide3(),
         description: _languageServices.introSlidesAlertTriggersDesc,
-        styleDescription: textStyleDark(),
+        styleDescription: textStyleSlide3(),
         pathImage: "assets/images/IntroSlide_LocationOn.png",
-        widthImage: _imageWidth,
-        heightImage: _imageHeight,
+        widthImage: _imageWidthSlide3,
+        heightImage: _imageHeightSlide3,
+        foregroundImageFit: BoxFit.fitWidth,
         backgroundColor: introSlidesBackgroundSlide3,
       ),
     );
     listContentConfig.add(
       ContentConfig(
         title: _languageServices.introSlidesYourAlertsTitle,
-        styleTitle: titleTextStyleLight(),
+        styleTitle: titleTextStyleSlide4(),
         description: _languageServices.introSlidesYourAlertsDesc,
-        styleDescription: textStyleLight(),
+        styleDescription: textStyleSlide4(),
         pathImage: "assets/images/IntroSlide_ManyAlerts.png",
-        widthImage: _imageWidth,
-        heightImage: _imageHeight,
+        widthImage: _imageWidthSlide4,
+        heightImage: _imageHeightSlide4,
+        foregroundImageFit: BoxFit.fitWidth,
         backgroundColor: introSlidesBackgroundSlide4,
       ),
     );
@@ -100,34 +115,66 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
     );
   }
 
-  TextStyle titleTextStyleDark() {
+  TextStyle titleTextStyleSlide1() {
     return TextStyle(
         color: introSlidesTitleTextSlide1,
-        fontSize: _titleFontSize,
+        fontSize: _titleFontSizeSlide1,
         fontFamily: font_bigButtonText,
         fontWeight: FontWeight.bold);
   }
 
-  TextStyle titleTextStyleLight() {
+  TextStyle titleTextStyleSlide2() {
     return TextStyle(
         color: introSlidesTitleTextSlide2,
-        fontSize: _titleFontSize,
+        fontSize: _titleFontSizeSlide2,
         fontFamily: font_bigButtonText,
         fontWeight: FontWeight.bold);
   }
 
-  TextStyle textStyleDark() {
+  TextStyle titleTextStyleSlide3() {
+    return TextStyle(
+        color: introSlidesTitleTextSlide3,
+        fontSize: _titleFontSizeSlide3,
+        fontFamily: font_bigButtonText,
+        fontWeight: FontWeight.bold);
+  }
+
+  TextStyle titleTextStyleSlide4() {
+    return TextStyle(
+        color: introSlidesTitleTextSlide4,
+        fontSize: _titleFontSizeSlide4,
+        fontFamily: font_bigButtonText,
+        fontWeight: FontWeight.bold);
+  }
+
+  TextStyle textStyleSlide1() {
     return TextStyle(
         color: introSlidesTextSlide1,
-        fontSize: _textFontSize,
+        fontSize: _textFontSizeSlide1,
         fontFamily: font_plainText,
         fontWeight: FontWeight.bold);
   }
 
-  TextStyle textStyleLight() {
+  TextStyle textStyleSlide2() {
     return TextStyle(
         color: introSlidesTextSlide2,
-        fontSize: _textFontSize,
+        fontSize: _textFontSizeSlide2,
+        fontFamily: font_plainText,
+        fontWeight: FontWeight.bold);
+  }
+
+  TextStyle textStyleSlide3() {
+    return TextStyle(
+        color: introSlidesTextSlide3,
+        fontSize: _textFontSizeSlide3,
+        fontFamily: font_plainText,
+        fontWeight: FontWeight.bold);
+  }
+
+  TextStyle textStyleSlide4() {
+    return TextStyle(
+        color: introSlidesTextSlide4,
+        fontSize: _textFontSizeSlide4,
         fontFamily: font_plainText,
         fontWeight: FontWeight.bold);
   }
@@ -135,9 +182,23 @@ class _IntroSlidesScreenState extends State<IntroSlidesScreen> {
   void generateLayout() {
     double langScale = _languageServices.getLanguageScale();
 
-    _titleFontSize = (32 / 781) * this.widget.screenHeight * langScale;
-    _textFontSize = (15 / 781) * this.widget.screenHeight * langScale;
-    _imageWidth = (300 / 392) * this.widget.screenWidth;
-    _imageHeight = (300 / 392) * this.widget.screenWidth;
+    _titleFontSizeSlide1 = (34 / 781) * this.widget.screenHeight * langScale;
+    _titleFontSizeSlide2 = (34 / 781) * this.widget.screenHeight * langScale;
+    _titleFontSizeSlide3 = (34 / 781) * this.widget.screenHeight * langScale;
+    _titleFontSizeSlide4 = (34 / 781) * this.widget.screenHeight * langScale;
+
+    _textFontSizeSlide1 = (20 / 781) * this.widget.screenHeight * langScale;
+    _textFontSizeSlide2 = (20 / 781) * this.widget.screenHeight * langScale;
+    _textFontSizeSlide3 = (20 / 781) * this.widget.screenHeight * langScale;
+    _textFontSizeSlide4 = (20 / 781) * this.widget.screenHeight * langScale;
+
+    _imageWidthSlide1 = (300 / 392) * this.widget.screenWidth;
+    _imageHeightSlide1 = (300 / 392) * this.widget.screenWidth;
+    _imageWidthSlide2 = (300 / 392) * this.widget.screenWidth;
+    _imageHeightSlide2 = (300 / 392) * this.widget.screenWidth;
+    _imageWidthSlide3 = (300 / 392) * this.widget.screenWidth;
+    _imageHeightSlide3 = (300 / 392) * this.widget.screenWidth;
+    _imageWidthSlide4 = (300 / 392) * this.widget.screenWidth;
+    _imageHeightSlide4 = (400 / 392) * this.widget.screenWidth;
   }
 }

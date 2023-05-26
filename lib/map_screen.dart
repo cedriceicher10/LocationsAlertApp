@@ -733,19 +733,19 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
 
     // Font
     _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height * langScale;
-    _backButtonFontSize = (20 / 60) * _buttonHeight * langScale;
+    _backButtonFontSize = (24 / 60) * _buttonHeight * langScale;
     _noAlertsYetText = (26 / 781) * _screenHeight * langScale;
-    _popupTitleFontSize = (20 / 781) * _screenHeight * langScale;
-    _popupLocationFontSize = (14 / 781) * _screenHeight * langScale;
-    _popupDateFontSize = (12 / 781) * _screenHeight * langScale;
+    _popupTitleFontSize = (26 / 781) * _screenHeight * langScale;
+    _popupLocationFontSize = (19 / 781) * _screenHeight * langScale;
+    _popupDateFontSize = (16 / 781) * _screenHeight * langScale;
     _popupErrorFontSize = (16 / 781) * _screenHeight * langScale;
     _clusterAlertNumFontSize = (20 / 781) * _screenHeight * langScale;
-    _toggleButtonFontSize = (14 / 781) * _screenHeight;
+    _toggleButtonFontSize = (16 / 781) * _screenHeight;
 
     // Icons
     _backButtonIconSize = (24 / 60) * _buttonHeight;
     _mapButtonIconSize = (30 / 60) * _buttonHeight;
-    _editIconSize = (20 / 60) * _buttonHeight;
+    _editIconSize = (34 / 60) * _buttonHeight;
 
     // Styling
     _backButtonCornerRadius = (10 / 60) * _buttonHeight;

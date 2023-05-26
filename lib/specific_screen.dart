@@ -1183,7 +1183,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
     _guideTextFontSize = (26 / 781) * _screenHeight * langScale;
     _formFontSize = (16 / 60) * _buttonHeight * langScale;
     _locationButtonTextFontSize = (16 / 30) * _locationButtonHeight * langScale;
-    _submitButtonFontSize = (20 / 60) * _buttonHeight * langScale;
+    _submitButtonFontSize = (24 / 60) * _buttonHeight * langScale;
     _formErrorFontSize = (12 / 60) * _buttonHeight * langScale;
     _triggerUnitsFontSize = (16 / 60) * _buttonHeight * langScale;
     _updateButtonFontSize = (20 / 60) * _buttonHeight * langScale;

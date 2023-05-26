@@ -296,10 +296,10 @@ class LanguageServices {
       '\nEnter what you want to be reminded about and where. Such as:\n\nGrab more sugar next time I\'m at my grocery store.';
   String introSlidesAlertTriggersTitle = 'Alert Triggers';
   String introSlidesAlertTriggersDesc =
-      'After your alert is created, make sure the location toggle is ON and your location service is ACTIVE.\n\nLeave the app open in the background and just wait until you arrive at one of your specified locations for an alert to trigger!';
+      'After your alert is created, make sure the location toggle is ON and your location service is ACTIVE.\n\nThen just leave the app open in the background!';
   String introSlidesYourAlertsTitle = 'Your Alerts';
   String introSlidesYourAlertsDesc =
-      'You can set multiple alerts for multiple locations! Tap View my Alerts at any time to look at your current alerts, edit them, or delete them.\n\nLet\'s get started!';
+      'You can set multiple alerts for multiple locations! Let\'s get started!';
   List<String> _introSlides = [];
 
   Future<bool> init() async {

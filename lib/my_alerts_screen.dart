@@ -438,16 +438,16 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
 
     // Font
     _titleTextFontSize = (32 / 56) * AppBar().preferredSize.height * langScale;
-    _cardTitleFontSize = (22 / 60) * _buttonHeight * langScale;
-    _cardBodyFontSize = (16 / 60) * _buttonHeight * langScale;
-    _cardSubtitleFontSize = (14 / 60) * _buttonHeight * langScale;
-    _explainerTextFontSize = (14 / 781) * _screenHeight * langScale;
-    _backButtonFontSize = (20 / 60) * _buttonHeight * langScale;
+    _cardTitleFontSize = (26 / 60) * _buttonHeight * langScale;
+    _cardBodyFontSize = (19 / 60) * _buttonHeight * langScale;
+    _cardSubtitleFontSize = (16 / 60) * _buttonHeight * langScale;
+    _explainerTextFontSize = (16 / 781) * _screenHeight * langScale;
+    _backButtonFontSize = (24 / 60) * _buttonHeight * langScale;
     _noAlertsYetText = (26 / 781) * _screenHeight * langScale;
-    _toggleButtonFontSize = (14 / 781) * _screenHeight;
+    _toggleButtonFontSize = (16 / 781) * _screenHeight;
 
     // Icons
-    _cardIconSize = (30 / 60) * _buttonHeight;
+    _cardIconSize = (34 / 60) * _buttonHeight;
     _backButtonIconSize = (24 / 60) * _buttonHeight;
     _mapButtonIconSize = (30 / 60) * _buttonHeight;
 

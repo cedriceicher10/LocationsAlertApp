@@ -249,8 +249,12 @@ Color introSlidesBackgroundSlide3 = googleRedLight;
 Color introSlidesBackgroundSlide4 = googleYellowLight;
 Color introSlidesTitleTextSlide1 = black;
 Color introSlidesTitleTextSlide2 = black;
+Color introSlidesTitleTextSlide3 = black;
+Color introSlidesTitleTextSlide4 = black;
 Color introSlidesTextSlide1 = black;
 Color introSlidesTextSlide2 = black;
+Color introSlidesTextSlide3 = black;
+Color introSlidesTextSlide4 = black;
 
 Color sideDrawerTitleText = white;
 Color sideDrawerTitleIcon = white;

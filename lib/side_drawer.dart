@@ -131,8 +131,15 @@ class SideDrawer extends StatelessWidget {
               ListTile(
                 dense: true,
                 title: privacyPolicy(context),
-                onTap: () {
+                onTap: () async {
                   // URL to privacy policy
+                  String url =
+                      'https://cedriceicher10.github.io/LocationAlertsAppPrivacyPolicy.github.io/';
+                  if (!(await launch(url))) {
+                    _exception.popUp(
+                        context, 'Launch URL: Could not launch $url');
+                    throw 'Could not launch $url';
+                  }
                 },
               ),
               ListTile(

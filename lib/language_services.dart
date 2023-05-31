@@ -246,7 +246,7 @@ class LanguageServices {
   // Disclosures
   String disclosureDataTitle = 'Data Disclosure';
   String disclosureDataBody =
-      'This app uses an encrypted cloud-based database (Google Firebase Cloud Firestore) to store your alerts and usage information. All data is strictly ANONYMOUS. No location or user data is tracked AT ANY TIME. \n\nA full user data dump may be requested at any time by contacting the app\'s maker in the Google Play store.';
+      'This app uses an encrypted cloud-based database (Google Firebase Cloud Firestore) to store your alerts and usage information. All data is strictly ANONYMOUS. No location or user data is tracked AT ANY TIME. \n\nA full user data dump may be requested at any time.';
   String disclosureAdsTitle = 'Ad Disclosure';
   String disclosureAdsBody =
       'This app uses Google Admob to serve interstitial ads between defined events in the app\'s use. These ads help fund the app\'s continued development and deployment.';

@@ -53,6 +53,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
         adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
           ad.fullScreenContentCallback = FullScreenContentCallback(
             onAdDismissedFullScreenContent: (ad) {
+              _interstitialAd.dispose();
               Navigator.pop(context, false);
             },
           );
@@ -62,15 +63,16 @@ class _SpecificScreenState extends State<SpecificScreen> {
           });
         }, onAdFailedToLoad: (error) {
           print('Failed to load interstitial ad: ${error.message}');
-          _interstitialAd.dispose();
+          //_interstitialAd.dispose(); // Why dispose if not loaded?
         }));
   }
 
-  @override
-  void dispose() {
-    _interstitialAd.dispose();
-    super.dispose();
-  }
+  // This caused issues if the ad wasn't properly loaded
+  // @override
+  // void dispose() {
+  //   _interstitialAd.dispose();
+  //   super.dispose();
+  // }
   // ------------------
 
   String _reminderBody = '';
@@ -223,12 +225,44 @@ class _SpecificScreenState extends State<SpecificScreen> {
               centerTitle: true,
             ),
             resizeToAvoidBottomInset: false,
-            body: specificScreenBody(),
+            // This future builder is for the unique case where one is creating
+            // an alert from the map screen and requires geolocating for lat/lon
+            body: ((this.widget.screen == ScreenType.CREATE) &&
+                    (this.widget.alert.id == 'CREATE_ALERT'))
+                ? FutureBuilder(
+                    future: initFunctions(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                      if (snapshot.hasData) {
+                        return specificScreenBody();
+                      } else {
+                        return Center(
+                            child: CircularProgressIndicator(
+                          color: startScreenLoading,
+                        ));
+                      }
+                    })
+                : specificScreenBody(),
             floatingActionButton: buttonsFAB(),
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,
           ),
         ));
+  }
+
+  Future<bool> initFunctions() async {
+    // If creating a new alert from the map screen, this is necessary
+    var placemarks = await placemarkFromCoordinates(
+        this.widget.alert.latitude, this.widget.alert.longitude);
+    String address = placemarks[0].street! +
+        ', ' +
+        placemarks[0].locality! +
+        ', ' +
+        placemarks[0].administrativeArea! +
+        ', ' +
+        placemarks[0].postalCode!;
+    this.widget.alert.location = address;
+    return true;
   }
 
   void loadRecentLocations() {
@@ -650,7 +684,12 @@ class _SpecificScreenState extends State<SpecificScreen> {
                   _dbServices.updateUsersAdsServed(context);
                   _interstitialAd.show();
                 } else {
-                  Navigator.pop(context);
+                  if ((this.widget.screen == ScreenType.CREATE) &&
+                      (this.widget.alert.id == 'CREATE_ALERT')) {
+                    Navigator.pop(context, false);
+                  } else {
+                    Navigator.pop(context);
+                  }
                 }
               }
             },

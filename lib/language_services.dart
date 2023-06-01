@@ -188,6 +188,7 @@ class LanguageServices {
   String mapViewYourLocation = 'Your Location!';
   String mapViewTileLocation = 'at';
   String mapViewTileDate = 'Date Created';
+  String mapViewCreateNewAlert = 'Create alert at this location?';
   List<String> _mapView = [];
 
   // Edit Alert Screen
@@ -472,6 +473,7 @@ class LanguageServices {
       mapViewYourLocation,
       mapViewTileLocation,
       mapViewTileDate,
+      mapViewCreateNewAlert,
     ];
 
     // Edit Alert Screen
@@ -766,6 +768,7 @@ class LanguageServices {
     mapViewYourLocation = newVars[4];
     mapViewTileLocation = newVars[5];
     mapViewTileDate = newVars[6];
+    mapViewCreateNewAlert = newVars[7];
   }
 
   // Edit Alert Screen

@@ -317,11 +317,27 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     return FlutterMap(
       mapController: _mapController,
       options: MapOptions(
-        center: determineMapStartLocation(),
-        zoom: (_userPin) ? _locationOnZoom : _locationOffZoom,
-        plugins: [MarkerClusterPlugin()],
-        onTap: (_, __) => _popupController.hideAllPopups(),
-      ),
+          center: determineMapStartLocation(),
+          zoom: (_userPin) ? _locationOnZoom : _locationOffZoom,
+          plugins: [MarkerClusterPlugin()],
+          onTap: (_, __) => _popupController.hideAllPopups(),
+          onLongPress: (tapPositionLongPress, latLongLongPress) {
+            // Create 'create alert' marker (separately, as it's on long press)
+            List<Marker> _createAlertMarkerList = [];
+            Marker _createAlertMarker = Marker(
+              point: latLongLongPress,
+              width:
+                  10, // These are the keys to identifying the popup as a create alert pop-up
+              height:
+                  10, // These are the keys to identifying the popup as a create alert pop-up
+              anchorPos: AnchorPos.align(AnchorAlign.top),
+              builder: (context) => Icon(Icons.location_on_sharp,
+                  size: 50,
+                  color: Colors.blue), // This doesn't do anything, meh
+            );
+            _createAlertMarkerList.add(_createAlertMarker);
+            _popupController.showPopupsOnlyFor(_createAlertMarkerList);
+          }),
       layers: [
         TileLayerOptions(
           minZoom: 1,
@@ -360,17 +376,44 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               popupController: _popupController,
               popupBuilder: (_, marker) => GestureDetector(
                   onTap: () {
-                    _popupController.hideAllPopups();
-                    Navigator.of(context)
-                        .push(createRoute(
-                            //EditAlertScreen(alert: findMarkerAlertObj(marker)),
-                            SpecificScreen(
-                                screen: ScreenType.EDIT,
-                                alert: findMarkerAlertObj(marker)),
-                            'from_right'))
-                        .then((value) => setState(() {
-                              checkIfInstaPop(value);
-                            }));
+                    // Create alert marker
+                    if ((marker.width == 10) && (marker.height == 10)) {
+                      _popupController.hideAllPopups();
+                      Navigator.of(context)
+                          .push(createRoute(
+                              SpecificScreen(
+                                  screen: ScreenType.CREATE,
+                                  alert: AlertObject(
+                                      id: 'CREATE_ALERT',
+                                      dateTimeCreated: '',
+                                      dateTimeCompleted: '',
+                                      isCompleted: false,
+                                      isSpecific: true,
+                                      location: '',
+                                      latitude: marker.point.latitude,
+                                      longitude: marker.point.longitude,
+                                      reminder: '',
+                                      userId: '',
+                                      triggerDistance: 0,
+                                      triggerUnits: '')),
+                              'from_right'))
+                          .then((value) => setState(() {
+                                checkIfInstaPop(value);
+                              }));
+                      // Alert marker
+                    } else if (!useSmallPopupMarker(marker)) {
+                      _popupController.hideAllPopups();
+                      Navigator.of(context)
+                          .push(createRoute(
+                              //EditAlertScreen(alert: findMarkerAlertObj(marker)),
+                              SpecificScreen(
+                                  screen: ScreenType.EDIT,
+                                  alert: findMarkerAlertObj(marker)),
+                              'from_right'))
+                          .then((value) => setState(() {
+                                checkIfInstaPop(value);
+                              }));
+                    }
                   },
                   child: FittedBox(
                       fit: BoxFit.fitHeight,
@@ -585,6 +628,22 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         weight: FontWeight.bold,
         align: TextAlign.center,
       );
+    } else if (alertObj.id == 'CREATE_ALERT') {
+      return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        FormattedText(
+            text: _languageServices.mapViewCreateNewAlert,
+            size: _popupErrorFontSize,
+            color: mapViewCardUserLocationText,
+            font: font_cards,
+            weight: FontWeight.bold,
+            align: TextAlign.center),
+        Center(
+            child: Icon(
+          Icons.arrow_downward_sharp,
+          color: mapViewCardIcon,
+          size: _editIconSize,
+        ))
+      ]);
     } else if (alertObj.id == 'NOT_FOUND') {
       return FormattedText(
           text: _languageServices.mapViewNoAlertInformation,
@@ -651,6 +710,22 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   }
 
   AlertObject findMarkerAlertObj(Marker marker) {
+    // Identify the create alert pop-up first
+    if ((marker.width == 10) && (marker.height == 10)) {
+      return AlertObject(
+          id: 'CREATE_ALERT',
+          dateTimeCreated: '',
+          dateTimeCompleted: '',
+          isCompleted: false,
+          isSpecific: true,
+          location: '',
+          latitude: 0,
+          longitude: 0,
+          reminder: '',
+          userId: '',
+          triggerDistance: 0,
+          triggerUnits: '');
+    }
     for (int index = 0; index < _alertObjs.length; ++index) {
       // User's location marker
       if ((marker.point.latitude == _startLat) &&

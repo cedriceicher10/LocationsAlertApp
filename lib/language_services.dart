@@ -343,6 +343,9 @@ class LanguageServices {
       if (prefs.getStringList(_currentLanguageCode + '-startScreenList') ==
           null) {
         return true;
+      } else if (await isFullReTranslateNeeded()) {
+        // Check if a full retranslate is necessary
+        return true;
       } else {
         // Retrieve cached language translations and assign
         await retrieveCachedTranslations();
@@ -350,6 +353,17 @@ class LanguageServices {
       }
     }
     return false;
+  }
+
+  Future<bool> isFullReTranslateNeeded() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? updateFor_05312023 = prefs.getBool('updateFor_05312023');
+    if (updateFor_05312023 == null) {
+      prefs.setBool('updateFor_05312023', false);
+      return true;
+    } else {
+      return updateFor_05312023;
+    }
   }
 
   Future<bool> retrieveCachedTranslations() async {

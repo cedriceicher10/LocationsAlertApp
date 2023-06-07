@@ -286,7 +286,7 @@ class _StartScreenState extends State<StartScreen> {
         message: _languageServices.notificationsBody,
         icon: '@mipmap/ic_launcher',
       );
-      await BackgroundLocation.setAndroidConfiguration(15000); // interval in ms
+      await BackgroundLocation.setAndroidConfiguration(30000); // interval in ms
       await BackgroundLocation.startLocationService(distanceFilter: 0);
       BackgroundLocation.getLocationUpdates((bgLocationData) {
         _userBgLat = bgLocationData.latitude!;

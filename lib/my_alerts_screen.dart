@@ -108,6 +108,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     generateLayout();
     return MaterialApp(
       title: 'Alerts Screen',
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           title: myAlertsScreenTitle(),

@@ -147,6 +147,7 @@ class _StartScreenState extends State<StartScreen> {
     generateLayout();
     return MaterialApp(
       title: 'Start Screen',
+      debugShowCheckedModeBanner: false,
       initialRoute: '/',
       // This Builder is here so that routes needing a up-the-tree context can
       // find it. See: https://stackoverflow.com/questions/44004451/navigator-operation-requested-with-a-context-that-does-not-include-a-navigator
@@ -840,7 +841,7 @@ class _StartScreenState extends State<StartScreen> {
     _gapBeforeButtons = (5 / 781) * _screenHeight;
     _gapAfterButtons = (20 / 781) * _screenHeight;
     _bottomPadding = (20 / 781) * _screenHeight;
-    _mainImageSize = (410 / 781) * _screenHeight;
+    _mainImageSize = (395 / 781) * _screenHeight;
 
     // Width
     _buttonWidth = (325 / 392) * _screenWidth;

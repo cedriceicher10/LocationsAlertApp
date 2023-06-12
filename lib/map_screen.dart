@@ -80,6 +80,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     generateLayout();
     return MaterialApp(
       title: 'Map Screen',
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           title: myAlertsScreenTitle(),

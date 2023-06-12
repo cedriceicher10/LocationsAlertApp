@@ -218,6 +218,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
         },
         child: MaterialApp(
           title: 'Specific Screen',
+          debugShowCheckedModeBanner: false,
           home: Scaffold(
             appBar: AppBar(
               title: specificScreenTitle(),
@@ -325,6 +326,7 @@ class _SpecificScreenState extends State<SpecificScreen> {
                             pickOnMapButton(
                                 _locationButtonWidth, _locationButtonHeight),
                           ]),
+                      SizedBox(height: _buttonSpacing / 3),
                       (this.widget.screen == ScreenType.EDIT)
                           ? Row(
                               mainAxisAlignment: MainAxisAlignment.center,

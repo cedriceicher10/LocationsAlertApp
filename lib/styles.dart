@@ -187,8 +187,10 @@ Color editAlertUpdateButtonIcon = white;
 Color editAlertMarkCompleteText = black;
 Color editAlertDeleteAlertText = white;
 
-Color notificationTextAccept = royalPurple;
-Color notificationTextDismiss = royalPurple;
+Color notificationTextAccept =
+    vibrantBlue; // This should work on both normal/dark modes of phone notifications
+Color notificationTextDismiss =
+    vibrantBlue; // This should work on both normal/dark modes of phone notifications
 Color notificationChannel = royalPurple;
 Color notificationLed = royalPurple;
 

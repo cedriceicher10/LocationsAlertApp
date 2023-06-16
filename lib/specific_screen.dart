@@ -727,12 +727,13 @@ class _SpecificScreenState extends State<SpecificScreen> {
             onPressed: () async {
               formKey.currentState?.save();
               if (!_isGeneric) {
-                _usingRecentLocation = checkRecentLocationMap(_location);
+                _usingRecentLocation =
+                    checkRecentLocationMap(_specificLocation);
                 String locationToUse;
                 if (_usingRecentLocation) {
-                  locationToUse = _recentLocationsMap[_location];
+                  locationToUse = _recentLocationsMap[_specificLocation];
                 } else {
-                  locationToUse = _location;
+                  locationToUse = _specificLocation;
                 }
                 _reverseGeolocateSuccess = await _locationServices
                     .reverseGeolocateCheck(context, locationToUse);
@@ -778,8 +779,12 @@ class _SpecificScreenState extends State<SpecificScreen> {
                     await _dbServices.checkRemindersNum(context);
                 if (formKey.currentState!.validate() && lessThanLimit) {
                   formKey.currentState?.save();
-                  _dbServices.updateRemindersGenericAlert(context,
-                      widget.alert.id, _reminderBody, _location, !_isGeneric);
+                  _dbServices.updateRemindersGenericAlert(
+                      context,
+                      widget.alert.id,
+                      _reminderBody,
+                      _specificLocation,
+                      !_isGeneric);
                   _dbServices.updateUsersReminderUpdated(context);
                   // Remove keyboard
                   FocusScopeNode currentFocus = FocusScope.of(context);
